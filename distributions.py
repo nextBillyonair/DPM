@@ -36,7 +36,8 @@ class Normal(Distribution):
     def get_parameters(self):
         if self.n_dims == 1:
             return {'loc':self.loc.item(), 'scale':self.scale.item()}
-        return {'loc':self.loc.detach().numpy()}
+        return {'loc':self.loc.detach().numpy(),
+                'scale':self.scale.detach().numpy()}
 
 
 class Exponential(Distribution):
@@ -90,10 +91,6 @@ class GumbelSoftmax(Distribution):
     @property
     def probs(self):
         return self.logits.softmax(dim=-1)
-
-    def get_parameters(self):
-        probs = self.probs
-        return {f'logits_{i}': self.probs[i].item()}
 
 
 class Cauchy(Distribution):
@@ -176,3 +173,55 @@ class LogNormal(Distribution):
             return {'loc':self.loc.item(), 'scale':self.scale.item()}
         return {'loc':self.loc.detach().numpy(),
                 'scale':self.scale.detach().numpy()}
+
+
+class Gamma(Distribution):
+    def __init__(self, alpha, beta):
+        super(Gamma, self).__init__()
+        self.n_dims = len(alpha)
+        self.log_alpha = Parameter(torch.tensor(alpha).log())
+        self.log_beta = Parameter(torch.tensor(beta).log())
+
+    def log_prob(self, value):
+        model = distributions.Gamma(self.alpha, self.beta)
+        return model.log_prob(value)
+
+    def sample(self, batch_size):
+        model = distributions.Gamma(self.alpha, self.beta)
+        return model.rsample((batch_size,))
+
+    @property
+    def alpha(self):
+        return self.log_alpha.exp()
+
+    @property
+    def beta(self):
+        return self.log_beta.exp()
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'alpha':self.alpha.item(), 'beta':self.beta.item()}
+        return {'alpha':self.alpha.detach().numpy(),
+                'beta':self.beta.detach().numpy()}
+
+
+class RelaxedBernoulli(Distribution):
+    def __init__(self, probs, temperature=1.0):
+        super(RelaxedBernoulli, self).__init__()
+        self.n_dims = len(probs)
+        self.temperature = temperature
+        self.logits = Parameter(torch.tensor(probs).log())
+
+    def log_prob(self, value):
+        model = dist.RelaxedBernoulli(self.temperature, self.probs)
+        return model.log_prob(value)
+
+    def sample(self, batch_size):
+        model = dist.RelaxedBernoulli(self.temperature, self.probs)
+        return model.sample((value,))
+
+    @property
+    def probs(self):
+        return self.logits.softmax(dim=-1)
+
+# EOF

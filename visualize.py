@@ -82,3 +82,19 @@ def plot_model_1D(model):
 
 def plot_model_2D(model):
     plot_models_2D(model, model)
+    
+def plot_hists(samples_1, samples_2, labels=["Accepted Samples", "True Model"]):
+    ax = sns.distplot(samples_1, color = '#003f5c', label=labels[0])
+    ax = sns.distplot(samples_2, color = '#ffa600', label=labels[1])
+    plt.xlabel("Sample")
+    plt.ylabel("Density")
+    plt.title("Distplot for Model")
+    plt.legend()
+    plt.show()
+    
+def plot_hist(samples):
+    ax = sns.distplot(samples, color = '#003f5c')
+    plt.xlabel("Sample")
+    plt.ylabel("Density")
+    plt.title("Distplot for Model")
+    plt.show()
