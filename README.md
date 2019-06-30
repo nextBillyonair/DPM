@@ -20,26 +20,26 @@ Differentiable Probabilistic Models
 
 # Mixture Model <a name="mixture-model"></a>
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)
-    * Static weights to pick from sub-models using a categorical distribution.
+      * Static weights to pick from sub-models using a categorical distribution.
   2. [Gumbel Mixture Model](https://arxiv.org/abs/1611.01144)
-    * Uses the Gumbel Softmax as a differentiable approximation to the
+      * Uses the Gumbel Softmax as a differentiable approximation to the
       categorical distribution, allowing mixture weights to be learned.
 
 # Divergences <a name="divergences"></a>
   1. [Forward KL Divergence](https://en.wikipedia.org/wiki/Kullback–Leibler_divergence)
-    * P Model -> Sampling (rsample)
-    * Q Model -> PDF Function (log_prob)
+      * P Model -> Sampling (rsample)
+      * Q Model -> PDF Function (log_prob)
   2. [Reverse KL Divergence](https://en.wikipedia.org/wiki/Kullback–Leibler_divergence)
-    * P Model -> PDF Function (log_prob)
-    * Q Model -> Sampling + PDF Function
+      * P Model -> PDF Function (log_prob)
+      * Q Model -> Sampling + PDF Function
   3. [Jensen-Shannon Divergence (JS)](https://en.wikipedia.org/wiki/Jensen–Shannon_divergence)
-    * P Model -> PDF + Sampling
-    * Q Model -> PDF + Sampling
+      * P Model -> PDF + Sampling
+      * Q Model -> PDF + Sampling
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metroplis-Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
-    * MCMC sampling method to generate samples from a unknown distribution
-      * Requires distribution to have a log_prob method implemented.
+      * MCMC sampling method to generate samples from a unknown distribution
+        * Requires distribution to have a log_prob method implemented.
 
 # Notes <a name="notes"></a>
   * Sampling must be done through a reparameterized version of the
