@@ -45,7 +45,7 @@ Differentiable Probabilistic Models
       * Q Model -> Sampling (rsample)
 
 # MCMC Methods <a name="mcmc-methods"></a>
-  1. [Metroplis-Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
+  1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
       * MCMC sampling method to generate samples from a unknown distribution
         * Requires distribution to have a log_prob method implemented.
 
