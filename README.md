@@ -18,6 +18,7 @@ Differentiable Probabilistic Models
   6. [Gamma](https://en.wikipedia.org/wiki/Gamma_distribution)
   7. [Relaxed Bernoulli](https://arxiv.org/abs/1611.00712)
   8. [Gumbel Softmax (Relaxed Categorical)](https://arxiv.org/abs/1611.01144)
+  9. [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous))
 
 # Mixture Model <a name="mixture-model"></a>
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)
