@@ -23,12 +23,13 @@ def update_stats(stats, model):
 def train(p_model, q_model, method, epochs=1000, batch_size=64,
           lr=0.01, optimizer='Adam', track_parameters=True):
 
+    criterion = method(p_model.n_dims)
     optimizer = getattr(optim, optimizer)(q_model.parameters(), lr=lr)
     stats = Statistics()
 
     for i in range(epochs):
+        loss = criterion(p_model, q_model, batch_size)
         optimizer.zero_grad()
-        loss = method(p_model, q_model, batch_size)
         loss.backward()
         optimizer.step()
         stats.update({'loss':loss.item()})

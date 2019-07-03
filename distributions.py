@@ -213,15 +213,55 @@ class RelaxedBernoulli(Distribution):
         self.logits = Parameter(torch.tensor(probs).log())
 
     def log_prob(self, value):
-        model = dist.RelaxedBernoulli(self.temperature, self.probs)
+        model = distributions.RelaxedBernoulli(self.temperature, self.probs)
         return model.log_prob(value)
 
     def sample(self, batch_size):
-        model = dist.RelaxedBernoulli(self.temperature, self.probs)
-        return model.sample((value,))
+        model = distributions.RelaxedBernoulli(self.temperature, self.probs)
+        return model.sample((batch_size,))
 
     @property
     def probs(self):
         return self.logits.softmax(dim=-1)
+
+    def get_parameters(self):
+        if self.n_dims == 1: return {'probs':self.props.item()}
+        return {'probs':self.probs.detach().numpy()}
+
+
+class Uniform(Distribution):
+    def __init__(self, low, high):
+        super(Uniform, self).__init__()
+        self.n_dims = len(low)
+        self.alpha = Parameter(torch.tensor(low))
+        self.beta = Parameter(torch.tensor(high))
+
+    def log_prob(self, value):
+        model = distributions.Uniform(self.low, self.high)
+        return model.log_prob(value)
+
+    def sample(self, batch_size):
+        model = distributions.Uniform(self.low, self.high)
+        return model.rsample((batch_size,))
+
+    @property
+    def low(self):
+        if self.alpha <= self.beta:
+            return self.alpha
+        return self.beta
+
+    @property
+    def high(self):
+        if self.alpha <= self.beta:
+            return self.beta
+        return self.alpha
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'low':self.low.item(), 'high':self.high.item()}
+        return {'low':self.low.detach().numpy(),
+                'high':self.high.detach().item()}
+
+
 
 # EOF

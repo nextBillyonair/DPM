@@ -5,6 +5,7 @@ Differentiable Probabilistic Models
 1. [Distributions](#distributions)
 2. [Mixture Models](#mixture-models)
 3. [Divergences](#divergences)
+5. [Adversarial Loss](#adversarial-loss)
 4. [MCMC Methods](#mcmc-methods)
 5. [Notes](#notes)
 
@@ -35,6 +36,12 @@ Differentiable Probabilistic Models
   3. [Jensen-Shannon Divergence (JS)](https://en.wikipedia.org/wiki/Jensen–Shannon_divergence)
       * P Model -> PDF + Sampling
       * Q Model -> PDF + Sampling
+
+# Adversarial Loss <a name="#adversarial-loss"></a>
+  1. [Adversarial Loss (aka GAN Loss)](https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf)
+    * Hides a discriminator under the loss function, and computes the adversarial loss
+    * P Model -> Sampling (rsample)
+    * Q Model -> Sampling (rsample)
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metroplis-Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
