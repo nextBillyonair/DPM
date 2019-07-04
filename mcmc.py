@@ -17,7 +17,7 @@ def metropolis_hastings(true_model, epochs=10000, burn_in=1000,
             x_t = x_prime
             if t >= burn_in:
                 samples.append(x_t)
-        elif t % keep == 0:
+        elif keep is not None and t % keep == 0:
             if t >= burn_in:
                 samples.append(x_t)
         t += 1
