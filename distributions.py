@@ -5,7 +5,7 @@ import torch.distributions as distributions
 
 class Distribution(Module):
     def __init__(self, **args):
-        super(Distribution, self).__init__()
+        super().__init__()
 
     def log_prob(self, value):
         raise NotImplementedError("log_prob method is not implemented")
@@ -16,7 +16,7 @@ class Distribution(Module):
 
 class Normal(Distribution):
     def __init__(self, loc, scale):
-        super(Normal, self).__init__()
+        super().__init__()
         self.n_dims = len(loc)
         self.loc = Parameter(torch.tensor(loc))
         self.cholesky_decomp = Parameter(torch.tensor(scale).cholesky())
@@ -42,7 +42,7 @@ class Normal(Distribution):
 
 class Exponential(Distribution):
     def __init__(self, rate):
-        super(Exponential, self).__init__()
+        super().__init__()
         self.n_dims = len(rate)
         self.log_rate = Parameter(torch.tensor(rate).log())
 
@@ -66,7 +66,7 @@ class Exponential(Distribution):
 
 class GumbelSoftmax(Distribution):
     def __init__(self, probs, temperature=1.0, hard=True):
-        super(GumbelSoftmax, self).__init__()
+        super().__init__()
         self.n_components = len(probs)
         self.temperature = temperature
         self.hard = hard
@@ -91,11 +91,14 @@ class GumbelSoftmax(Distribution):
     @property
     def probs(self):
         return self.logits.softmax(dim=-1)
+    
+    def get_parameters(self):
+        return {'probs':self.probs.detach().numpy()}
 
 
 class Cauchy(Distribution):
     def __init__(self, loc, scale):
-        super(Cauchy, self).__init__()
+        super().__init__()
         self.n_dims = len(loc)
         self.loc = Parameter(torch.tensor(loc))
         self.log_scale = Parameter(torch.tensor(scale).log())
@@ -121,7 +124,7 @@ class Cauchy(Distribution):
 
 class Beta(Distribution):
     def __init__(self, alpha, beta):
-        super(Beta, self).__init__()
+        super().__init__()
         self.n_dims = len(alpha)
         self.log_alpha = Parameter(torch.tensor(alpha).log())
         self.log_beta = Parameter(torch.tensor(beta).log())
@@ -151,7 +154,7 @@ class Beta(Distribution):
 
 class LogNormal(Distribution):
     def __init__(self, loc, scale):
-        super(LogNormal, self).__init__()
+        super().__init__()
         self.n_dims = len(loc)
         self.loc = Parameter(torch.tensor(loc))
         self.log_scale = Parameter(torch.tensor(scale).log())
@@ -177,7 +180,7 @@ class LogNormal(Distribution):
 
 class Gamma(Distribution):
     def __init__(self, alpha, beta):
-        super(Gamma, self).__init__()
+        super().__init__()
         self.n_dims = len(alpha)
         self.log_alpha = Parameter(torch.tensor(alpha).log())
         self.log_beta = Parameter(torch.tensor(beta).log())
@@ -207,7 +210,7 @@ class Gamma(Distribution):
 
 class RelaxedBernoulli(Distribution):
     def __init__(self, probs, temperature=1.0):
-        super(RelaxedBernoulli, self).__init__()
+        super().__init__()
         self.n_dims = len(probs)
         self.temperature = temperature
         self.logits = Parameter(torch.tensor(probs).log())
@@ -231,7 +234,7 @@ class RelaxedBernoulli(Distribution):
 
 class Uniform(Distribution):
     def __init__(self, low, high):
-        super(Uniform, self).__init__()
+        super().__init__()
         self.n_dims = len(low)
         self.alpha = Parameter(torch.tensor(low))
         self.beta = Parameter(torch.tensor(high))

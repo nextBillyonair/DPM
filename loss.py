@@ -5,29 +5,29 @@ from mixture_model import MixtureModel
 
 class ForwardKL(Module):
     def __init__(self, n_dims):
-        super(ForwardKL, self).__init__()
+        super().__init__()
 
     def forward(self, p_model, q_model, batch_size=64):
         p_samples = p_model.sample(batch_size)
-        return -(q_model.log_prob(p_samples)).sum()
+        return -(q_model.log_prob(p_samples)).mean()
 
 
 class ReverseKL(Module):
     def __init__(self, n_dims):
-        super(ReverseKL, self).__init__()
+        super().__init__()
 
     def forward(self, p_model, q_model, batch_size=64):
         q_samples = q_model.sample(batch_size)
-        return -(p_model.log_prob(q_samples) - q_model.log_prob(q_samples)).sum()
+        return -(p_model.log_prob(q_samples) - q_model.log_prob(q_samples)).mean()
 
 
 class JSDivergence(Module):
     def __init__(self, n_dims):
-        super(JSDivergence, self).__init__()
+        super().__init__()
 
     def _forward_kl(self, p_model, q_model, batch_size=64):
         p_samples = p_model.sample(batch_size)
-        return (p_model.log_prob(p_samples) - q_model.log_prob(p_samples)).sum()
+        return (p_model.log_prob(p_samples) - q_model.log_prob(p_samples)).mean()
 
     def forward(self, p_model, q_model, batch_size=64):
         M = MixtureModel([p_model, q_model], [0.5, 0.5])
@@ -35,17 +35,17 @@ class JSDivergence(Module):
                       + self._forward_kl(q_model, M, batch_size))
 
 
-class AdversarialLoss(Module):
+class JSDAdversarialLoss(Module):
     def __init__(self, n_dims, hidden_size=4):
-        super(AdversarialLoss, self).__init__()
+        super().__init__()
         self.n_dims = n_dims
         self.hidden_size = hidden_size
         self.discriminator_model = Sequential(Linear(n_dims, hidden_size),
                                               LeakyReLU(),
                                               Linear(hidden_size, 1))
         self.bce_loss = BCEWithLogitsLoss()
-        self.d_optimizer = optim.Adam(self.discriminator_model.parameters(),
-                                      lr=0.01)
+        self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
+                                         lr=1e-3)
 
     def forward(self, p_model, q_model, batch_size=64):
         self.d_optimizer.zero_grad()
@@ -67,3 +67,33 @@ class AdversarialLoss(Module):
         q_loss = self.bce_loss(q_values, torch.ones_like(q_values))
 
         return q_loss
+    
+class EMDAdversarialLoss(Module):
+    def __init__(self, n_dims, hidden_size=4):
+        super().__init__()
+        self.n_dims = n_dims
+        self.hidden_size = hidden_size
+        self.discriminator_model = Sequential(Linear(n_dims, hidden_size),
+                                              LeakyReLU(),
+                                              Linear(hidden_size, 1))
+        self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
+                                         lr=1e-3)
+
+    def forward(self, p_model, q_model, batch_size=64):
+        self.d_optimizer.zero_grad()
+
+        p_samples = p_model.sample(batch_size)
+        p_loss = self.discriminator_model(p_samples).mean()
+
+        q_samples = q_model.sample(batch_size)
+        q_loss = self.discriminator_model(q_samples).mean()
+
+        loss = (p_loss - q_loss)
+        loss.backward()
+        self.d_optimizer.step()
+
+        q_samples = q_model.sample(batch_size)
+        q_loss = self.discriminator_model(q_samples).mean()
+
+        return q_loss
+
