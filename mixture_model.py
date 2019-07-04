@@ -7,9 +7,9 @@ from distributions import Distribution, GumbelSoftmax
 
 # Non-differentiable Categorical weights (not learnable)
 class MixtureModel(Distribution):
-    def __init__(self, models, weights):
+    def __init__(self, models, probs):
         super(MixtureModel, self).__init__()
-        self.categorical = Categorical(probs=torch.tensor(weights))
+        self.categorical = Categorical(probs=torch.tensor(probs))
         self.models = ModuleList(models)
 
     def log_prob(self, value):
@@ -27,12 +27,16 @@ class MixtureModel(Distribution):
     def n_dims(self):
         return self.models[0].n_dims
 
+    def get_parameters(self):
+        return {'probs': self.categorical.probs.numpy(),
+                'models': [model.get_parameters() for model in self.models]}
+
 
 # Differentiable, Learnable Mixture Weights
 class GumbelMixtureModel(Distribution):
-    def __init__(self, models, weights, temperature=1.0, hard=True):
+    def __init__(self, models, probs, temperature=1.0, hard=True):
         super(GumbelMixtureModel, self).__init__()
-        self.categorical = GumbelSoftmax(weights, temperature, hard)
+        self.categorical = GumbelSoftmax(probs, temperature, hard)
         self.models = ModuleList(models)
 
     def log_prob(self, value):
@@ -49,3 +53,7 @@ class GumbelMixtureModel(Distribution):
     @property
     def n_dims(self):
         return self.models[0].n_dims
+
+    def get_parameters(self):
+        return {'probs': self.categorical.probs.detach().numpy(),
+                'models': [model.get_parameters() for model in self.models]}
