@@ -1,7 +1,7 @@
 import torch
 from torch import nn, optim
 from torch.nn import (
-    Module, Sequential, Linear, LeakyReLU, 
+    Module, Sequential, Linear, LeakyReLU,
     BCEWithLogitsLoss, MSELoss
 )
 
@@ -46,7 +46,7 @@ class AdversarialLoss(Module):
         q_values = self.discriminator_model(q_samples)
         return self.generator_loss(q_values)
 
-
+# Also NSGAN
 class GANLoss(AdversarialLoss):
 
     def __init__(self, *args, **kwargs):
@@ -56,10 +56,25 @@ class GANLoss(AdversarialLoss):
     def discriminator_loss(self, p_values, q_values):
         p_loss = self.bce_loss(p_values, torch.ones_like(p_values))
         q_loss = self.bce_loss(q_values, torch.zeros_like(q_values))
-        return 0.5 * (p_loss + q_loss)
+        return p_loss + q_loss
 
     def generator_loss(self, q_values):
         return self.bce_loss(q_values, torch.ones_like(q_values))
+
+
+class MMGANLoss(AdversarialLoss):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bce_loss = BCEWithLogitsLoss()
+
+    def discriminator_loss(self, p_values, q_values):
+        p_loss = self.bce_loss(p_values, torch.ones_like(p_values))
+        q_loss = self.bce_loss(q_values, torch.zeros_like(q_values))
+        return p_loss + q_loss
+
+    def generator_loss(self, q_values):
+        return -self.bce_loss(q_values, torch.zeros_like(q_values))
 
 
 class WGANLoss(AdversarialLoss):
@@ -80,7 +95,16 @@ class LSGANLoss(AdversarialLoss):
     def discriminator_loss(self, p_values, q_values):
         p_loss = self.mse_loss(p_values, torch.ones_like(p_values))
         q_loss = self.mse_loss(q_values, torch.zeros_like(q_values))
-        return 0.5 * (p_loss + q_loss)
+        return p_loss + q_loss
 
     def generator_loss(self, q_values):
         return self.mse_loss(q_values, torch.ones_like(q_values))
+
+
+
+
+
+
+
+
+# EOF

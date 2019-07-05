@@ -451,6 +451,7 @@ class FisherSnedecor(Distribution):
 
 
 # For ELBO!
+# AKA Conditional Model
 class VariationalModel(Distribution):
 
     def __init__(self, input_dim, hidden_sizes, activation,
