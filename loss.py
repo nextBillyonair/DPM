@@ -36,11 +36,13 @@ class JSDivergence(Module):
 
 
 class GANAdversarialLoss(Module):
-    def __init__(self, n_dims, hidden_size=4):
+    def __init__(self, n_dims, hidden_size=24):
         super().__init__()
         self.n_dims = n_dims
         self.hidden_size = hidden_size
         self.discriminator_model = Sequential(Linear(n_dims, hidden_size),
+                                              LeakyReLU(),
+                                              Linear(hidden_size, hidden_size),
                                               LeakyReLU(),
                                               Linear(hidden_size, 1))
         self.bce_loss = BCEWithLogitsLoss()
@@ -69,11 +71,13 @@ class GANAdversarialLoss(Module):
         return q_loss
 
 class WGANAdversarialLoss(Module):
-    def __init__(self, n_dims, hidden_size=4):
+    def __init__(self, n_dims, hidden_size=24):
         super().__init__()
         self.n_dims = n_dims
         self.hidden_size = hidden_size
         self.discriminator_model = Sequential(Linear(n_dims, hidden_size),
+                                              LeakyReLU(),
+                                              Linear(hidden_size, hidden_size),
                                               LeakyReLU(),
                                               Linear(hidden_size, 1))
         self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
@@ -98,11 +102,13 @@ class WGANAdversarialLoss(Module):
         return q_loss
 
 class LSGANAdversarialLoss(Module):
-    def __init__(self, n_dims, hidden_size=4):
+    def __init__(self, n_dims, hidden_size=24):
         super().__init__()
         self.n_dims = n_dims
         self.hidden_size = hidden_size
         self.discriminator_model = Sequential(Linear(n_dims, hidden_size),
+                                              LeakyReLU(),
+                                              Linear(hidden_size, hidden_size),
                                               LeakyReLU(),
                                               Linear(hidden_size, 1))
         self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
