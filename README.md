@@ -7,8 +7,9 @@ Differentiable Probabilistic Models
 3. [Mixture Models](#mixture-models)
 4. [Divergences](#divergences)
 5. [Adversarial Loss](#adversarial-loss)
-6. [MCMC Methods](#mcmc-methods)
-7. [Notes](#notes)
+6. [ELBO](#elbo)
+7. [MCMC Methods](#mcmc-methods)
+8. [Notes](#notes)
 
 # Distributions <a name="distributions"></a>
   1. [Normal (Multivariate)](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)
@@ -61,6 +62,10 @@ Differentiable Probabilistic Models
           2. [MMGAN Loss](https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf)
           3. [WGAN Loss](https://arxiv.org/pdf/1701.07875.pdf)
           4. [LSGAN Loss](https://arxiv.org/pdf/1611.04076.pdf)
+
+# ELBO <a> name="#elbo"</a>
+  1. Implements SVI with ELBO loss.
+  2. Requires a Variational Model to learn, in addition to P and Q models.
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
