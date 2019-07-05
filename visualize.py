@@ -5,7 +5,6 @@ import seaborn as sns
 plt.style.use('seaborn-darkgrid')
 
 def plot_stats(stats, goals=None):
-    palette = plt.get_cmap('Set1')
     fig, axes = plt.subplots(1, len(stats.data.keys()), figsize=(12, 6), squeeze=False)
     for index, value in enumerate(stats.data.keys()):
         axes[0, index].set_title(f"{value} curve")
@@ -88,8 +87,8 @@ def plot_model_2D(model):
 
 def plot_hists(samples_1, samples_2, labels=["Accepted Samples", "True Model"]):
     if samples_1.size(1) == 1:
-        plot_hists_1D(samples_1, samples_2, labels)
-    plot_hists_2D(samples_1, samples_2, labels)
+        return plot_hists_1D(samples_1, samples_2, labels)
+    return plot_hists_2D(samples_1, samples_2, labels)
 
 def plot_hists_1D(samples_1, samples_2, labels=["Accepted Samples", "True Model"]):
     ax = sns.distplot(samples_1, color = '#003f5c', label=labels[0])
@@ -126,8 +125,8 @@ def plot_hists_2D(samples_1, model, labels=["Accepted Samples", "True Model"], n
 
 def plot_hist(samples):
     if samples.size(1) == 1:
-        plot_hist_1D(samples)
-    plot_hist_2D(samples)
+        return plot_hist_1D(samples)
+    return plot_hist_2D(samples)
 
 def plot_hist_1D(samples):
     ax = sns.distplot(samples, color = '#003f5c')
@@ -145,8 +144,8 @@ def plot_hist_2D(samples):
 
 def plot_mcmc(samples):
     if samples.size(1) == 1:
-        plot_mcmc_1D(samples)
-    plot_mcmc_2D(samples)
+        return plot_mcmc_1D(samples)
+    return plot_mcmc_2D(samples)
 
 def plot_mcmc_1D(samples):
     x = np.linspace(0, len(samples), len(samples))

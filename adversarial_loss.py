@@ -1,102 +1,86 @@
 import torch
-import torch.optim as optim
-from torch.nn import Module, Sequential, Linear, LeakyReLU, BCEWithLogitsLoss
+from torch import nn, optim
+from torch.nn import (
+    Module, Sequential, Linear, LeakyReLU, 
+    BCEWithLogitsLoss, MSELoss
+)
 
-class GANLoss(Module):
-    def __init__(self, n_dims, hidden_size=24):
+class AdversarialLoss(Module):
+
+    def __init__(self, input_dim, hidden_sizes=[24, 24],
+                 activation='LeakyReLU',
+                 lr=1e-3):
         super().__init__()
-        self.n_dims = n_dims
-        self.hidden_size = hidden_size
-        self.discriminator_model = Sequential(Linear(n_dims, hidden_size),
-                                              LeakyReLU(),
-                                              Linear(hidden_size, hidden_size),
-                                              LeakyReLU(),
-                                              Linear(hidden_size, 1))
+        self.n_dims = input_dim
+        prev_size = input_dim
+        layers = []
+        for h in hidden_sizes:
+            layers.append(nn.Linear(prev_size, h))
+            layers.append(getattr(nn, activation)())
+            prev_size = h
+        layers.append(nn.Linear(prev_size, 1))
+        self.discriminator_model = nn.Sequential(*layers)
+        self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
+                                         lr=lr)
+
+    def discriminator_loss(self, p_values, q_values):
+        raise NotImplementedError()
+
+    def generator_loss(self, q_values):
+        raise NotImplementedError()
+
+    def forward(self, p_model, q_model, batch_size=64):
+        self.d_optimizer.zero_grad()
+
+        p_samples = p_model.sample(batch_size)
+        p_values = self.discriminator_model(p_samples.detach())
+
+        q_samples = q_model.sample(batch_size)
+        q_values = self.discriminator_model(q_samples.detach())
+
+        d_loss = self.discriminator_loss(p_values, q_values)
+        d_loss.backward()
+        self.d_optimizer.step()
+
+        q_samples = q_model.sample(batch_size)
+        q_values = self.discriminator_model(q_samples)
+        return self.generator_loss(q_values)
+
+
+class GANLoss(AdversarialLoss):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.bce_loss = BCEWithLogitsLoss()
-        self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
-                                         lr=1e-3)
 
-    def forward(self, p_model, q_model, batch_size=64):
-        self.d_optimizer.zero_grad()
-
-        p_samples = p_model.sample(batch_size)
-        p_values = self.discriminator_model(p_samples)
+    def discriminator_loss(self, p_values, q_values):
         p_loss = self.bce_loss(p_values, torch.ones_like(p_values))
+        q_loss = self.bce_loss(q_values, torch.zeros_like(q_values))
+        return 0.5 * (p_loss + q_loss)
 
-        q_samples = q_model.sample(batch_size)
-        q_values = self.discriminator_model(q_samples)
-        q_loss = self.bce_loss(q_values, torch.zeros_like(p_values))
+    def generator_loss(self, q_values):
+        return self.bce_loss(q_values, torch.ones_like(q_values))
 
-        loss = 0.5*(p_loss + q_loss)
-        loss.backward()
-        self.d_optimizer.step()
 
-        q_samples = q_model.sample(batch_size)
-        q_values = self.discriminator_model(q_samples)
-        q_loss = self.bce_loss(q_values, torch.ones_like(p_values))
+class WGANLoss(AdversarialLoss):
 
-        return q_loss
+    def discriminator_loss(self, p_values, q_values):
+        return p_values.mean() - q_values.mean()
 
-class WGANLoss(Module):
-    def __init__(self, n_dims, hidden_size=24):
-        super().__init__()
-        self.n_dims = n_dims
-        self.hidden_size = hidden_size
-        self.discriminator_model = Sequential(Linear(n_dims, hidden_size),
-                                              LeakyReLU(),
-                                              Linear(hidden_size, hidden_size),
-                                              LeakyReLU(),
-                                              Linear(hidden_size, 1))
-        self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
-                                         lr=1e-3)
+    def generator_loss(self, q_values):
+        return q_values.mean()
 
-    def forward(self, p_model, q_model, batch_size=64):
-        self.d_optimizer.zero_grad()
 
-        p_samples = p_model.sample(batch_size)
-        p_loss = self.discriminator_model(p_samples).mean()
+class LSGANLoss(AdversarialLoss):
 
-        q_samples = q_model.sample(batch_size)
-        q_loss = self.discriminator_model(q_samples).mean()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.mse_loss = MSELoss()
 
-        loss = (p_loss - q_loss)
-        loss.backward()
-        self.d_optimizer.step()
+    def discriminator_loss(self, p_values, q_values):
+        p_loss = self.mse_loss(p_values, torch.ones_like(p_values))
+        q_loss = self.mse_loss(q_values, torch.zeros_like(q_values))
+        return 0.5 * (p_loss + q_loss)
 
-        q_samples = q_model.sample(batch_size)
-        q_loss = self.discriminator_model(q_samples).mean()
-
-        return q_loss
-
-class LSGANLoss(Module):
-    def __init__(self, n_dims, hidden_size=24):
-        super().__init__()
-        self.n_dims = n_dims
-        self.hidden_size = hidden_size
-        self.discriminator_model = Sequential(Linear(n_dims, hidden_size),
-                                              LeakyReLU(),
-                                              Linear(hidden_size, hidden_size),
-                                              LeakyReLU(),
-                                              Linear(hidden_size, 1))
-        self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
-                                         lr=1e-3)
-
-    def forward(self, p_model, q_model, batch_size=64):
-        self.d_optimizer.zero_grad()
-
-        p_samples = p_model.sample(batch_size)
-        p_loss = (self.discriminator_model(p_samples) \
-                  - torch.ones(batch_size)).pow(2).mean()
-
-        q_samples = q_model.sample(batch_size)
-        q_loss = (self.discriminator_model(q_samples)).pow(2).mean()
-
-        loss = 0.5*(p_loss + q_loss)
-        loss.backward()
-        self.d_optimizer.step()
-
-        q_samples = q_model.sample(batch_size)
-        q_loss = 0.5*(self.discriminator_model(q_samples) \
-                     - torch.ones(batch_size)).pow(2).mean()
-
-        return q_loss
+    def generator_loss(self, q_values):
+        return self.mse_loss(q_values, torch.ones_like(q_values))

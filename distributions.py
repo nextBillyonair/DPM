@@ -1,29 +1,42 @@
+from abc import abstractmethod, ABC
 import torch
+from torch import nn, distributions
 from torch.nn import Module, Parameter
 from torch.nn.functional import softplus
-import torch.distributions as distributions
 
-
-class Distribution(Module):
-    def __init__(self, **args):
+class Distribution(ABC, Module):
+    def __init__(self):
         super().__init__()
 
+    @abstractmethod
     def log_prob(self, value):
         raise NotImplementedError("log_prob method is not implemented")
 
+    @abstractmethod
     def sample(self, batch_size):
         raise NotImplementedError("sample method is not implemented")
 
-    def softplus_inverse(self, value):
-        return (value.exp() - 1.0).log()
+    def softplus_inverse(self, value, threshold=20):
+        inv = (value.exp() - 1.0).log()
+        inv[value > threshold] = value[value > threshold]
+        return inv
 
 
 class Normal(Distribution):
-    def __init__(self, loc, scale):
+    def __init__(self, loc, scale, learnable=True):
         super().__init__()
         self.n_dims = len(loc)
-        self.loc = Parameter(torch.tensor(loc))
-        self.cholesky_decomp = Parameter(torch.tensor(scale).cholesky())
+        if not isinstance(loc, torch.Tensor):
+            loc = torch.tensor(loc)
+        if not isinstance(scale, torch.Tensor):
+            scale = torch.tensor(scale)
+
+        self.loc = loc
+        self.cholesky_decomp = scale.view(self.n_dims, self.n_dims).cholesky()
+
+        if learnable:
+            self.loc = Parameter(self.loc)
+            self.cholesky_decomp = Parameter(self.cholesky_decomp)
 
     def log_prob(self, value):
         model = distributions.MultivariateNormal(self.loc, self.scale)
@@ -183,11 +196,20 @@ class LogNormal(Distribution):
 
 
 class Gamma(Distribution):
-    def __init__(self, alpha, beta):
+    def __init__(self, alpha, beta, learnable=True):
         super().__init__()
         self.n_dims = len(alpha)
-        self._alpha = Parameter(self.softplus_inverse(torch.tensor(alpha)))
-        self._beta = Parameter(self.softplus_inverse(torch.tensor(beta)))
+        if not isinstance(alpha, torch.Tensor):
+            alpha = torch.tensor(alpha)
+        if not isinstance(beta, torch.Tensor):
+            beta = torch.tensor(beta)
+
+        self._alpha = self.softplus_inverse(alpha)
+        self._beta = self.softplus_inverse(beta)
+
+        if learnable:
+            self._alpha = Parameter(self._alpha)
+            self._beta = Parameter(self._beta)
 
     def log_prob(self, value):
         model = distributions.Gamma(self.alpha, self.beta)
@@ -268,6 +290,82 @@ class Uniform(Distribution):
             return {'low':self.low.item(), 'high':self.high.item()}
         return {'low':self.low.detach().numpy(),
                 'high':self.high.detach().item()}
+
+
+class StudentT(Distribution):
+    def __init__(self, df, loc, scale):
+        super().__init__()
+        self.n_dims = len(loc)
+        self.loc = Parameter(torch.tensor(loc))
+        self._scale = Parameter(self.softplus_inverse(torch.tensor(scale)))
+        self._df = Parameter(self.softplus_inverse(torch.tensor(df)))
+
+    def log_prob(self, value):
+        model = distributions.StudentT(self.df, self.loc, self.scale)
+        return model.log_prob(value)
+
+    def sample(self, batch_size):
+        model = distributions.StudentT(self.df, self.loc, self.scale)
+        return model.rsample((batch_size,))
+
+    @property
+    def scale(self):
+        return softplus(self._scale)
+
+    @property
+    def df(self):
+        return softplus(self._df)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'loc' : self.loc.item(), 'scale':self.scale.item(),
+                    'df':self.df.item()}
+        return {'loc' : self.loc.detach().numpy(),
+                'scale':self.scale.detach().numpy(),
+                'df':self.df.detach().numpy()}
+
+# For ELBO!
+class VariationalModel(Distribution):
+
+    def __init__(self, input_dim, hidden_sizes, activation,
+                 output_shapes, output_activations, distribution):
+        super().__init__()
+        prev_size = input_dim
+        layers = []
+        for h in hidden_sizes:
+            layers.append(nn.Linear(prev_size, h))
+            layers.append(getattr(nn, activation)())
+            layers.append(nn.BatchNorm1d(h))
+            prev_size = h
+
+        self.model = nn.Sequential(*layers)
+        self.output_layers = nn.ModuleList()
+        for output_shape, output_activation in zip(output_shapes, output_activations):
+            layers = []
+            layers.append(nn.Linear(prev_size, output_shape))
+            if output_activation is not None:
+                layers.append(getattr(nn, output_activation)())
+            self.output_layers.append(nn.Sequential(*layers))
+
+        self.distribution = distribution
+
+    def _create_dist(self, x):
+        h = self.model(x)
+        dist_params = [output_layer(h) for output_layer in self.output_layers]
+#         print(dist_params[0].mean(), dist_params[1].mean())
+        return self.distribution(*dist_params, learnable=False)
+
+    def sample(self, x, compute_logprob=False):
+        # sample from q(z|x)
+        dist = self._create_dist(x)
+        z = dist.sample(1).squeeze(0)
+        if compute_logprob:
+            return z, dist.log_prob(z)
+        return z
+
+    def log_prob(self, z, x):
+        # log_prob of q(z|x)
+        return self._create_dist(x).log_prob(z)
 
 
 

@@ -1,8 +1,7 @@
 import torch
-from torch.distributions import Categorical
+from torch.distributions import Categorical, Gamma, Normal
 from torch.nn import Module, ModuleList, Parameter
 from torch.nn.functional import softplus
-from torch.distributions import Normal
 import numpy as np
 
 from distributions import Distribution, GumbelSoftmax
@@ -55,18 +54,41 @@ class GumbelMixtureModel(Distribution):
                 'models': [model.get_parameters() for model in self.models]}
 
 
-class StudentTMixtureModel(Distribution):
-    def __init__(self, loc, scale, df):
+# Infinite Mixture Version of Gaussian
+class InfiniteMixtureModel(Distribution):
+    def __init__(self, df, loc, scale,
+                 loc_learnable=True,
+                 scale_learnable=True,
+                 df_learnable=True):
+        super().__init__()
         self.n_dims = len(loc)
-        self.loc = Parameter(torch.tensor(loc))
-        self._scale = Parameter(self.softplus_inverse(torch.tensor(scale)))
-        self._df = Parameter(self.softplus_inverse(torch.tensor(df)))
+        self.loc = torch.tensor(loc)
+        if loc_learnable:
+            self.loc = Parameter(self.loc)
 
-    def log_prob(self, value):
-        pass
+        self._scale = self.softplus_inverse(torch.tensor(scale))
+        if scale_learnable:
+            self._scale = Parameter(self._scale)
 
-    def sample(self, batch_size):
-        pass
+        self._df = self.softplus_inverse(torch.tensor(df))
+        if df_learnable:
+            self._df = Parameter(self._df)
+
+    def sample(self, batch_size, return_latents=False):
+        weight_model = Gamma(self.df / 2, self.df / 2)
+        latent_samples = weight_model.rsample((batch_size,))
+        normal_model = Normal(self.loc, self.scale / latent_samples)
+        if return_latents:
+            return normal_model.rsample((1,)).squeeze(0), latent_samples
+        else:
+            return normal_model.rsample((1,)).squeeze(0)
+
+    def log_prob(self, samples, latents=None):
+        if latents is None:
+            raise NotImplementedError("InfiniteMixtureModel log_prob not implemented")
+        weight_model = Gamma(self.df / 2, self.df / 2)
+        normal_model = Normal(self.loc, self.scale / latents)
+        return normal_model.log_prob(samples) + weight_model.log_prob(latents)
 
     @property
     def scale(self):
@@ -76,15 +98,22 @@ class StudentTMixtureModel(Distribution):
     def df(self):
         return softplus(self._df)
 
+    @property
+    def has_latents(self):
+        return True
+
     def get_parameters(self):
         if self.n_dims == 1:
-            return {'loc' : self.loc.item(), 'scale':self.scale.item(),
-                    'df':self.df.item()}
-        return {'loc' : self.loc.detach().numpy(),
-                'scale':self.scale.detach().numpy(),
-                'df':self.df.detach().numpy()}
-
-
+            return {
+                "loc": self.loc.item(),
+                "scale": self.scale.item(),
+                "df": self.df.item(),
+            }
+        return {
+            "loc": self.loc.detach().numpy(),
+            "scale": self.scale.detach().numpy(),
+            "df": self.df.detach().numpy(),
+        }
 
 
 
