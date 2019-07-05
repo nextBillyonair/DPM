@@ -3,11 +3,12 @@ Differentiable Probabilistic Models
 
 ## Table of Contents
 1. [Distributions](#distributions)
-2. [Mixture Models](#mixture-models)
-3. [Divergences](#divergences)
+2. [Variational Model](#variational_model)
+3. [Mixture Models](#mixture-models)
+4. [Divergences](#divergences)
 5. [Adversarial Loss](#adversarial-loss)
-4. [MCMC Methods](#mcmc-methods)
-5. [Notes](#notes)
+6. [MCMC Methods](#mcmc-methods)
+7. [Notes](#notes)
 
 # Distributions <a name="distributions"></a>
   1. [Normal (Multivariate)](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)
@@ -19,6 +20,15 @@ Differentiable Probabilistic Models
   7. [Relaxed Bernoulli](https://arxiv.org/abs/1611.00712)
   8. [Gumbel Softmax (Relaxed Categorical)](https://arxiv.org/abs/1611.01144)
   9. [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous))
+  10. Student T
+  11. Dirichlet
+  12. Fisher-Snedecor
+
+# Variational Model <a name="variational_model"></a>
+  1. Uses a Neural Network to take inputs and create the parameters of a distribution.
+  2. Sampling -> takes a value, runs the network to create the distribution,
+    sample from conditional distribution.
+  3. Log Prob -> Create distribution conditioned on X, take log_prob w.r.t. Z
 
 # Mixture Model <a name="mixture-model"></a>
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)
@@ -26,6 +36,8 @@ Differentiable Probabilistic Models
   2. [Gumbel Mixture Model](https://arxiv.org/abs/1611.01144)
       * Uses the Gumbel Softmax as a differentiable approximation to the
       categorical distribution, allowing mixture weights to be learned.
+  3. Infinite Mixture Model
+      * Student T written as a Mixture Model.
 
 # Divergences <a name="divergences"></a>
   1. [Forward KL Divergence](https://en.wikipedia.org/wiki/Kullback–Leibler_divergence)
@@ -39,10 +51,16 @@ Differentiable Probabilistic Models
       * Q Model -> PDF + Sampling
 
 # Adversarial Loss <a name="#adversarial-loss"></a>
-  1. [Adversarial Loss (aka GAN Loss)](https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf)
+  1. [Adversarial Loss (aka GAN Loss)](https://arxiv.org/pdf/1711.10337.pdf)
       * Hides a discriminator under the loss function, and computes the adversarial loss
       * P Model -> Sampling (rsample)
       * Q Model -> Sampling (rsample)
+      * Must use RMSprop
+      * Algorithms:
+          1. [GAN Loss](https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf)
+          2. [MMGAN Loss](https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf)
+          3. [WGAN Loss](https://arxiv.org/pdf/1701.07875.pdf)
+          4. [LSGAN Loss](https://arxiv.org/pdf/1611.04076.pdf)
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
