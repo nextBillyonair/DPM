@@ -268,7 +268,7 @@ class Gamma(Distribution):
 
 
 class RelaxedBernoulli(Distribution):
-    
+
     def __init__(self, probs, temperature=1.0, learnable=True):
         super().__init__()
         self.n_dims = len(probs)
@@ -380,6 +380,75 @@ class StudentT(Distribution):
         return {'loc' : self.loc.detach().numpy(),
                 'scale':self.scale.detach().numpy(),
                 'df':self.df.detach().numpy()}
+
+
+class Dirichlet(Distribution):
+
+    def __init__(self, alpha, learnable=True):
+        self.n_dims = len(alpha)
+        if not isinstance(alpha, torch.Tensor):
+            alpha = torch.tensor(alpha)
+        self._alpha = self.softplus_inverse(alpha)
+        if learnable:
+            self._alpha = Parameter(self._alpha)
+
+    def log_prob(self, value):
+        model = distributions.Dirichlet(self.alpha)
+        return model.log_prob(value)
+
+    def sample(self, batch_size):
+        model = distributions.Dirichlet(self.alpha)
+        return model.rsample((batch_size,))
+
+    @property
+    def alpha(self):
+        return softplus(self._alpha)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'alpha':self.alpha.item()}
+        return {'alpha':self.alpha.detach().numpy()}
+
+
+class FisherSnedecor(Distribution):
+
+    def __init__(self, df_1, df_2, learnable=True):
+        self.n_dims = len(df_1)
+        if not isinstance(df_1, torch.Tensor):
+            df_1 = torch.tensor(df_1)
+        if not isinstance(df_2, torch.Tensor):
+            df_2 = torch.tensor(df_2)
+        self._df_1 = self.softplus_inverse(df_1)
+        self._df_2 = self.softplus_inverse(df_2)
+        if learnable:
+            self._df_1 = Parameter(self._df_1)
+            self._df_2 = Parameter(self._df_2)
+
+    def log_prob(self, value):
+        model = distributions.FisherSnedecor(self.df_1, self.df_2)
+        return model.log_prob(value)
+
+    def sample(self, batch_size):
+        model = distributions.FisherSnedecor(self.df_1, self.df_2)
+        return model.rsample((batch_size,))
+
+    @property
+    def df_1(self):
+        return softplus(self._df_1)
+
+    @property
+    def df_2(self):
+        return softplus(self._df_2)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'df_1':self.df_1.item(),'df_2':self.df_2.item()}
+        return {'df_1':self.df_1.detach().numpy(),
+                'df_2':self.df_2.detach().numpy()}
+
+
+# Missing: Half-Cauchy, Half Normal, Laplace
+
 
 # For ELBO!
 class VariationalModel(Distribution):
