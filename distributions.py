@@ -5,6 +5,7 @@ from torch.nn import Module, Parameter
 from torch.nn.functional import softplus
 
 class Distribution(ABC, Module):
+
     def __init__(self):
         super().__init__()
 
@@ -23,6 +24,7 @@ class Distribution(ABC, Module):
 
 
 class Normal(Distribution):
+
     def __init__(self, loc, scale, learnable=True):
         super().__init__()
         self.n_dims = len(loc)
@@ -30,10 +32,8 @@ class Normal(Distribution):
             loc = torch.tensor(loc)
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale)
-
         self.loc = loc
         self.cholesky_decomp = scale.view(self.n_dims, self.n_dims).cholesky()
-
         if learnable:
             self.loc = Parameter(self.loc)
             self.cholesky_decomp = Parameter(self.cholesky_decomp)
@@ -58,10 +58,15 @@ class Normal(Distribution):
 
 
 class Exponential(Distribution):
-    def __init__(self, rate):
+
+    def __init__(self, rate, learnable=True):
         super().__init__()
         self.n_dims = len(rate)
-        self._rate = Parameter(self.softplus_inverse(torch.tensor(rate)))
+        if not isinstance(rate, torch.Tensor):
+            rate = torch.tensor(rate)
+        self._rate = self.softplus_inverse(rate)
+        if learnable:
+            self._rate = Parameter(self._rate)
 
     def log_prob(self, value):
         model = distributions.Exponential(self.rate)
@@ -82,12 +87,17 @@ class Exponential(Distribution):
 
 
 class GumbelSoftmax(Distribution):
-    def __init__(self, probs, temperature=1.0, hard=True):
+
+    def __init__(self, probs, temperature=1.0, hard=True, learnable=True):
         super().__init__()
         self.n_components = len(probs)
         self.temperature = temperature
         self.hard = hard
-        self.logits = Parameter(torch.tensor(probs).log())
+        if not isinstance(probs, torch.Tensor):
+            probs = torch.tensor(probs)
+        self.logits = probs.log()
+        if learnable:
+            self.logits = Parameter(self.logits)
 
     def log_prob(self, value):
         model = distributions.Categorical(probs=self.probs)
@@ -114,11 +124,19 @@ class GumbelSoftmax(Distribution):
 
 
 class Cauchy(Distribution):
-    def __init__(self, loc, scale):
+
+    def __init__(self, loc, scale, learnable=True):
         super().__init__()
         self.n_dims = len(loc)
-        self.loc = Parameter(torch.tensor(loc))
-        self._scale = Parameter(self.softplus_inverse(torch.tensor(scale)))
+        if not isinstance(loc, torch.Tensor):
+            loc = torch.tensor(loc)
+        if not isinstance(scale, torch.Tensor):
+            scale = torch.tensor(scale)
+        self.loc = loc
+        self._scale = self.softplus_inverse(scale)
+        if learnable:
+            self.loc = Parameter(self.loc)
+            self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
         model = distributions.Cauchy(self.loc, self.scale)
@@ -140,11 +158,19 @@ class Cauchy(Distribution):
 
 
 class Beta(Distribution):
-    def __init__(self, alpha, beta):
+
+    def __init__(self, alpha, beta, learnable=True):
         super().__init__()
         self.n_dims = len(alpha)
-        self._alpha = Parameter(self.softplus_inverse(torch.tensor(alpha)))
-        self._beta = Parameter(self.softplus_inverse(torch.tensor(beta)))
+        if not isinstance(alpha, torch.Tensor):
+            alpha = torch.tensor(alpha)
+        if not isinstance(beta, torch.Tensor):
+            beta = torch.tensor(beta)
+        self._alpha = self.softplus_inverse(alpha)
+        self._beta = self.softplus_inverse(beta)
+        if learnable:
+            self._alpha = Parameter(self._alpha)
+            self._beta = Parameter(self._beta)
 
     def log_prob(self, value):
         model = distributions.Beta(self.alpha, self.beta)
@@ -170,11 +196,19 @@ class Beta(Distribution):
 
 
 class LogNormal(Distribution):
-    def __init__(self, loc, scale):
+
+    def __init__(self, loc, scale, learnable=True):
         super().__init__()
         self.n_dims = len(loc)
-        self.loc = Parameter(torch.tensor(loc))
-        self._scale = Parameter(self.softplus_inverse(torch.tensor(scale)))
+        if not isinstance(loc, torch.Tensor):
+            loc = torch.tensor(loc)
+        if not isinstance(scale, torch.Tensor):
+            scale = torch.tensor(scale)
+        self.loc = loc
+        self._scale = self.softplus_inverse(scale)
+        if learnable:
+            self.loc = Parameter(self.loc)
+            self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
         model = distributions.LogNormal(self.loc, self.scale)
@@ -196,6 +230,7 @@ class LogNormal(Distribution):
 
 
 class Gamma(Distribution):
+
     def __init__(self, alpha, beta, learnable=True):
         super().__init__()
         self.n_dims = len(alpha)
@@ -203,10 +238,8 @@ class Gamma(Distribution):
             alpha = torch.tensor(alpha)
         if not isinstance(beta, torch.Tensor):
             beta = torch.tensor(beta)
-
         self._alpha = self.softplus_inverse(alpha)
         self._beta = self.softplus_inverse(beta)
-
         if learnable:
             self._alpha = Parameter(self._alpha)
             self._beta = Parameter(self._beta)
@@ -235,11 +268,16 @@ class Gamma(Distribution):
 
 
 class RelaxedBernoulli(Distribution):
-    def __init__(self, probs, temperature=1.0):
+    
+    def __init__(self, probs, temperature=1.0, learnable=True):
         super().__init__()
         self.n_dims = len(probs)
         self.temperature = temperature
-        self.logits = Parameter(self.softplus_inverse(torch.tensor(probs)))
+        if not isinstance(probs, torch.Tensor):
+            probs = torch.tensor(probs)
+        self.logits = self.softplus_inverse(probs)
+        if learnable:
+            self.logits = Parameter(self.logits)
 
     def log_prob(self, value):
         model = distributions.RelaxedBernoulli(self.temperature, self.probs)
@@ -259,11 +297,19 @@ class RelaxedBernoulli(Distribution):
 
 
 class Uniform(Distribution):
-    def __init__(self, low, high):
+
+    def __init__(self, low, high, learnable=True):
         super().__init__()
         self.n_dims = len(low)
-        self.alpha = Parameter(torch.tensor(low))
-        self.beta = Parameter(torch.tensor(high))
+        if not isinstance(low, torch.Tensor):
+            low = torch.tensor(low)
+        if not isinstance(high, torch.Tensor):
+            high = torch.tensor(high)
+        self.alpha = low
+        self.beta = high
+        if learnable:
+            self.alpha = Parameter(self.alpha)
+            self.beta = Parameter(self.beta)
 
     def log_prob(self, value):
         model = distributions.Uniform(self.low, self.high)
@@ -293,12 +339,23 @@ class Uniform(Distribution):
 
 
 class StudentT(Distribution):
-    def __init__(self, df, loc, scale):
+
+    def __init__(self, df, loc, scale, learnable=True):
         super().__init__()
         self.n_dims = len(loc)
-        self.loc = Parameter(torch.tensor(loc))
-        self._scale = Parameter(self.softplus_inverse(torch.tensor(scale)))
-        self._df = Parameter(self.softplus_inverse(torch.tensor(df)))
+        if not isinstance(loc, torch.Tensor):
+            loc = torch.tensor(loc)
+        if not isinstance(scale, torch.Tensor):
+            scale = torch.tensor(scale)
+        if not isinstance(df, torch.Tensor):
+            df = torch.tensor(df)
+        self.loc = loc
+        self._scale = self.softplus_inverse(scale)
+        self._df = self.softplus_inverse(df)
+        if learnable:
+            self.loc = Parameter(self.loc)
+            self._scale = Parameter(self._scale)
+            self._df = Parameter(self._df)
 
     def log_prob(self, value):
         model = distributions.StudentT(self.df, self.loc, self.scale)
