@@ -1,6 +1,8 @@
 import torch
 from torch.distributions import Categorical
-from torch.nn import Module, ModuleList
+from torch.nn import Module, ModuleList, Parameter
+from torch.nn.functional import softplus
+from torch.distributions import Normal
 import numpy as np
 
 from distributions import Distribution, GumbelSoftmax
@@ -9,6 +11,7 @@ from distributions import Distribution, GumbelSoftmax
 class MixtureModel(Distribution):
     def __init__(self, models, probs):
         super(MixtureModel, self).__init__()
+        self.n_dims = models[0].n_dims
         self.categorical = Categorical(probs=torch.tensor(probs))
         self.models = ModuleList(models)
 
@@ -23,10 +26,6 @@ class MixtureModel(Distribution):
                                for sub_model in self.models])
         return samples[indices, np.arange(batch_size)]
 
-    @property
-    def n_dims(self):
-        return self.models[0].n_dims
-
     def get_parameters(self):
         return {'probs': self.categorical.probs.numpy(),
                 'models': [model.get_parameters() for model in self.models]}
@@ -36,6 +35,7 @@ class MixtureModel(Distribution):
 class GumbelMixtureModel(Distribution):
     def __init__(self, models, probs, temperature=1.0, hard=True):
         super(GumbelMixtureModel, self).__init__()
+        self.n_dims = models[0].n_dims
         self.categorical = GumbelSoftmax(probs, temperature, hard)
         self.models = ModuleList(models)
 
@@ -50,10 +50,43 @@ class GumbelMixtureModel(Distribution):
                                for sub_model in self.models], dim=1)
         return (samples * one_hot.unsqueeze(2)).sum(dim=1)
 
-    @property
-    def n_dims(self):
-        return self.models[0].n_dims
-
     def get_parameters(self):
         return {'probs': self.categorical.probs.detach().numpy(),
                 'models': [model.get_parameters() for model in self.models]}
+
+
+class StudentTMixtureModel(Distribution):
+    def __init__(self, loc, scale, df):
+        self.n_dims = len(loc)
+        self.loc = Parameter(torch.tensor(loc))
+        self._scale = Parameter(self.softplus_inverse(torch.tensor(scale)))
+        self._df = Parameter(self.softplus_inverse(torch.tensor(df)))
+
+    def log_prob(self, value):
+        pass
+
+    def sample(self, batch_size):
+        pass
+
+    @property
+    def scale(self):
+        return softplus(self._scale)
+
+    @property
+    def df(self):
+        return softplus(self._df)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'loc' : self.loc.item(), 'scale':self.scale.item(),
+                    'df':self.df.item()}
+        return {'loc' : self.loc.detach().numpy(),
+                'scale':self.scale.detach().numpy(),
+                'df':self.df.detach().numpy()}
+
+
+
+
+
+
+# EOF

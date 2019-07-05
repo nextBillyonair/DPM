@@ -1,5 +1,6 @@
 import torch
 from torch.nn import Module, Parameter
+from torch.nn.functional import softplus
 import torch.distributions as distributions
 
 
@@ -12,6 +13,9 @@ class Distribution(Module):
 
     def sample(self, batch_size):
         raise NotImplementedError("sample method is not implemented")
+
+    def softplus_inverse(self, value):
+        return (value.exp() - 1.0).log()
 
 
 class Normal(Distribution):
@@ -44,7 +48,7 @@ class Exponential(Distribution):
     def __init__(self, rate):
         super().__init__()
         self.n_dims = len(rate)
-        self.log_rate = Parameter(torch.tensor(rate).log())
+        self._rate = Parameter(self.softplus_inverse(torch.tensor(rate)))
 
     def log_prob(self, value):
         model = distributions.Exponential(self.rate)
@@ -56,7 +60,7 @@ class Exponential(Distribution):
 
     @property
     def rate(self):
-        return self.log_rate.exp()
+        return softplus(self._rate)
 
     def get_parameters(self):
         if self.n_dims == 1:
@@ -91,7 +95,7 @@ class GumbelSoftmax(Distribution):
     @property
     def probs(self):
         return self.logits.softmax(dim=-1)
-    
+
     def get_parameters(self):
         return {'probs':self.probs.detach().numpy()}
 
@@ -101,7 +105,7 @@ class Cauchy(Distribution):
         super().__init__()
         self.n_dims = len(loc)
         self.loc = Parameter(torch.tensor(loc))
-        self.log_scale = Parameter(torch.tensor(scale).log())
+        self._scale = Parameter(self.softplus_inverse(torch.tensor(scale)))
 
     def log_prob(self, value):
         model = distributions.Cauchy(self.loc, self.scale)
@@ -113,7 +117,7 @@ class Cauchy(Distribution):
 
     @property
     def scale(self):
-        return self.log_scale.exp()
+        return softplus(self._scale)
 
     def get_parameters(self):
         if self.n_dims == 1:
@@ -126,8 +130,8 @@ class Beta(Distribution):
     def __init__(self, alpha, beta):
         super().__init__()
         self.n_dims = len(alpha)
-        self.log_alpha = Parameter(torch.tensor(alpha).log())
-        self.log_beta = Parameter(torch.tensor(beta).log())
+        self._alpha = Parameter(self.softplus_inverse(torch.tensor(alpha)))
+        self._beta = Parameter(self.softplus_inverse(torch.tensor(beta)))
 
     def log_prob(self, value):
         model = distributions.Beta(self.alpha, self.beta)
@@ -139,11 +143,11 @@ class Beta(Distribution):
 
     @property
     def alpha(self):
-        return self.log_alpha.exp()
+        return softplus(self._alpha)
 
     @property
     def beta(self):
-        return self.log_beta.exp()
+        return softplus(self._beta)
 
     def get_parameters(self):
         if self.n_dims == 1:
@@ -157,7 +161,7 @@ class LogNormal(Distribution):
         super().__init__()
         self.n_dims = len(loc)
         self.loc = Parameter(torch.tensor(loc))
-        self.log_scale = Parameter(torch.tensor(scale).log())
+        self._scale = Parameter(self.softplus_inverse(torch.tensor(scale)))
 
     def log_prob(self, value):
         model = distributions.LogNormal(self.loc, self.scale)
@@ -169,7 +173,7 @@ class LogNormal(Distribution):
 
     @property
     def scale(self):
-        return self.log_scale.exp()
+        return softplus(self._scale)
 
     def get_parameters(self):
         if self.n_dims == 1:
@@ -182,8 +186,8 @@ class Gamma(Distribution):
     def __init__(self, alpha, beta):
         super().__init__()
         self.n_dims = len(alpha)
-        self.log_alpha = Parameter(torch.tensor(alpha).log())
-        self.log_beta = Parameter(torch.tensor(beta).log())
+        self._alpha = Parameter(self.softplus_inverse(torch.tensor(alpha)))
+        self._beta = Parameter(self.softplus_inverse(torch.tensor(beta)))
 
     def log_prob(self, value):
         model = distributions.Gamma(self.alpha, self.beta)
@@ -195,11 +199,11 @@ class Gamma(Distribution):
 
     @property
     def alpha(self):
-        return self.log_alpha.exp()
+        return softplus(self._alpha)
 
     @property
     def beta(self):
-        return self.log_beta.exp()
+        return softplus(self._beta)
 
     def get_parameters(self):
         if self.n_dims == 1:
@@ -213,7 +217,7 @@ class RelaxedBernoulli(Distribution):
         super().__init__()
         self.n_dims = len(probs)
         self.temperature = temperature
-        self.logits = Parameter(torch.tensor(probs).log())
+        self.logits = Parameter(self.softplus_inverse(torch.tensor(probs)))
 
     def log_prob(self, value):
         model = distributions.RelaxedBernoulli(self.temperature, self.probs)
@@ -225,7 +229,7 @@ class RelaxedBernoulli(Distribution):
 
     @property
     def probs(self):
-        return self.logits.softmax(dim=-1)
+        return softplus(self.logits)
 
     def get_parameters(self):
         if self.n_dims == 1: return {'probs':self.props.item()}
