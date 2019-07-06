@@ -4,7 +4,7 @@ from torch.nn import Module, ModuleList, Parameter
 from torch.nn.functional import softplus
 import numpy as np
 
-from distributions import Distribution, GumbelSoftmax, Gamma, Normal
+from dpm.distributions import Distribution, GumbelSoftmax, Gamma, Normal
 
 # Non-differentiable Categorical weights (not learnable)
 class MixtureModel(Distribution):

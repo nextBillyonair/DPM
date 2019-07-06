@@ -1,6 +1,6 @@
 import torch
 from torch.nn import Module
-from mixture_models import MixtureModel
+from dpm.mixture_models import MixtureModel
 
 
 def forward_kl(p_model, q_model, batch_size=64):

@@ -1,6 +1,6 @@
 from torch import optim
-from mixture_models import MixtureModel, GumbelMixtureModel
-from elbo import ELBO
+from dpm.mixture_models import MixtureModel, GumbelMixtureModel
+from dpm.elbo import ELBO
 
 class Statistics:
     def __init__(self):
