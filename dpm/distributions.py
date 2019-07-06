@@ -249,7 +249,7 @@ class Gamma(Distribution):
 
     def log_prob(self, value):
         model = distributions.Gamma(self.alpha, self.beta)
-        return model.log_prob(value)
+        return model.log_prob(value).sum(dim=-1)
 
     def sample(self, batch_size):
         model = distributions.Gamma(self.alpha, self.beta)
@@ -275,7 +275,7 @@ class RelaxedBernoulli(Distribution):
     def __init__(self, probs, temperature=1.0, learnable=True):
         super().__init__()
         self.n_dims = len(probs)
-        self.temperature = temperature
+        self.temperature = torch.tensor(temperature)
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs)
         self.logits = self.softplus_inverse(probs)
@@ -284,7 +284,7 @@ class RelaxedBernoulli(Distribution):
 
     def log_prob(self, value):
         model = distributions.RelaxedBernoulli(self.temperature, self.probs)
-        return model.log_prob(value)
+        return model.log_prob(value).sum(-1)
 
     def sample(self, batch_size):
         model = distributions.RelaxedBernoulli(self.temperature, self.probs)
@@ -295,7 +295,7 @@ class RelaxedBernoulli(Distribution):
         return softplus(self.logits)
 
     def get_parameters(self):
-        if self.n_dims == 1: return {'probs':self.props.item()}
+        if self.n_dims == 1: return {'probs':self.probs.item()}
         return {'probs':self.probs.detach().numpy()}
 
 
@@ -316,7 +316,7 @@ class Uniform(Distribution):
 
     def log_prob(self, value):
         model = distributions.Uniform(self.low, self.high)
-        return model.log_prob(value)
+        return model.log_prob(value).sum(-1)
 
     def sample(self, batch_size):
         model = distributions.Uniform(self.low, self.high)
@@ -362,7 +362,7 @@ class StudentT(Distribution):
 
     def log_prob(self, value):
         model = distributions.StudentT(self.df, self.loc, self.scale)
-        return model.log_prob(value)
+        return model.log_prob(value).sum(-1)
 
     def sample(self, batch_size):
         model = distributions.StudentT(self.df, self.loc, self.scale)
@@ -431,7 +431,7 @@ class FisherSnedecor(Distribution):
 
     def log_prob(self, value):
         model = distributions.FisherSnedecor(self.df_1, self.df_2)
-        return model.log_prob(value)
+        return model.log_prob(value).sum(-1)
 
     def sample(self, batch_size):
         model = distributions.FisherSnedecor(self.df_1, self.df_2)
@@ -454,7 +454,7 @@ class FisherSnedecor(Distribution):
 
 class DiracDelta(Distribution):
 
-    def __init__(self, loc, eps=1e-10, learnable=True):
+    def __init__(self, loc, eps=1e-10):
         super().__init__()
         self.n_dims = len(loc)
         if not isinstance(loc, torch.Tensor):
@@ -463,12 +463,9 @@ class DiracDelta(Distribution):
             eps = torch.tensor(eps).expand(self.n_dims)
         self.loc = loc
         self.eps = eps
-        if learnable:
-            self.loc = Parameter(self.loc)
 
     def log_prob(self, value):
-        model = Normal(self.loc, self.eps, learnable=False, diag=True)
-        return model.log_prob(value)
+        raise NotImplementedError("Dirac Delta log_prob not implemented")
 
     def sample(self, batch_size):
         return self.loc.expand(batch_size, self.n_dims)
