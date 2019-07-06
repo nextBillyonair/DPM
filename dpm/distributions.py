@@ -4,6 +4,7 @@ from torch import nn, distributions
 from torch.nn import Module, Parameter
 from torch.nn.functional import softplus
 import numpy as np
+import math
 
 class Distribution(ABC, Module):
 
@@ -17,6 +18,12 @@ class Distribution(ABC, Module):
     @abstractmethod
     def sample(self, batch_size):
         raise NotImplementedError("sample method is not implemented")
+
+    def entropy(self, batch_size=10000):
+        return -self.log_prob(self.sample(batch_size)).mean()
+
+    def cross_entropy(self, model, batch_size=10000):
+        return -model.log_prob(self.sample(batch_size)).mean()
 
     def softplus_inverse(self, value, threshold=20):
         inv = (value.exp() - 1.0).log()
@@ -49,6 +56,9 @@ class Normal(Distribution):
         model = distributions.MultivariateNormal(self.loc, self.scale)
         return model.rsample((batch_size,))
 
+    def entropy(self, batch_size=None):
+        return 0.5 * torch.logdet(2.0 * math.pi * math.e * self.scale)
+
     @property
     def scale(self):
         return torch.mm(self.cholesky_decomp, self.cholesky_decomp.t())
@@ -78,6 +88,9 @@ class Exponential(Distribution):
     def sample(self, batch_size):
         model = distributions.Exponential(self.rate)
         return model.rsample((batch_size,))
+
+    def entropy(self, batch_size=None):
+        return 1 - self.rate.log()
 
     @property
     def rate(self):
@@ -149,6 +162,9 @@ class Cauchy(Distribution):
         model = distributions.Cauchy(self.loc, self.scale)
         return model.rsample((batch_size,))
 
+    def entropy(self, batch_size=None):
+        return (4 * math.pi * self.scale).log()
+
     @property
     def scale(self):
         return softplus(self._scale)
@@ -182,6 +198,9 @@ class Beta(Distribution):
     def sample(self, batch_size):
         model = distributions.Beta(self.alpha, self.beta)
         return model.rsample((batch_size,))
+
+    def entropy(self, batch_size=None):
+        return distributions.Beta(self.alpha, self.beta).entropy()
 
     @property
     def alpha(self):
@@ -221,6 +240,9 @@ class LogNormal(Distribution):
         model = distributions.LogNormal(self.loc, self.scale)
         return model.rsample((batch_size,))
 
+    def entropy(self, batch_size=None):
+        return distributions.LogNormal(self.loc, self.scale).entropy()
+
     @property
     def scale(self):
         return softplus(self._scale)
@@ -254,6 +276,9 @@ class Gamma(Distribution):
     def sample(self, batch_size):
         model = distributions.Gamma(self.alpha, self.beta)
         return model.rsample((batch_size,))
+
+    def entropy(self, batch_size=None):
+        return distributions.Gamma(self.alpha, self.beta).entropy()
 
     @property
     def alpha(self):
@@ -322,6 +347,9 @@ class Uniform(Distribution):
         model = distributions.Uniform(self.low, self.high)
         return model.rsample((batch_size,))
 
+    def entropy(self, batch_size=None):
+        return (self.high - self.low).log()
+
     @property
     def low(self):
         if self.alpha <= self.beta:
@@ -368,6 +396,9 @@ class StudentT(Distribution):
         model = distributions.StudentT(self.df, self.loc, self.scale)
         return model.rsample((batch_size,))
 
+    def entropy(self, batch_size=None):
+        return distributions.StudentT(self.df, self.loc, self.scale).entropy()
+
     @property
     def scale(self):
         return softplus(self._scale)
@@ -403,6 +434,9 @@ class Dirichlet(Distribution):
     def sample(self, batch_size):
         model = distributions.Dirichlet(self.alpha)
         return model.rsample((batch_size,))
+
+    def entropy(self, batch_size=None):
+        return distributions.Dirichlet(self.alpha).entropy()
 
     @property
     def alpha(self):
@@ -452,6 +486,107 @@ class FisherSnedecor(Distribution):
                 'df_2':self.df_2.detach().numpy()}
 
 
+class HalfCauchy(Distribution):
+
+    def __init__(self, scale, learnable=True):
+        super().__init__()
+        self.n_dims = len(scale)
+        if not isinstance(scale, torch.Tensor):
+            scale = torch.tensor(scale)
+        self._scale = self.softplus_inverse(scale)
+        if learnable:
+            self._scale = Parameter(self._scale)
+
+    def log_prob(self, value):
+        model = distributions.HalfCauchy(self.scale)
+        return model.log_prob(value).sum(-1)
+
+    def sample(self, batch_size):
+        model = distributions.HalfCauchy(self.scale)
+        return model.rsample((batch_size,))
+
+    def entropy(self, batch_size=None):
+        return distributions.HalfCauchy(self.scale).entropy()
+
+    @property
+    def scale(self):
+        return softplus(self._scale)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'scale':self.scale.item()}
+        return {'scale':self.scale.detach().numpy()}
+
+
+class HalfNormal(Distribution):
+
+    def __init__(self, scale, learnable=True):
+        super().__init__()
+        self.n_dims = len(scale)
+        if not isinstance(scale, torch.Tensor):
+            scale = torch.tensor(scale)
+        self._scale = self.softplus_inverse(scale)
+        if learnable:
+            self._scale = Parameter(self._scale)
+
+    def log_prob(self, value):
+        model = distributions.HalfNormal(self.scale)
+        return model.log_prob(value).sum(-1)
+
+    def sample(self, batch_size):
+        model = distributions.HalfNormal(self.scale)
+        return model.rsample((batch_size,))
+
+    def entropy(self, batch_size=None):
+        return 0.5 * (0.5 * math.pi * self.scale.pow(2)).log() + 0.5
+
+    @property
+    def scale(self):
+        return softplus(self._scale)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'scale':self.scale.item()}
+        return {'scale':self.scale.detach().numpy()}
+
+
+class Laplace(Distribution):
+
+    def __init__(self, loc, scale, learnable=True):
+        super().__init__()
+        self.n_dims = len(loc)
+        if not isinstance(loc, torch.Tensor):
+            loc = torch.tensor(loc)
+        if not isinstance(scale, torch.Tensor):
+            scale = torch.tensor(scale)
+        self.loc = loc
+        self._scale = self.softplus_inverse(scale)
+        if learnable:
+            self.loc = Parameter(self.loc)
+            self._scale = Parameter(self._scale)
+
+    def log_prob(self, value):
+        model = distributions.Laplace(self.loc, self.scale)
+        return model.log_prob(value).sum(-1)
+
+    def sample(self, batch_size):
+        model = distributions.Laplace(self.loc, self.scale)
+        return model.rsample((batch_size,))
+
+    def entropy(self, batch_size=None):
+        return (2 * self.scale * math.e).log()
+
+    @property
+    def scale(self):
+        return softplus(self._scale)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'loc':self.loc.item(), 'scale':self.scale.item()}
+        return {'loc':self.loc.detach().numpy(),
+                'scale':self.scale.detach().numpy()}
+
+
 class DiracDelta(Distribution):
 
     def __init__(self, loc, eps=1e-10):
@@ -495,10 +630,6 @@ class Data(Distribution):
     def get_parameters(self):
         return {}
 
-
-
-
-# Missing: Half-Cauchy, Half Normal, Laplace
 
 
 # For ELBO!

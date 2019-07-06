@@ -2,6 +2,8 @@ import torch
 from torch.nn import Module
 from dpm.mixture_models import MixtureModel
 
+def cross_entropy(p_model, q_model, batch_size=64):
+    return p_model.cross_entropy(q_model, batch_size)
 
 def forward_kl(p_model, q_model, batch_size=64):
     p_samples = p_model.sample(batch_size)
