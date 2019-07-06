@@ -3,7 +3,7 @@ Differentiable Probabilistic Models
 
 ## Table of Contents
 1. [Distributions](#distributions)
-2. [Variational Model](#variational_model)
+2. [Conditional Model](#conditional_model)
 3. [Mixture Models](#mixture-models)
 4. [Divergences](#divergences)
 5. [Adversarial Loss](#adversarial-loss)
@@ -21,12 +21,13 @@ Differentiable Probabilistic Models
   7. [Relaxed Bernoulli](https://arxiv.org/abs/1611.00712)
   8. [Gumbel Softmax (Relaxed Categorical)](https://arxiv.org/abs/1611.01144)
   9. [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous))
-  10. Student T
-  11. Dirichlet
-  12. Fisher-Snedecor
-  13. Dirac Delta
+  10. [Student T](https://en.wikipedia.org/wiki/Student%27s_t-distribution)
+  11. [Dirichlet](https://en.wikipedia.org/wiki/Dirichlet_distribution)
+  12. [Fisher-Snedecor (F-Distribution)](https://en.wikipedia.org/wiki/F-distribution)
+  13. [Dirac Delta](https://en.wikipedia.org/wiki/Dirac_delta_function)
+  14. Data Distribution - can randomly sample from a given set of data.
 
-# Variational Model <a name="variational_model"></a>
+# Conditional Model <a name="conditional_model"></a>
   1. Uses a Neural Network to take inputs and create the parameters of a distribution.
   2. Sampling -> takes a value, runs the network to create the distribution,
     sample from conditional distribution.
@@ -66,7 +67,7 @@ Differentiable Probabilistic Models
 
 # ELBO <a> name="#elbo"</a>
   1. Implements SVI with ELBO loss.
-  2. Requires a Variational Model to learn, in addition to P and Q models.
+  2. Requires a Conditional Model to learn, in addition to P and Q models.
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)

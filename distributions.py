@@ -3,6 +3,7 @@ import torch
 from torch import nn, distributions
 from torch.nn import Module, Parameter
 from torch.nn.functional import softplus
+import numpy as np
 
 class Distribution(ABC, Module):
 
@@ -476,6 +477,29 @@ class DiracDelta(Distribution):
         if self.n_dims == 1:
             return {'loc':self.loc.item()}
         return {'loc':self.loc.detach().numpy()}
+
+
+class Data(Distribution):
+
+    def __init__(self, data):
+        super().__init__()
+        if not isinstance(data, torch.Tensor):
+            data = torch.tensor(data)
+        self.n_dims = data.size(-1)
+        self.data = data
+
+    def log_prob(self, value):
+        raise NotImplementedError("Data Distribution log_prob not implemented")
+
+    def sample(self, batch_size):
+        idx = torch.tensor(np.random.choice(self.data.size(0), size=batch_size))
+        return self.data[idx]
+
+    def get_parameters(self):
+        return {}
+
+
+
 
 # Missing: Half-Cauchy, Half Normal, Laplace
 
