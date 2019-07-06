@@ -1,10 +1,10 @@
 import torch
-from torch.distributions import Categorical, Gamma, Normal
+from torch.distributions import Categorical
 from torch.nn import Module, ModuleList, Parameter
 from torch.nn.functional import softplus
 import numpy as np
 
-from distributions import Distribution, GumbelSoftmax
+from distributions import Distribution, GumbelSoftmax, Gamma, Normal
 
 # Non-differentiable Categorical weights (not learnable)
 class MixtureModel(Distribution):
@@ -75,19 +75,21 @@ class InfiniteMixtureModel(Distribution):
             self._df = Parameter(self._df)
 
     def sample(self, batch_size, return_latents=False):
-        weight_model = Gamma(self.df / 2, self.df / 2)
-        latent_samples = weight_model.rsample((batch_size,))
-        normal_model = Normal(self.loc, self.scale / latent_samples)
+        weight_model = Gamma(self.df / 2, self.df / 2, learnable=False)
+        latent_samples = weight_model.sample(batch_size)
+        normal_model = Normal(self.loc.expand(batch_size), self.scale / latent_samples,
+                              learnable=False, diag=True)
         if return_latents:
-            return normal_model.rsample((1,)).squeeze(0), latent_samples
+            return normal_model.sample(1).squeeze().unsqueeze(1), latent_samples
         else:
-            return normal_model.rsample((1,)).squeeze(0)
+            return normal_model.sample(1).squeeze().unsqueeze(1)
 
     def log_prob(self, samples, latents=None):
         if latents is None:
             raise NotImplementedError("InfiniteMixtureModel log_prob not implemented")
-        weight_model = Gamma(self.df / 2, self.df / 2)
-        normal_model = Normal(self.loc, self.scale / latents)
+        weight_model = Gamma(self.df / 2, self.df / 2, learnable=False)
+        normal_model = Normal(self.loc.expand(latents.size(0)), self.scale / latents,
+                              learnable=False, diag=True)
         return normal_model.log_prob(samples) + weight_model.log_prob(latents)
 
     @property

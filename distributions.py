@@ -25,13 +25,15 @@ class Distribution(ABC, Module):
 
 class Normal(Distribution):
 
-    def __init__(self, loc, scale, learnable=True):
+    def __init__(self, loc, scale, learnable=True, diag=False):
         super().__init__()
         self.n_dims = len(loc)
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc)
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale)
+        if diag:
+            scale = torch.diag(scale)
         self.loc = loc
         self.cholesky_decomp = scale.view(self.n_dims, self.n_dims).cholesky()
         if learnable:
@@ -385,6 +387,7 @@ class StudentT(Distribution):
 class Dirichlet(Distribution):
 
     def __init__(self, alpha, learnable=True):
+        super().__init__()
         self.n_dims = len(alpha)
         if not isinstance(alpha, torch.Tensor):
             alpha = torch.tensor(alpha)
@@ -413,6 +416,7 @@ class Dirichlet(Distribution):
 class FisherSnedecor(Distribution):
 
     def __init__(self, df_1, df_2, learnable=True):
+        super().__init__()
         self.n_dims = len(df_1)
         if not isinstance(df_1, torch.Tensor):
             df_1 = torch.tensor(df_1)
@@ -447,12 +451,38 @@ class FisherSnedecor(Distribution):
                 'df_2':self.df_2.detach().numpy()}
 
 
+class DiracDelta(Distribution):
+
+    def __init__(self, loc, eps=1e-10, learnable=True):
+        super().__init__()
+        self.n_dims = len(loc)
+        if not isinstance(loc, torch.Tensor):
+            loc = torch.tensor(loc)
+        if not isinstance(eps, torch.Tensor):
+            eps = torch.tensor(eps).expand(self.n_dims)
+        self.loc = loc
+        self.eps = eps
+        if learnable:
+            self.loc = Parameter(self.loc)
+
+    def log_prob(self, value):
+        model = Normal(self.loc, self.eps, learnable=False, diag=True)
+        return model.log_prob(value)
+
+    def sample(self, batch_size):
+        return self.loc.expand(batch_size, self.n_dims)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'loc':self.loc.item()}
+        return {'loc':self.loc.detach().numpy()}
+
 # Missing: Half-Cauchy, Half Normal, Laplace
 
 
 # For ELBO!
 # AKA Conditional Model
-class VariationalModel(Distribution):
+class ConditionalModel(Distribution):
 
     def __init__(self, input_dim, hidden_sizes, activation,
                  output_shapes, output_activations, distribution):
@@ -479,7 +509,6 @@ class VariationalModel(Distribution):
     def _create_dist(self, x):
         h = self.model(x)
         dist_params = [output_layer(h) for output_layer in self.output_layers]
-#         print(dist_params[0].mean(), dist_params[1].mean())
         return self.distribution(*dist_params, learnable=False)
 
     def sample(self, x, compute_logprob=False):

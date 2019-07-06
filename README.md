@@ -24,6 +24,7 @@ Differentiable Probabilistic Models
   10. Student T
   11. Dirichlet
   12. Fisher-Snedecor
+  13. Dirac Delta
 
 # Variational Model <a name="variational_model"></a>
   1. Uses a Neural Network to take inputs and create the parameters of a distribution.
