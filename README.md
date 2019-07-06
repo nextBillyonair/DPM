@@ -53,7 +53,7 @@ Differentiable Probabilistic Models
       * P Model -> PDF + Sampling
       * Q Model -> PDF + Sampling
 
-# Adversarial Loss <a name="#adversarial-loss"></a>
+# Adversarial Loss <a name="adversarial-loss"></a>
   1. [Adversarial Loss (aka GAN Loss)](https://arxiv.org/pdf/1711.10337.pdf)
       * Hides a discriminator under the loss function, and computes the adversarial loss
       * P Model -> Sampling (rsample)
@@ -65,7 +65,7 @@ Differentiable Probabilistic Models
           3. [WGAN Loss](https://arxiv.org/pdf/1701.07875.pdf)
           4. [LSGAN Loss](https://arxiv.org/pdf/1611.04076.pdf)
 
-# ELBO <a> name="#elbo"></a>
+# ELBO <a name="elbo"></a>
   1. Implements SVI with ELBO loss.
   2. Requires a Conditional Model to learn, in addition to P and Q models.
 
