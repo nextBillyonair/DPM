@@ -30,37 +30,6 @@ class MixtureModel(Distribution):
                 'models': [model.get_parameters() for model in self.models]}
 
 
-class Convolution(Distribution):
-    def __init__(self, models):
-        super().__init__()
-        self.n_dims = models[0].n_dims
-        self.models = ModuleList(models)
-        self.n_models = len(models)
-
-    def log_prob(self, value):
-        raise NotImplementedError("Convolution log_prob not implemented")
-
-    def sample(self, batch_size):
-        samples = torch.stack([sub_model.sample(batch_size)
-                               for sub_model in self.models])
-        return samples.sum(0)
-
-    def get_parameters(self):
-        return {'models':[model.get_parameters() for model in self.models]}
-
-
-class ChiSquare(Distribution):
-
-    def __init__(self, df):
-        pass
-
-    def log_prob(self, value):
-        raise NotImplementedError("Chi2 log_prob not implemented")
-
-    def sample(self, batch_size):
-        raise NotImplementedError("Chi2 log_prob not implemented")
-
-
 # Differentiable, Learnable Mixture Weights
 class GumbelMixtureModel(Distribution):
     def __init__(self, models, probs, temperature=1.0, hard=True):
