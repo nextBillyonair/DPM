@@ -6,6 +6,8 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 
+from dpm.transforms import Logit, Affine
+
 class Distribution(ABC, Module):
 
     def __init__(self):
@@ -691,6 +693,7 @@ class TransformDistribution(Distribution):
         log_det = 0.0
         for transform in self.transforms[::-1]:
             value = transform.inverse(prev_value)
+            print(transform.log_abs_det_jacobian(value, prev_value))
             log_det += transform.log_abs_det_jacobian(value, prev_value)
             prev_value = value
         return -log_det.sum(1) + self.distribution.log_prob(value)
@@ -725,18 +728,82 @@ class Convolution(Distribution):
     def get_parameters(self):
         return {'models':[model.get_parameters() for model in self.models]}
 
-        
-# Uses Convolution
+
+# Inherit Gamma?
 class ChiSquare(Distribution):
 
-    def __init__(self, df):
-        pass
+    def __init__(self, df, learnable=True):
+        super().__init__()
+        if not isinstance(df, torch.Tensor):
+            df = torch.tensor(df).view(-1)
+        self._df = self.softplus_inverse(df)
+        self.n_dims = len(df)
+        if learnable:
+            self._df = Parameter(self._df)
 
     def log_prob(self, value):
-        raise NotImplementedError("Chi2 log_prob not implemented")
+        alpha = 0.5 * self.df
+        beta = torch.zeros_like(alpha).fill_(0.5)
+        model = distributions.Gamma(alpha, beta)
+        return model.log_prob(value).sum(dim=-1)
 
     def sample(self, batch_size):
-        raise NotImplementedError("Chi2 log_prob not implemented")
+        alpha = 0.5 * self.df
+        beta = torch.zeros_like(alpha).fill_(0.5)
+        model = distributions.Gamma(alpha, beta)
+        return model.rsample((batch_size,))
+
+    @property
+    def df(self):
+        return softplus(self._df)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'df':self.df.item()}
+        return {'df':self.df.detach().numpy()}
+
+
+class Logistic(Distribution):
+
+    def __init__(self, loc, scale, learnable=True):
+        super().__init__()
+        if not isinstance(loc, torch.Tensor):
+            loc = torch.tensor(loc).view(-1)
+        self.n_dims = len(loc)
+        if not isinstance(scale, torch.Tensor):
+            scale = torch.tensor(scale).view(-1)
+        self.loc = loc
+        self._scale = self.softplus_inverse(scale)
+        if learnable:
+            self.loc = Parameter(self.loc)
+            self._scale = Parameter(self._scale)
+
+    def log_prob(self, value):
+        zero = torch.zeros_like(self.loc)
+        one = torch.ones_like(self.loc)
+        model = TransformDistribution(Uniform(zero, one, learnable=False),
+                                      [Logit(),
+                                       Affine(self.loc, self.scale, learnable=False)])
+        return model.log_prob(value)
+
+    def sample(self, batch_size):
+        zero = torch.zeros_like(self.loc)
+        one = torch.ones_like(self.loc)
+        model = TransformDistribution(Uniform(zero, one, learnable=False),
+                                      [Logit(),
+                                       Affine(self.loc, self.scale, learnable=False)])
+        return model.sample(batch_size)
+
+    @property
+    def scale(self):
+        return softplus(self._scale)
+
+    def get_parameters(self):
+        if self.n_dims == 1:
+            return {'loc':self.loc.item(), 'scale':self.scale.item()}
+        return {'loc':self.loc.detach().numpy(),
+                'scale':self.scale.detach().numpy()}
+
 
 
 #

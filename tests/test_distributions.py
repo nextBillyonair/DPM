@@ -2,7 +2,7 @@ from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
     Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
     Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
-    DiracDelta, Data, Convolution
+    DiracDelta, Data, Convolution, ChiSquare
 )
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
@@ -83,6 +83,7 @@ test_dists = [
     (MixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75]), 1),
     (GumbelMixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75]), 1),
     (GumbelMixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75], hard=False), 1),
+    (ChiSquare(4.), 1),
 
     (Normal([0., 0.], [1., 0., 0., 1.0]), 2),
     (Exponential([0.5, 1.0]), 2),
@@ -101,6 +102,7 @@ test_dists = [
     (MixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75]), 2),
     (GumbelMixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75]), 2),
     (GumbelMixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75], hard=False), 2),
+    (ChiSquare([4., 9.]), 2),
 ]
 
 @pytest.mark.parametrize("dist,n_dims", test_dists)

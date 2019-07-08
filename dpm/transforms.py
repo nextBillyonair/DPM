@@ -100,6 +100,24 @@ class Sigmoid(Transform):
         return {'type':'sigmoid'}
 
 
+class Logit(Transform):
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        return torch.log(x) - (-x).log1p()
+
+    def inverse(self, y):
+        return torch.sigmoid(y)
+
+    def log_abs_det_jacobian(self, x, y):
+        return torch.log((y.reciprocal() + (1 - y).reciprocal()))
+
+    def get_parameters(self):
+        return {'type':'logit'}
+
+
 class Affine(Transform):
 
     def __init__(self, loc=0.0, scale=1.0, learnable=True):
