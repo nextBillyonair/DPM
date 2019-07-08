@@ -55,7 +55,7 @@ Differentiable Probabilistic Models
   20. [Convolution](https://en.wikipedia.org/wiki/List_of_convolutions_of_probability_distributions)
       * Sum of component distributions, only allows sampling
   21. ChiSquare
-  22. Logistic
+  22. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
 
 
 # 2. Transforms <a name="transforms"></a>
