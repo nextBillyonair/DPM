@@ -53,9 +53,11 @@ Differentiable Probabilistic Models
   19. Transform Distribution
       * Composes a list of [transforms](#transforms) on a distribution
       * Example: Exp(Normal) ~ LogNormal
-  21. [Convolution](https://en.wikipedia.org/wiki/List_of_convolutions_of_probability_distributions)
+  20. [Convolution](https://en.wikipedia.org/wiki/List_of_convolutions_of_probability_distributions)
       * Sum of component distributions, only allows sampling
-  20. ChiSquare (TODO)
+  21. ChiSquare
+  22. Logistic (NEEDS TESTING)
+
 
 # 2. Transforms <a name="transforms"></a>
   1. Exp
@@ -69,6 +71,7 @@ Differentiable Probabilistic Models
   9. Softplus
   10. Softsign
   11. Tanh
+  12. Logit (Inverse of Sigmoid)
 
 # 3. Mixture Model <a name="mixture-model"></a>
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)
