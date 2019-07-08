@@ -2,7 +2,7 @@ from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
     Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
     Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
-    DiracDelta, Data, Convolution, ChiSquare
+    DiracDelta, Data, Convolution, ChiSquare, Logistic
 )
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
@@ -84,6 +84,7 @@ test_dists = [
     (GumbelMixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75]), 1),
     (GumbelMixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75], hard=False), 1),
     (ChiSquare(4.), 1),
+    (Logistic(0., 1.), 1),
 
     (Normal([0., 0.], [1., 0., 0., 1.0]), 2),
     (Exponential([0.5, 1.0]), 2),

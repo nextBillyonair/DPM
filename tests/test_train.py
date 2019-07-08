@@ -7,6 +7,7 @@ from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
     Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
     Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
+    Logistic, ChiSquare
 )
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
@@ -37,6 +38,8 @@ test_dists = [
      GumbelMixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75])),
     (GumbelMixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75], hard=False),
      GumbelMixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75], hard=False)),
+    (Logistic(0., 1.), Logistic(0., 1.)),
+    (ChiSquare(4.), ChiSquare(4.))
 ]
 
 @pytest.mark.parametrize("p_model,q_model", test_dists)

@@ -693,7 +693,6 @@ class TransformDistribution(Distribution):
         log_det = 0.0
         for transform in self.transforms[::-1]:
             value = transform.inverse(prev_value)
-            print(transform.log_abs_det_jacobian(value, prev_value))
             log_det += transform.log_abs_det_jacobian(value, prev_value)
             prev_value = value
         return -log_det.sum(1) + self.distribution.log_prob(value)

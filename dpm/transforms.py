@@ -112,7 +112,7 @@ class Logit(Transform):
         return torch.sigmoid(y)
 
     def log_abs_det_jacobian(self, x, y):
-        return torch.log((y.reciprocal() + (1 - y).reciprocal()))
+        return torch.log((x.reciprocal() + (1 - x).reciprocal()))
 
     def get_parameters(self):
         return {'type':'logit'}
@@ -140,7 +140,7 @@ class Affine(Transform):
         return (y - self.loc) / self.scale
 
     def log_abs_det_jacobian(self, x, y):
-        return torch.log(torch.abs(self.scale))
+        return torch.log(torch.abs(self.scale.expand(x.size())))
 
     def get_parameters(self):
         return {'type':'affine', 'loc':self.loc.detach().numpy(),

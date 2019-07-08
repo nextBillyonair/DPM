@@ -1,8 +1,12 @@
-from dpm.distributions import LogNormal, Normal, TransformDistribution
+from dpm.distributions import LogNormal, Normal, TransformDistribution, Logistic
 from dpm.transforms import *
 import dpm
 import torch.autograd as autograd
 import torch
+from torch.distributions import Uniform
+from torch.distributions.transforms import SigmoidTransform, AffineTransform
+from torch.distributions.transformed_distribution import TransformedDistribution
+
 import pytest
 
 transforms_dist_list = [
@@ -54,6 +58,26 @@ def test_normal_affine():
     transform.get_parameters()
 
 
+def test_logistic():
+    base_distribution = Uniform(0, 1)
+    transforms = [SigmoidTransform().inv, AffineTransform(loc=torch.tensor([2.]), scale=torch.tensor([1.]))]
+    model = TransformedDistribution(base_distribution, transforms)
+    transform = Logistic(2., 1.)
+
+    x = model.sample((4,)).reshape(-1, 1)
+    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-5)
+
+    x = transform.sample(4)
+    assert x.shape == (4, 1)
+    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-5)
+
+    x = transform.sample(1)
+    assert x.shape == (1, 1)
+    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-5)
+
+    transform.get_parameters()
+
+
 transforms_list = [
     Affine(),
     Affine(1., 2.),
@@ -72,11 +96,14 @@ transforms_list = [
     Softplus(-1.),
     Softsign(),
     Tanh(),
+    Logit()
 ]
 
 @pytest.mark.parametrize("t_form", transforms_list)
 def test_transforms(t_form):
-    for i in [0.0, 1.0, 5.0, -2.0]:
+    for i in [0.0, 0.5, 1.0, 5.0, -2.0]:
+        if isinstance(t_form, Logit) and (i == 5.0 or i == -2.0): continue
+
         x = torch.tensor([[i]])
         assert (t_form.inverse(t_form(x)) - x) < 1e-3
         t_form.get_parameters()
