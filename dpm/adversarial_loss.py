@@ -1,3 +1,4 @@
+from abc import abstractmethod, ABC
 import torch
 from torch import nn, optim
 from torch.nn import (
@@ -5,7 +6,7 @@ from torch.nn import (
     BCEWithLogitsLoss, MSELoss
 )
 
-class AdversarialLoss(Module):
+class AdversarialLoss(ABC, Module):
 
     def __init__(self, input_dim, hidden_sizes=[24, 24],
                  activation='LeakyReLU',
@@ -23,9 +24,11 @@ class AdversarialLoss(Module):
         self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
                                          lr=lr)
 
+    @abstractmethod
     def discriminator_loss(self, p_values, q_values):
         raise NotImplementedError()
 
+    @abstractmethod
     def generator_loss(self, q_values):
         raise NotImplementedError()
 

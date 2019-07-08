@@ -36,10 +36,10 @@ class Normal(Distribution):
     def __init__(self, loc, scale, learnable=True, diag=False):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
-            loc = torch.tensor(loc).view(1, -1)
+            loc = torch.tensor(loc).view(-1)
         self.n_dims = len(loc)
         if not isinstance(scale, torch.Tensor):
-            scale = torch.tensor(scale).view(1, -1)
+            scale = torch.tensor(scale).view(-1)
         if diag:
             scale = torch.diag(scale)
         self.loc = loc
@@ -75,7 +75,7 @@ class Exponential(Distribution):
     def __init__(self, rate, learnable=True):
         super().__init__()
         if not isinstance(rate, torch.Tensor):
-            rate = torch.tensor(rate).view(1, -1)
+            rate = torch.tensor(rate).view(-1)
         self.n_dims = len(rate)
         self._rate = self.softplus_inverse(rate)
         if learnable:
@@ -106,7 +106,7 @@ class GumbelSoftmax(Distribution):
 
     def __init__(self, probs, temperature=1.0, hard=True, learnable=True):
         super().__init__()
-        self.n_components = len(probs)
+        self.n_dims = len(probs)
         self.temperature = temperature
         self.hard = hard
         if not isinstance(probs, torch.Tensor):
@@ -120,7 +120,7 @@ class GumbelSoftmax(Distribution):
         return model.log_prob(value)
 
     def sample(self, batch_size):
-        U = torch.rand((batch_size, self.n_components))
+        U = torch.rand((batch_size, self.n_dims))
         gumbel_samples = -torch.log(-torch.log(U + 1e-20) + 1e-20)
         y = self.logits + gumbel_samples
         y = (y / self.temperature).softmax(dim=1)
@@ -144,10 +144,10 @@ class Cauchy(Distribution):
     def __init__(self, loc, scale, learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
-            loc = torch.tensor(loc).view(1, -1)
+            loc = torch.tensor(loc).view(-1)
         self.n_dims = len(loc)
         if not isinstance(scale, torch.Tensor):
-            scale = torch.tensor(scale).view(1, -1)
+            scale = torch.tensor(scale).view(-1)
         self.loc = loc
         self._scale = self.softplus_inverse(scale)
         if learnable:
@@ -181,10 +181,10 @@ class Beta(Distribution):
     def __init__(self, alpha, beta, learnable=True):
         super().__init__()
         if not isinstance(alpha, torch.Tensor):
-            alpha = torch.tensor(alpha).view(1, -1)
+            alpha = torch.tensor(alpha).view(-1)
         self.n_dims = len(alpha)
         if not isinstance(beta, torch.Tensor):
-            beta = torch.tensor(beta).view(1, -1)
+            beta = torch.tensor(beta).view(-1)
         self._alpha = self.softplus_inverse(alpha)
         self._beta = self.softplus_inverse(beta)
         if learnable:
@@ -222,10 +222,10 @@ class LogNormal(Distribution):
     def __init__(self, loc, scale, learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
-            loc = torch.tensor(loc).view(1, -1)
+            loc = torch.tensor(loc).view(-1)
         self.n_dims = len(loc)
         if not isinstance(scale, torch.Tensor):
-            scale = torch.tensor(scale).view(1, -1)
+            scale = torch.tensor(scale).view(-1)
         self.loc = loc
         self._scale = self.softplus_inverse(scale)
         if learnable:
@@ -259,10 +259,10 @@ class Gamma(Distribution):
     def __init__(self, alpha, beta, learnable=True):
         super().__init__()
         if not isinstance(alpha, torch.Tensor):
-            alpha = torch.tensor(alpha).view(1, -1)
+            alpha = torch.tensor(alpha).view(-1)
         self.n_dims = len(alpha)
         if not isinstance(beta, torch.Tensor):
-            beta = torch.tensor(beta).view(1, -1)
+            beta = torch.tensor(beta).view(-1)
         self._alpha = self.softplus_inverse(alpha)
         self._beta = self.softplus_inverse(beta)
         if learnable:
@@ -329,10 +329,10 @@ class Uniform(Distribution):
     def __init__(self, low, high, learnable=True):
         super().__init__()
         if not isinstance(low, torch.Tensor):
-            low = torch.tensor(low).view(1, -1)
+            low = torch.tensor(low).view(-1)
         self.n_dims = len(low)
         if not isinstance(high, torch.Tensor):
-            high = torch.tensor(high).view(1, -1)
+            high = torch.tensor(high).view(-1)
         self.alpha = low
         self.beta = high
         if learnable:
@@ -374,12 +374,12 @@ class StudentT(Distribution):
     def __init__(self, df, loc, scale, learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
-            loc = torch.tensor(loc).view(1, -1)
+            loc = torch.tensor(loc).view(-1)
         self.n_dims = len(loc)
         if not isinstance(scale, torch.Tensor):
-            scale = torch.tensor(scale).view(1, -1)
+            scale = torch.tensor(scale).view(-1)
         if not isinstance(df, torch.Tensor):
-            df = torch.tensor(df).view(1, -1)
+            df = torch.tensor(df).view(-1)
         self.loc = loc
         self._scale = self.softplus_inverse(scale)
         self._df = self.softplus_inverse(df)
@@ -421,7 +421,7 @@ class Dirichlet(Distribution):
     def __init__(self, alpha, learnable=True):
         super().__init__()
         if not isinstance(alpha, torch.Tensor):
-            alpha = torch.tensor(alpha)
+            alpha = torch.tensor(alpha).view(-1)
         self.n_dims = len(alpha)
         self._alpha = self.softplus_inverse(alpha)
         if learnable:
@@ -453,10 +453,10 @@ class FisherSnedecor(Distribution):
     def __init__(self, df_1, df_2, learnable=True):
         super().__init__()
         if not isinstance(df_1, torch.Tensor):
-            df_1 = torch.tensor(df_1).view(1, -1)
+            df_1 = torch.tensor(df_1).view(-1)
         self.n_dims = len(df_1)
         if not isinstance(df_2, torch.Tensor):
-            df_2 = torch.tensor(df_2).view(1, -1)
+            df_2 = torch.tensor(df_2).view(-1)
         self._df_1 = self.softplus_inverse(df_1)
         self._df_2 = self.softplus_inverse(df_2)
         if learnable:
@@ -491,7 +491,7 @@ class HalfCauchy(Distribution):
     def __init__(self, scale, learnable=True):
         super().__init__()
         if not isinstance(scale, torch.Tensor):
-            scale = torch.tensor(scale).view(1, -1)
+            scale = torch.tensor(scale).view(-1)
         self.n_dims = len(scale)
         self._scale = self.softplus_inverse(scale)
         if learnable:
@@ -523,7 +523,7 @@ class HalfNormal(Distribution):
     def __init__(self, scale, learnable=True):
         super().__init__()
         if not isinstance(scale, torch.Tensor):
-            scale = torch.tensor(scale).view(1, -1)
+            scale = torch.tensor(scale).view(-1)
         self.n_dims = len(scale)
         self._scale = self.softplus_inverse(scale)
         if learnable:
@@ -555,10 +555,10 @@ class Laplace(Distribution):
     def __init__(self, loc, scale, learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
-            loc = torch.tensor(loc).view(1, -1)
+            loc = torch.tensor(loc).view(-1)
         self.n_dims = len(loc)
         if not isinstance(scale, torch.Tensor):
-            scale = torch.tensor(scale).view(1, -1)
+            scale = torch.tensor(scale).view(-1)
         self.loc = loc
         self._scale = self.softplus_inverse(scale)
         if learnable:
@@ -592,7 +592,7 @@ class DiracDelta(Distribution):
     def __init__(self, loc, eps=1e-10):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
-            loc = torch.tensor(loc).view(1, -1)
+            loc = torch.tensor(loc).view(-1)
         self.n_dims = len(loc)
         if not isinstance(eps, torch.Tensor):
             eps = torch.tensor(eps).expand(self.n_dims)
@@ -618,6 +618,7 @@ class Data(Distribution):
         if not isinstance(data, torch.Tensor):
             data = torch.tensor(data)
         self.n_dims = data.size(-1)
+        self.n_samples = len(data)
         self.data = data
 
     def log_prob(self, value):
@@ -628,7 +629,7 @@ class Data(Distribution):
         return self.data[idx]
 
     def get_parameters(self):
-        return {}
+        return {'n_dims':self.n_dims, 'n_samples':self.n_samples}
 
 
 

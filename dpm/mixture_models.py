@@ -17,7 +17,8 @@ class MixtureModel(Distribution):
     def log_prob(self, value):
         log_probs = torch.stack([sub_model.log_prob(value)
                                  for sub_model in self.models])
-        return torch.logsumexp(log_probs + self.categorical.probs.unsqueeze(1).log(), dim=0)
+        cat_log_probs = self.categorical.probs.view(-1, 1).log()
+        return torch.logsumexp(log_probs + cat_log_probs, dim=0)
 
     def sample(self, batch_size):
         indices = self.categorical.sample((batch_size,))
@@ -41,7 +42,8 @@ class GumbelMixtureModel(Distribution):
     def log_prob(self, value):
         log_probs = torch.stack([sub_model.log_prob(value)
                                  for sub_model in self.models])
-        return torch.logsumexp(log_probs + self.categorical.probs.unsqueeze(1).log(), dim=0)
+        cat_log_probs = self.categorical.probs.view(-1, 1).log()
+        return torch.logsumexp(log_probs + cat_log_probs, dim=0)
 
     def sample(self, batch_size):
         one_hot = self.categorical.sample(batch_size)
@@ -61,23 +63,21 @@ class InfiniteMixtureModel(Distribution):
                  scale_learnable=True,
                  df_learnable=True):
         super().__init__()
-        self.n_dims = len(loc)
-        self.loc = torch.tensor(loc)
+        self.loc = torch.tensor(loc).view(-1)
+        self.n_dims = len(self.loc)
         if loc_learnable:
             self.loc = Parameter(self.loc)
-
-        self._scale = self.softplus_inverse(torch.tensor(scale))
+        self._scale = self.softplus_inverse(torch.tensor(scale).view(-1))
         if scale_learnable:
             self._scale = Parameter(self._scale)
-
-        self._df = self.softplus_inverse(torch.tensor(df))
+        self._df = self.softplus_inverse(torch.tensor(df).view(-1))
         if df_learnable:
             self._df = Parameter(self._df)
 
     def sample(self, batch_size, return_latents=False):
         weight_model = Gamma(self.df / 2, self.df / 2, learnable=False)
         latent_samples = weight_model.sample(batch_size)
-        normal_model = Normal(self.loc.expand(batch_size), self.scale / latent_samples,
+        normal_model = Normal(self.loc.expand(batch_size), (self.scale / latent_samples).squeeze(1),
                               learnable=False, diag=True)
         if return_latents:
             return normal_model.sample(1).squeeze().unsqueeze(1), latent_samples
