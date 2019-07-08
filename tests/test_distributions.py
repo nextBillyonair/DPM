@@ -2,7 +2,7 @@ from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
     Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
     Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
-    DiracDelta, Data
+    DiracDelta, Data, Convolution
 )
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
@@ -194,7 +194,22 @@ def test_data_dist(n_dims):
     assert dist.get_parameters()['n_dims'] == n_dims
     assert dist.get_parameters()['n_samples'] == 100
 
+dists = [
+    (Convolution([Normal(15., 1.0), Normal(-10., 1.0)]),1),
+    (Convolution([Normal([0., 1.], [1., 1.], diag=True),
+                  Normal([-10., 10.], [1.0, 1.0], diag=True)]), 2)
+]
+@pytest.mark.parametrize("dist,n_dims", dists)
+def test_convolution(dist, n_dims):
+    assert dist.sample(1).shape == (1, n_dims)
+    assert dist.sample(64).shape == (64, n_dims)
 
+    try:
+        dist.log_prob(dist.sample(64))
+    except NotImplementedError:
+        pass
+
+    dist.get_parameters()
 
 
 # EOF
