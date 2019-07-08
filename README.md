@@ -80,7 +80,7 @@ Differentiable Probabilistic Models
       * Student T written as a Mixture Model.
 
 # 4. Divergences <a name="divergences"></a>
-  1. Cross Entropy
+  1. [Cross Entropy](https://en.wikipedia.org/wiki/Cross_entropy)
   2. [Forward KL Divergence](https://en.wikipedia.org/wiki/Kullback–Leibler_divergence)
       * P Model -> Sampling (rsample)
       * Q Model -> PDF Function (log_prob)
