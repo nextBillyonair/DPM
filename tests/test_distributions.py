@@ -50,7 +50,7 @@ test_normal_dists = [
 
 
 @pytest.mark.parametrize("normal_dist,n_dims", test_normal_dists)
-def test_normal_dist(normal_dist, n_dims):
+def test_normal_dist_params(normal_dist, n_dims):
 
     if n_dims == 1:
         assert normal_dist.get_parameters() == {'loc': 0, 'scale': 1}

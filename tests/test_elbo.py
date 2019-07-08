@@ -27,8 +27,8 @@ def test_elbo():
         elbo_loss,
         optimizer="Adamax",
         lr=0.1,
-        epochs=5000,
-        log_interval=200,
-        batch_size=512,
+        epochs=3,
+        log_interval=None,
+        batch_size=64,
         stats=stats,
     )

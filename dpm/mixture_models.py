@@ -80,15 +80,15 @@ class InfiniteMixtureModel(Distribution):
         normal_model = Normal(self.loc.expand(batch_size), (self.scale / latent_samples).squeeze(1),
                               learnable=False, diag=True)
         if return_latents:
-            return normal_model.sample(1).squeeze().unsqueeze(1), latent_samples
+            return normal_model.sample(1).squeeze(0).unsqueeze(1), latent_samples
         else:
-            return normal_model.sample(1).squeeze().unsqueeze(1)
+            return normal_model.sample(1).squeeze(0).unsqueeze(1)
 
     def log_prob(self, samples, latents=None):
         if latents is None:
             raise NotImplementedError("InfiniteMixtureModel log_prob not implemented")
         weight_model = Gamma(self.df / 2, self.df / 2, learnable=False)
-        normal_model = Normal(self.loc.expand(latents.size(0)), self.scale / latents,
+        normal_model = Normal(self.loc.expand(latents.size(0)), (self.scale / latents).squeeze(1),
                               learnable=False, diag=True)
         return normal_model.log_prob(samples) + weight_model.log_prob(latents)
 

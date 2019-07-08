@@ -28,14 +28,35 @@ def test_mixture_model(model, n_dims):
 
 
 imm_models = [
-    InfiniteMixtureModel(10., 10., 1.)
+    InfiniteMixtureModel(10., 10., 1.),
+    InfiniteMixtureModel([10.], [10.], [1.]),
 ]
 @pytest.mark.parametrize("model", imm_models)
-def test_mixture_model(model):
+def test_infinite_mixture_model(model):
     assert model.sample(1).shape == (1, 1)
     assert model.sample(64).shape == (64, 1)
 
-    assert model.log_prob(model.sample(1)).shape == (1, )
-    assert model.log_prob(model.sample(64)).shape == (64, )
+    assert model.sample(1, return_latents=True)[1].shape == (1, 1)
+    assert model.sample(64, return_latents=True)[1].shape == (64, 1)
 
-    assert (model.get_parameters()['probs'] == np.array([0.5, 0.5])).all()
+    try:
+        model.log_prob(model.sample(64))
+    except NotImplementedError:
+        pass
+
+    samples, latents = model.sample(1, return_latents=True)
+    assert model.log_prob(samples, latents).shape == (1, )
+
+    samples, latents = model.sample(64, return_latents=True)
+    assert model.log_prob(samples, latents).shape == (64, )
+
+    params = model.get_parameters()
+    if model.n_dims == 1:
+        assert params["loc"] == 10.
+        assert params["scale"] - 1. < 1e-4
+        assert params["df"] == 10.
+
+
+
+
+# EOF
