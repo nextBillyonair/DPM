@@ -40,11 +40,11 @@ Differentiable Probabilistic Models
   11. [Dirichlet](https://en.wikipedia.org/wiki/Dirichlet_distribution)
   12. [Fisher-Snedecor (F-Distribution)](https://en.wikipedia.org/wiki/F-distribution)
   13. [Dirac Delta](https://en.wikipedia.org/wiki/Dirac_delta_function)
-  14. Data Distribution
-      * Randomly sample from a given set of data.
+  14. [Laplace](https://en.wikipedia.org/wiki/Laplace_distribution)
   15. Half Cauchy
   16. Half Normal
-  17. [Laplace](https://en.wikipedia.org/wiki/Laplace_distribution)
+  17. Data Distribution
+      * Randomly sample from a given set of data.
   18. Conditional Model
       * Uses a Neural Network to take inputs and create the parameters of a distribution.
       * Sampling -> takes a value, runs the network to create the distribution,
