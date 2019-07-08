@@ -4,7 +4,6 @@ Differentiable Probabilistic Models
 ---
 
 ## TODO:
-  * Implement ChiSquare Distribution
   * Finish VAE example in Notebook
   * GAN Example using Distribution Components
   * GLM Models from TensorFlow
