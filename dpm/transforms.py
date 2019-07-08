@@ -24,12 +24,9 @@ class Transform(ABC, Module):
         raise NotImplementedError("Log Abs Det Jacobian not implemented")
 
     def softplus_inverse(self, value, threshold=20):
-        inv = self.log((value.exp() - 1.0))
+        inv = torch.log((value.exp() - 1.0))
         inv[value > threshold] = value[value > threshold]
         return inv
-
-    def log(self, x):
-        return torch.log(x)
 
     def get_parameters(self):
         raise NotImplementedError('Get Parameters not implemented')
@@ -44,7 +41,7 @@ class Exp(Transform):
         return x.exp()
 
     def inverse(self, y):
-        return self.log(y)
+        return torch.log(y)
 
     def log_abs_det_jacobian(self, x, y):
         return x
@@ -70,10 +67,10 @@ class Power(Transform):
         return y.pow(1 / self.exponent)
 
     def log_abs_det_jacobian(self, x, y):
-        # return self.log((self.exponent * y / x).abs())
+        # return torch.log((self.exponent * y / x).abs())
         if self.exponent == 1:
             return torch.zeros_like(x)
-        return self.log(self.exponent.abs()) + (self.exponent - 1) * self.log(x.abs())
+        return torch.log(self.exponent.abs()) + (self.exponent - 1) * torch.log(x.abs())
 
     def get_parameters(self):
         return {'type':'power', 'exponent':self.exponent.item()}
@@ -94,10 +91,10 @@ class Sigmoid(Transform):
         return torch.sigmoid(x)
 
     def inverse(self, y):
-        return self.log(y) - (-y).log1p()
+        return torch.log(y) - (-y).log1p()
 
     def log_abs_det_jacobian(self, x, y):
-        return -self.log((y.reciprocal() + (1 - y).reciprocal()))
+        return -torch.log((y.reciprocal() + (1 - y).reciprocal()))
 
     def get_parameters(self):
         return {'type':'sigmoid'}
@@ -125,7 +122,7 @@ class Affine(Transform):
         return (y - self.loc) / self.scale
 
     def log_abs_det_jacobian(self, x, y):
-        return self.log(torch.abs(self.scale))
+        return torch.log(torch.abs(self.scale))
 
     def get_parameters(self):
         return {'type':'affine', 'loc':self.loc.detach().numpy(),
@@ -170,10 +167,10 @@ class Gumbel(Transform):
         return torch.exp(-torch.exp(-z))
 
     def inverse(self, y):
-        return self.loc - self.scale * self.log(-self.log(y))
+        return self.loc - self.scale * torch.log(-torch.log(y))
 
     def log_abs_det_jacobian(self, x, y):
-        return -self.log(self.scale / (-self.log(y) * y))
+        return -torch.log(self.scale / (-torch.log(y) * y))
 
     @property
     def scale(self):
@@ -199,7 +196,7 @@ class SinhArcsinh(Transform):
             self._tailweight = Parameter(self._tailweight)
 
     def asinh(self, x):
-        return self.log(x + (x.pow(2) + 1).pow(0.5))
+        return torch.log(x + (x.pow(2) + 1).pow(0.5))
 
     def sqrtx2p1(self, x):
         return x.abs() * (1 + x.pow(-2)).sqrt()
@@ -211,9 +208,9 @@ class SinhArcsinh(Transform):
         return torch.sinh(self.asinh(y) / self.tailweight - self.skewness)
 
     def log_abs_det_jacobian(self, x, y):
-        return (self.log(
+        return (torch.log(
                 torch.cosh((self.asinh(x) + self.skewness) * self.tailweight)
-                / self.sqrtx2p1(x + 1e-10)) + self.log(self.tailweight))
+                / self.sqrtx2p1(x + 1e-10)) + torch.log(self.tailweight))
 
     @property
     def tailweight(self):
@@ -242,7 +239,7 @@ class Softplus(Transform):
         return self.hinge_softness * self.softplus_inverse(y / self.hinge_softness)
 
     def log_abs_det_jacobian(self, x, y):
-        return self.log(-torch.expm1(-y) + 1e-10)
+        return torch.log(-torch.expm1(-y) + 1e-10)
 
     def get_parameters(self):
         return {'type':'softplus',
@@ -273,7 +270,7 @@ class Tanh(Transform):
         super().__init__()
 
     def atanh(self, x):
-        return 0.5 * (self.log(1 + x) - self.log(1 - x))
+        return 0.5 * (torch.log(1 + x) - torch.log(1 - x))
 
     def forward(self, x):
         return x.tanh()
