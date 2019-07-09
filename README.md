@@ -8,8 +8,6 @@ Differentiable Probabilistic Models
   * GAN Example using Distribution Components
   * GLM Models from TensorFlow
   * Add more Transforms from TensorFlow
-  * Fix Uniform low/high switching
-  * Fix Softsign test issue of NaN
 
 ---
 
@@ -95,6 +93,10 @@ Differentiable Probabilistic Models
   4. [Jensen-Shannon Divergence (JS)](https://en.wikipedia.org/wiki/Jensen–Shannon_divergence)
       * P Model -> PDF + Sampling
       * Q Model -> PDF + Sampling
+  5. In Progress:
+      * Total Variation
+      * Pearson
+      * Quadrature Methods for F-Divergence
 
 # 5. Adversarial Loss <a name="adversarial-loss"></a>
   1. [Adversarial Loss (aka GAN Loss)](https://arxiv.org/pdf/1711.10337.pdf)
