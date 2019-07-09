@@ -793,6 +793,9 @@ class Logistic(Distribution):
     @property
     def scale(self):
         return softplus(self._scale)
+    
+    def entropy(self, batch_size=None):
+        return self.scale.log() + 2.
 
     def get_parameters(self):
         if self.n_dims == 1:

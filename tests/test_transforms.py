@@ -65,15 +65,15 @@ def test_logistic():
     transform = Logistic(2., 1.)
 
     x = model.sample((4,)).reshape(-1, 1)
-    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-5)
+    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-4)
 
     x = transform.sample(4)
     assert x.shape == (4, 1)
-    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-5)
+    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-4)
 
     x = transform.sample(1)
     assert x.shape == (1, 1)
-    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-5)
+    assert torch.all(transform.log_prob(x)- model.log_prob(x).view(-1) < 1e-4)
 
     transform.get_parameters()
 

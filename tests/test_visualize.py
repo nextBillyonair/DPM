@@ -1,7 +1,8 @@
 from dpm.visualize import (
     plot_stats, plot_models,
     plot_model, plot_hists,
-    plot_hist, plot_mcmc
+    plot_hist, plot_mcmc, 
+    plot_loss_function
 )
 from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
@@ -12,7 +13,9 @@ from dpm.distributions import (
 from dpm.mixture_models import MixtureModel, GumbelMixtureModel
 from dpm.mcmc import metropolis_hastings
 from dpm.train import train
-from dpm.divergences import forward_kl
+from dpm.divergences import (
+    forward_kl, reverse_kl, js_divergence, cross_entropy
+)
 import matplotlib.pyplot as plt
 import pytest
 
@@ -119,7 +122,12 @@ def test_mcmc_plot(dist, n_dims):
     plt.close()
 
 
-
+losses = [
+    forward_kl, reverse_kl, js_divergence, cross_entropy,
+]
+@pytest.mark.parametrize("loss", losses) 
+def test_plot_loss(loss):
+    plot_loss_function(loss)
 
 
 

@@ -1,7 +1,7 @@
 import torch
 from dpm.divergences import (
     cross_entropy, forward_kl, reverse_kl,
-    js_divergence, _forward_kl
+    js_divergence
 )
 from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
@@ -69,10 +69,6 @@ def test_divergences(p_model, q_model):
 
     reverse_kl(p_model, q_model, batch_size=1)
     reverse_kl(p_model, q_model, batch_size=64)
-
-    # Used in JS
-    _forward_kl(p_model, q_model, batch_size=1)
-    _forward_kl(p_model, q_model, batch_size=64)
 
     js_divergence(p_model, q_model, batch_size=1)
     js_divergence(p_model, q_model, batch_size=64)
