@@ -35,7 +35,7 @@ class Distribution(ABC, Module):
 
 class Normal(Distribution):
 
-    def __init__(self, loc, scale, learnable=True, diag=False):
+    def __init__(self, loc=0., scale=1., learnable=True, diag=False):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc).view(-1)
@@ -74,7 +74,7 @@ class Normal(Distribution):
 
 class Exponential(Distribution):
 
-    def __init__(self, rate, learnable=True):
+    def __init__(self, rate=1., learnable=True):
         super().__init__()
         if not isinstance(rate, torch.Tensor):
             rate = torch.tensor(rate).view(-1)
@@ -106,7 +106,8 @@ class Exponential(Distribution):
 
 class GumbelSoftmax(Distribution):
 
-    def __init__(self, probs, temperature=1.0, hard=True, learnable=True):
+    def __init__(self, probs=[0.5, 0.5], temperature=1.0,
+                 hard=True, learnable=True):
         super().__init__()
         self.n_dims = len(probs)
         self.temperature = temperature
@@ -143,7 +144,7 @@ class GumbelSoftmax(Distribution):
 
 class Cauchy(Distribution):
 
-    def __init__(self, loc, scale, learnable=True):
+    def __init__(self, loc=0., scale=1., learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc).view(-1)
@@ -180,7 +181,7 @@ class Cauchy(Distribution):
 
 class Beta(Distribution):
 
-    def __init__(self, alpha, beta, learnable=True):
+    def __init__(self, alpha=0.5, beta=0.5, learnable=True):
         super().__init__()
         if not isinstance(alpha, torch.Tensor):
             alpha = torch.tensor(alpha).view(-1)
@@ -221,7 +222,7 @@ class Beta(Distribution):
 
 class LogNormal(Distribution):
 
-    def __init__(self, loc, scale, learnable=True):
+    def __init__(self, loc=0., scale=1., learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc).view(-1)
@@ -258,7 +259,7 @@ class LogNormal(Distribution):
 
 class Gamma(Distribution):
 
-    def __init__(self, alpha, beta, learnable=True):
+    def __init__(self, alpha=1., beta=1., learnable=True):
         super().__init__()
         if not isinstance(alpha, torch.Tensor):
             alpha = torch.tensor(alpha).view(-1)
@@ -299,7 +300,7 @@ class Gamma(Distribution):
 
 class RelaxedBernoulli(Distribution):
 
-    def __init__(self, probs, temperature=1.0, learnable=True):
+    def __init__(self, probs=[0.5], temperature=1.0, learnable=True):
         super().__init__()
         self.n_dims = len(probs)
         self.temperature = torch.tensor(temperature)
@@ -328,7 +329,7 @@ class RelaxedBernoulli(Distribution):
 
 class Uniform(Distribution):
 
-    def __init__(self, low, high, learnable=True):
+    def __init__(self, low=0., high=1., learnable=True):
         super().__init__()
         if not isinstance(low, torch.Tensor):
             low = torch.tensor(low).view(-1)
@@ -365,11 +366,11 @@ class Uniform(Distribution):
             return {'low':self.low.item(), 'high':self.high.item()}
         return {'low':self.low.detach().numpy(),
                 'high':self.high.detach().numpy()}
-                
+
 
 class StudentT(Distribution):
 
-    def __init__(self, df, loc, scale, learnable=True):
+    def __init__(self, df=1., loc=0., scale=1., learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc).view(-1)
@@ -416,7 +417,7 @@ class StudentT(Distribution):
 
 class Dirichlet(Distribution):
 
-    def __init__(self, alpha, learnable=True):
+    def __init__(self, alpha=[0.5, 0.5], learnable=True):
         super().__init__()
         if not isinstance(alpha, torch.Tensor):
             alpha = torch.tensor(alpha).view(-1)
@@ -448,7 +449,7 @@ class Dirichlet(Distribution):
 
 class FisherSnedecor(Distribution):
 
-    def __init__(self, df_1, df_2, learnable=True):
+    def __init__(self, df_1=1., df_2=1., learnable=True):
         super().__init__()
         if not isinstance(df_1, torch.Tensor):
             df_1 = torch.tensor(df_1).view(-1)
@@ -486,7 +487,7 @@ class FisherSnedecor(Distribution):
 
 class HalfCauchy(Distribution):
 
-    def __init__(self, scale, learnable=True):
+    def __init__(self, scale=1., learnable=True):
         super().__init__()
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(-1)
@@ -518,7 +519,7 @@ class HalfCauchy(Distribution):
 
 class HalfNormal(Distribution):
 
-    def __init__(self, scale, learnable=True):
+    def __init__(self, scale=1., learnable=True):
         super().__init__()
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(-1)
@@ -550,7 +551,7 @@ class HalfNormal(Distribution):
 
 class Laplace(Distribution):
 
-    def __init__(self, loc, scale, learnable=True):
+    def __init__(self, loc=0., scale=1., learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc).view(-1)
@@ -587,7 +588,7 @@ class Laplace(Distribution):
 
 class DiracDelta(Distribution):
 
-    def __init__(self, loc, eps=1e-10):
+    def __init__(self, loc=0., eps=1e-10):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc).view(-1)
@@ -727,7 +728,7 @@ class Convolution(Distribution):
 # Inherit Gamma?
 class ChiSquare(Distribution):
 
-    def __init__(self, df, learnable=True):
+    def __init__(self, df=1., learnable=True):
         super().__init__()
         if not isinstance(df, torch.Tensor):
             df = torch.tensor(df).view(-1)
@@ -760,7 +761,7 @@ class ChiSquare(Distribution):
 
 class Logistic(Distribution):
 
-    def __init__(self, loc, scale, learnable=True):
+    def __init__(self, loc=0., scale=1., learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc).view(-1)

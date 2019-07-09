@@ -214,5 +214,31 @@ def test_convolution(dist, n_dims):
 
     dist.get_parameters()
 
+dists_init = [
+        Normal,
+        Exponential,
+        Cauchy,
+        Beta,
+        LogNormal,
+        Gamma,
+        RelaxedBernoulli,
+        Uniform,
+        StudentT,
+        Dirichlet,
+        FisherSnedecor,
+        HalfCauchy,
+        HalfNormal,
+        Laplace,
+        ChiSquare,
+        Logistic,
+]
+@pytest.mark.parametrize("dist", dists_init)
+def test_init(dist):
+    model = dist()
+    assert model.sample(1).shape[0] == 1
+    assert model.sample(64).shape[0] == 64
+    assert model.log_prob(model.sample(4)).shape[0] == 4
+    model.get_parameters()
+
 
 # EOF

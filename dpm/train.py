@@ -22,7 +22,7 @@ def update_stats(stats, model):
 
 def train(p_model, q_model, criterion, epochs=1000, batch_size=64,
           lr=0.01, optimizer='Adam', track_parameters=True, log_interval=None,
-          stats=None):
+          stats=None, clip_gradients=None):
 
     optimizer = getattr(optim, optimizer)(q_model.parameters(), lr=lr)
 
@@ -36,6 +36,9 @@ def train(p_model, q_model, criterion, epochs=1000, batch_size=64,
 
         loss = criterion(p_model, q_model, batch_size)
         loss.backward()
+        if clip_gradients is not None:
+            for p in q_model.parameters():
+                p.grad.data.clamp_(-clip_gradients, clip_gradients)
 
         optimizer.step()
         if 'step' in dir(criterion):

@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from dpm.distributions import Uniform
+from dpm.distributions import Uniform, Normal
 plt.style.use('seaborn-darkgrid')
 
 def plot_stats(stats, goals=None):
@@ -169,5 +169,24 @@ def plot_mcmc_2D(samples):
     # plt.plot()
 
 
+def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), iterations=10):
+    loss_values = []
+    mus = np.linspace(-15, 15, 100)
+
+    for mu in mus:
+        q_model = q_ref(mu)
+
+        values = []
+        for _ in range(iterations):
+            values.append(loss(p_model, q_model, 64).item())
+        values = np.array(values)
+        loss_values.append((values.mean(), values.std()))
+    #     plt.plot(values)
+    plt.plot(mus, [m for (m, _) in loss_values])
+    plt.plot(mus, [m+s for (m, s) in loss_values])
+    plt.plot(mus, [m-s for (m, s) in loss_values])
+    plt.xlabel(r"Q $\mu$ Point")
+    plt.ylabel("Loss")
+    plt.title("Learning Landscape")
 
 # EOF
