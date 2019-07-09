@@ -82,13 +82,16 @@ transforms_list = [
     Affine(),
     Affine(1., 2.),
     Exp(),
+    Log(),
     Expm1(),
     Gumbel(),
     Gumbel(1., 2.),
     Power(),
-    Power(3.),
+    Power(0.),
     Reciprocal(),
+    Square(),
     Sigmoid(),
+    Logit(),
     SinhArcsinh(),
     SinhArcsinh(1., 2.),
     Softplus(1.),
@@ -96,13 +99,16 @@ transforms_list = [
     Softplus(-1.),
     Softsign(),
     Tanh(),
-    Logit()
 ]
 
 @pytest.mark.parametrize("t_form", transforms_list)
 def test_transforms(t_form):
     for i in [0.0, 0.5, 1.0, 5.0, -2.0]:
-        if isinstance(t_form, Logit) and (i == 5.0 or i == -2.0): continue
+        if isinstance(t_form, Logit) and i in [5.0, -2.0]: continue
+        if isinstance(t_form, Log) and i in [0.0, -2.0]: continue
+        if isinstance(t_form, Square) and i == -2.0: continue
+        if isinstance(t_form, Reciprocal) and i == 0.0: continue
+        if isinstance(t_form, Power) and i == -2.0: continue
 
         x = torch.tensor([[i]])
         assert (t_form.inverse(t_form(x)) - x) < 1e-3

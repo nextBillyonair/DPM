@@ -32,6 +32,25 @@ class Transform(ABC, Module):
         raise NotImplementedError('Get Parameters not implemented')
 
 
+class InverseTransform(Transform):
+
+    def __init__(self, transform):
+        super().__init__()
+        self.transform = transform
+
+    def forward(self, x):
+        return self.transform.inverse(x)
+
+    def inverse(self, y):
+        return self.transform(y)
+
+    def log_abs_det_jacobian(self, x, y):
+        return -self.transform.log_abs_det_jacobian(y, x)
+
+    def get_parameters(self):
+        return {'type':'inverse'}
+
+
 class Exp(Transform):
 
     def __init__(self):
@@ -41,7 +60,7 @@ class Exp(Transform):
         return x.exp()
 
     def inverse(self, y):
-        return torch.log(y)
+        return y.log()
 
     def log_abs_det_jacobian(self, x, y):
         return x
@@ -50,36 +69,80 @@ class Exp(Transform):
         return {'type':'exp'}
 
 
-class Power(Transform):
-
-    def __init__(self, exponent=1.0, learnable=True):
-        super().__init__()
-        if not isinstance(exponent, torch.Tensor):
-            exponent = torch.tensor(exponent).view(1, -1)
-        self.exponent = exponent
-        if learnable:
-            self.exponent = Parameter(self.exponent)
-
-    def forward(self, x):
-        return x.pow(self.exponent)
-
-    def inverse(self, y):
-        return y.pow(1 / self.exponent)
-
-    def log_abs_det_jacobian(self, x, y):
-        # return torch.log((self.exponent * y / x).abs())
-        if self.exponent == 1:
-            return torch.zeros_like(x)
-        return torch.log(self.exponent.abs()) + (self.exponent - 1) * torch.log(x.abs())
-
-    def get_parameters(self):
-        return {'type':'power', 'exponent':self.exponent.item()}
-
-
-class Reciprocal(Power):
+class Log(InverseTransform):
 
     def __init__(self):
-        super().__init__(-1.0, learnable=False)
+        super().__init__(Exp())
+
+    def get_parameters(self):
+        return {'type':'log'}
+
+
+# FIX
+class Power(Transform):
+
+    def __init__(self, power=1.0, learnable=True):
+        super().__init__()
+        if not isinstance(power, torch.Tensor):
+            power = torch.tensor(power).view(1, -1)
+        self.power = power
+        if learnable:
+            self.power = Parameter(self.power)
+
+    def forward(self, x):
+        if self.power == 0.:
+            return x.exp()
+        return (1. + x * self.power) ** (1. / self.power)
+
+    def inverse(self, y):
+        if self.power == 0.:
+            return y.log()
+        return (y**self.power - 1.) / self.power
+
+    def log_abs_det_jacobian(self, x, y):
+        if self.power == 0.:
+            return x
+        return (1. / self.power - 1.) * (x * self.power).log1p()
+
+    def get_parameters(self):
+        return {'type':'power', 'power':self.power.item()}
+
+
+class Reciprocal(Transform):
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        return 1. / x
+
+    def inverse(self, y):
+        return 1. / y
+
+    def log_abs_det_jacobian(self, x, y):
+        return -2. * x.abs().log()
+
+    def get_parameters(self):
+        return {'type':'reciprocal'}
+
+
+# Only works for +
+class Square(Transform):
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        return x.pow(2)
+
+    def inverse(self, y):
+        return y.sqrt()
+
+    def log_abs_det_jacobian(self, x, y):
+        return np.log(2.) + x.log()
+
+    def get_parameters(self):
+        return {'type':'square'}
 
 
 class Sigmoid(Transform):
@@ -91,28 +154,20 @@ class Sigmoid(Transform):
         return torch.sigmoid(x)
 
     def inverse(self, y):
-        return torch.log(y) - (-y).log1p()
+        return y.log() - (-y).log1p()
 
     def log_abs_det_jacobian(self, x, y):
-        return -torch.log((y.reciprocal() + (1 - y).reciprocal()))
+        return -softplus(-x) - softplus(x)
+        # return -torch.log((y.reciprocal() + (1 - y).reciprocal()))
 
     def get_parameters(self):
         return {'type':'sigmoid'}
 
 
-class Logit(Transform):
+class Logit(InverseTransform):
 
     def __init__(self):
-        super().__init__()
-
-    def forward(self, x):
-        return torch.log(x) - (-x).log1p()
-
-    def inverse(self, y):
-        return torch.sigmoid(y)
-
-    def log_abs_det_jacobian(self, x, y):
-        return torch.log((x.reciprocal() + (1 - x).reciprocal()))
+        super().__init__(Sigmoid())
 
     def get_parameters(self):
         return {'type':'logit'}
@@ -257,7 +312,8 @@ class Softplus(Transform):
         return self.hinge_softness * self.softplus_inverse(y / self.hinge_softness)
 
     def log_abs_det_jacobian(self, x, y):
-        return torch.log(-torch.expm1(-y) + 1e-10)
+        return -softplus(-x / self.hinge_softness)
+        # return torch.log(-torch.expm1(-y) + 1e-10)
 
     def get_parameters(self):
         return {'type':'softplus',

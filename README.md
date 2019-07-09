@@ -61,17 +61,20 @@ Differentiable Probabilistic Models
 
 # 2. Transforms <a name="transforms"></a>
   1. Exp
-  2. Power
-  3. Reciprocal
-  4. Sigmoid
-  5. Affine
-  6. Expm1
-  7. Gumbel
-  8. SinhArcsinh
-  9. Softplus
-  10. Softsign
-  11. Tanh
-  12. Logit
+  2. Log
+  3. Power
+  4. Reciprocal
+  5. Square
+  6. Sigmoid
+  7. Logit
+  8. Affine
+  9. Expm1
+  10. Gumbel
+  11. SinhArcsinh
+  12. Softplus
+  13. Softsign
+  14. Tanh
+  15. InverseTransform (Inverts a transform)
 
 # 3. Mixture Model <a name="mixture-model"></a>
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)

@@ -354,22 +354,18 @@ class Uniform(Distribution):
 
     @property
     def low(self):
-        if self.alpha <= self.beta:
-            return self.alpha
-        return self.beta
+        return torch.min(self.alpha, self.beta)
 
     @property
     def high(self):
-        if self.alpha <= self.beta:
-            return self.beta
-        return self.alpha
+        return torch.max(self.alpha, self.beta)
 
     def get_parameters(self):
         if self.n_dims == 1:
             return {'low':self.low.item(), 'high':self.high.item()}
         return {'low':self.low.detach().numpy(),
-                'high':self.high.detach().item()}
-
+                'high':self.high.detach().numpy()}
+                
 
 class StudentT(Distribution):
 
@@ -802,7 +798,6 @@ class Logistic(Distribution):
             return {'loc':self.loc.item(), 'scale':self.scale.item()}
         return {'loc':self.loc.detach().numpy(),
                 'scale':self.scale.detach().numpy()}
-
 
 
 #
