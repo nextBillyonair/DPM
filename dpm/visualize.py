@@ -169,7 +169,7 @@ def plot_mcmc_2D(samples):
     # plt.plot()
 
 
-def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), iterations=10):
+def plot_loss_function_mu(loss, q_ref=Normal, p_model=Normal(), iterations=10):
     loss_values = []
     mus = np.linspace(-15, 15, 100)
 
@@ -185,8 +185,42 @@ def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), iterations=10):
     plt.plot(mus, [m for (m, _) in loss_values])
     plt.plot(mus, [m+s for (m, s) in loss_values])
     plt.plot(mus, [m-s for (m, s) in loss_values])
-    plt.xlabel(r"Q $\mu$ Point")
+    plt.xlabel(r"Q's $\mu$ Point")
     plt.ylabel("Loss")
     plt.title("Learning Landscape")
+
+def plot_loss_function_std(loss, q_ref=Normal, p_model=Normal(), iterations=10):
+    loss_values = []
+    mus = np.linspace(1e-4, 30, 100)
+
+    for mu in mus:
+        q_model = q_ref(0., mu)
+
+        values = []
+        for _ in range(iterations):
+            values.append(loss(p_model, q_model, 64).item())
+        values = np.array(values)
+        loss_values.append((values.mean(), values.std()))
+    #     plt.plot(values)
+    plt.plot(mus, [m for (m, _) in loss_values])
+    plt.plot(mus, [m+s for (m, s) in loss_values])
+    plt.plot(mus, [m-s for (m, s) in loss_values])
+    plt.xlabel(r"Q's $\sigma$ Point")
+    plt.ylabel("Loss")
+    plt.title("Learning Landscape")
+
+
+def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), iterations=1, n_plot=100):
+    xlist = np.linspace(-15., 15.0, n_plot)
+    ylist = np.linspace(1e-1, 15, n_plot)
+    X, Y = np.meshgrid(xlist, ylist)
+    Z = np.log(np.array([[loss(p_model, q_ref(x, y), 64).item() for x in xlist] for y in ylist]))
+    print(Z.min(), Z.max())
+    cp = plt.contourf(X, Y, Z, levels=np.linspace(min(0., Z.min()), Z.max(), 100), cmap='RdGy')
+    plt.title('Log Loss')
+    plt.colorbar();
+    plt.xlabel(r'$\mu$')
+    plt.ylabel(r'$\sigma$')
+
 
 # EOF
