@@ -588,21 +588,20 @@ class Laplace(Distribution):
 
 class DiracDelta(Distribution):
 
-    def __init__(self, loc=0., eps=1e-10):
+    def __init__(self, loc=0., learnable=False):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
-            loc = torch.tensor(loc).view(-1)
-        self.n_dims = len(loc)
-        if not isinstance(eps, torch.Tensor):
-            eps = torch.tensor(eps).expand(self.n_dims)
+            loc = torch.tensor(loc)
+            if len(loc.shape) == 0:
+                loc = loc.view(-1)
+        self.n_dims = loc.shape
         self.loc = loc
-        self.eps = eps
 
     def log_prob(self, value):
         raise NotImplementedError("Dirac Delta log_prob not implemented")
 
     def sample(self, batch_size):
-        return self.loc.expand(batch_size, self.n_dims)
+        return self.loc.expand(batch_size, *self.n_dims)
 
     def get_parameters(self):
         if self.n_dims == 1:
@@ -612,7 +611,7 @@ class DiracDelta(Distribution):
 
 class Data(Distribution):
 
-    def __init__(self, data):
+    def __init__(self, data, learnable=False):
         super().__init__()
         if not isinstance(data, torch.Tensor):
             data = torch.tensor(data)
@@ -650,8 +649,7 @@ class ConditionalModel(Distribution):
         self.model = nn.Sequential(*layers)
         self.output_layers = nn.ModuleList()
         for output_shape, output_activation in zip(output_shapes, output_activations):
-            layers = []
-            layers.append(nn.Linear(prev_size, output_shape))
+            layers = [nn.Linear(prev_size, output_shape)]
             if output_activation is not None:
                 layers.append(getattr(nn, output_activation)())
             self.output_layers.append(nn.Sequential(*layers))
@@ -676,10 +674,34 @@ class ConditionalModel(Distribution):
         return self._create_dist(x).log_prob(z)
 
 
+class Generator(Distribution):
+
+    def __init__(self, latent_distribution=None, input_dim=8,
+                 hidden_sizes=[24, 24], activation="LeakyReLU",
+                 output_shapes=[1], output_activations=[None]):
+        super().__init__()
+        self.latent_distribution = latent_distribution
+        if latent_distribution is None:
+            self.latent_distribution = Normal(torch.zeros(8), torch.eye(8), learnable=False)
+        self.conditional_model = ConditionalModel(input_dim, hidden_sizes, activation,
+                                                  output_shapes, output_activations, DiracDelta)
+        self.n_dims = output_shapes[0]
+
+    def log_prob(self, value):
+        raise NotImplementedError("Generator log_prob not implemented")
+
+    def sample(self, batch_size):
+        latent_samples = self.latent_distribution.sample(batch_size)
+        return self.conditional_model.sample(latent_samples)
+
+    def get_parameters(self):
+        return {'latent':self.latent_distribution.get_parameters()}
+
+        
 # Uses dist + transforms
 class TransformDistribution(Distribution):
 
-    def __init__(self, distribution, transforms):
+    def __init__(self, distribution, transforms, learnable=False):
         super().__init__()
         self.n_dims = distribution.n_dims
         self.distribution = distribution
@@ -707,7 +729,7 @@ class TransformDistribution(Distribution):
 
 
 class Convolution(Distribution):
-    def __init__(self, models):
+    def __init__(self, models, learnable=False):
         super().__init__()
         self.n_dims = models[0].n_dims
         self.models = ModuleList(models)

@@ -2,7 +2,7 @@ from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
     Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
     Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
-    DiracDelta, Data, Convolution, ChiSquare, Logistic
+    DiracDelta, Data, Convolution, ChiSquare, Logistic, Generator
 )
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
@@ -150,7 +150,7 @@ dirac_locs = [
 @pytest.mark.parametrize("loc,n_dims", dirac_locs)
 def test_dirac_delta(loc, n_dims):
     dist = DiracDelta(loc)
-    assert dist.sample(1).shape == (1, n_dims)
+    assert dist.sample(1).shape == (1, n_dims), "{} {}".format(dist.sample(1).shape, n_dims)
 
     try:
         dist.log_prob(dist.sample(64))
@@ -168,6 +168,14 @@ def test_dirac_delta(loc, n_dims):
         assert (dist.get_parameters()['loc'] == np.array([1.0, 2.0, 3.0])).all()
     else:
         raise ValueError()
+    dist.get_parameters()
+
+
+def test_dirac_delta_2d():
+    dist = DiracDelta([[1,0],[0,1]])
+    assert dist.sample(1).shape == (1, 2, 2), "{} {}".format(dist.sample(1).shape, n_dims)
+    dist.get_parameters()
+
 
 
 dim_list = [1, 2, 3]
@@ -238,6 +246,16 @@ def test_init(dist):
     assert model.sample(1).shape[0] == 1
     assert model.sample(64).shape[0] == 64
     assert model.log_prob(model.sample(4)).shape[0] == 4
+    model.get_parameters()
+
+
+def test_generator():
+    model = Generator()
+    assert model.sample(64).shape == (64, 1)
+    try:
+        model.log_prob(model.sample(64))
+    except NotImplementedError:
+        pass
     model.get_parameters()
 
 

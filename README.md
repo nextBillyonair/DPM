@@ -54,6 +54,9 @@ Differentiable Probabilistic Models
       * Sum of component distributions, only allows sampling
   21. ChiSquare
   22. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
+  23. Generator
+      * Uses a latent distribution to sample inputs to a neural network to 
+      generate a distribution. Train with the adversarial losses.
 
 
 # 2. Transforms <a name="transforms"></a>
