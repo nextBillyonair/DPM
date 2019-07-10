@@ -210,12 +210,11 @@ def plot_loss_function_std(loss, q_ref=Normal, p_model=Normal(), iterations=10):
     plt.title("Learning Landscape")
 
 
-def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), iterations=1, n_plot=100):
+def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), n_plot=30):
     xlist = np.linspace(-15., 15.0, n_plot)
     ylist = np.linspace(1e-1, 15, n_plot)
     X, Y = np.meshgrid(xlist, ylist)
     Z = np.log(np.array([[loss(p_model, q_ref(x, y), 64).item() for x in xlist] for y in ylist]))
-    print(Z.min(), Z.max())
     cp = plt.contourf(X, Y, Z, levels=np.linspace(min(0., Z.min()), Z.max(), 100), cmap='RdGy')
     plt.title('Log Loss')
     plt.colorbar();
