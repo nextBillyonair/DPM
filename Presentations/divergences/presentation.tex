@@ -112,7 +112,7 @@ an object function $\mathcal{L}$
     \item Divergences must statisfy 2 properties:
     \begin{itemize}
       \item $D(P \parallel Q ) \geq 0 \quad \forall P, Q \in S$
-      \item $D(p \parallel Q ) = 0 \iff P = Q$
+      \item $D(P \parallel Q ) = 0 \iff P = Q$
     \end{itemize}
   \end{itemize}
 
@@ -250,7 +250,7 @@ an object function $\mathcal{L}$
 \begin{frame}
   \frametitle{Directionality: Reverse KL}
   \begin{equation*}
-    D_{KL} (P \parallel Q) = \int_{-\infty}^{\infty} \overbrace{p(x)}^{\text{Constant}}\log \left({\frac {\overbrace{p(x)}^{\text{Constant}}}{\underbrace{q(x)}_{Variable}}}\right)\,dx
+    D_{KL} (Q \parallel P) = \int_{-\infty}^{\infty} q(x)\log \left({\frac {q(x)}{p(x)}}\right)\,dx
   \end{equation*}
   \begin{itemize}
     \item The Reverse KL will sample from $Q$, and evaluate the log probabilities from $P$ and $Q$
@@ -267,9 +267,96 @@ an object function $\mathcal{L}$
 
 \begin{frame}
   \frametitle{Digression: Common Reparameterization Tricks}
-
+  \begin{center}
+  \begin{tabular}{C{4cm}C{4cm}}
+  \toprule
+  {} & Reparameterized \\
+  \midrule
+  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Digression: Common Reparameterization Tricks}
+  \begin{center}
+  \begin{tabular}{C{4cm}C{4cm}}
+  \toprule
+  {} & Reparameterized \\
+  \midrule
+  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
+  \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Digression: Common Reparameterization Tricks}
+  \begin{center}
+  \begin{tabular}{C{4cm}C{4cm}}
+  \toprule
+  {} & Reparameterized \\
+  \midrule
+  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
+  \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
+  \\
+  $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
+  \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Digression: Common Reparameterization Tricks}
+  \begin{center}
+  \begin{tabular}{C{4cm}C{4cm}}
+  \toprule
+  {} & Reparameterized \\
+  \midrule
+  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
+  \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
+  \\
+  $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
+  \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
+  \\
+  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
+                                          & $\mu - b \cdot \text{sgn}(u) \cdot \ln \big[-|u|+1 \big]$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Digression: Common Reparameterization Tricks}
+  \begin{center}
+  \begin{tabular}{C{4cm}C{4cm}}
+  \toprule
+  {} & Reparameterized \\
+  \midrule
+  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
+  \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
+  \\
+  $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
+  \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
+  \\
+  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
+                                          & $\mu - b \cdot \text{sgn}(u) \cdot \ln \big[-|u|+1 \big]$ \\
+                                          \\
+  $\text{Categorical}(\pi)$ & \xmark \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
 
 \begin{frame}
   \frametitle{Reverse KL: Learning a Bimodal}
