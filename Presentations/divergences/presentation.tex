@@ -1,0 +1,381 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{bayesnet}
+\usetikzlibrary{arrows}
+\usepackage{color}
+\usepackage{array}
+\usepackage{dsfont}
+\usepackage{multirow, graphicx}
+ \usepackage{float}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pifont}
+\usepackage{xcolor}
+\newcommand{\cmark}{\textcolor{green!80!black}{\ding{51}}}
+\newcommand{\xmark}{\textcolor{red}{\ding{55}}}
+\urlstyle{same}
+% \usetheme{Boadilla}
+
+\title{Introduction to Differentiable Probabilistic Models}
+% \subtitle{Using Beamer}
+\author{Bill Watson}
+% \institute{University of ShareLaTeX}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Primer: Standard Machine Learning}
+\begin{itemize}
+\item Usually, we are given a set $\mathcal{D} = \{ X, y\}$
+  \begin{equation*}
+  X =
+    \begin{bmatrix}
+        x_{11} & x_{12} & \dots  & x_{1n} \\
+        x_{21} & x_{22} & \dots  & x_{2n} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        x_{m1} & x_{m2} & \dots  & x_{mn}
+    \end{bmatrix}
+    \quad \quad
+    y =
+    \begin{bmatrix}
+      y_1 \\
+      y_2 \\
+      \vdots \\
+      y_n
+    \end{bmatrix}
+  \end{equation*}
+  where $X$ is our data matrix, and $y$ are our labels.
+\pause
+\item Attempt to fit a model $f$ parameterized by $\theta$ with respect to
+an object function $\mathcal{L}$
+\begin{equation*}
+  \text{minimize} \; \mathcal{L} \big( f( X;\theta), \; y \big)
+\end{equation*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Reframed as a Probabilistic Model}
+\begin{itemize}
+\item Consider our model is a probability distribution $Q$
+\begin{itemize}
+  \item No longer have labels $y$
+  \item But have probabilties and sampling
+\end{itemize}
+\pause
+\item Consider that our data is sampled from the real world $P$:
+\begin{equation*}
+  \begin{gathered}
+  X \sim P \\
+  \text{minimize} \; \mathcal{L} \big( f(X;\theta) \big) \\
+\end{gathered}
+\end{equation*}
+\pause
+\item Examples:
+\begin{itemize}
+  \item Classification: Fitting two multinomial distributions
+  \item Regression: Fitting a Normal centered around the line of best fit
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How do we "fit" Distributions?}
+  \begin{itemize}
+    \item Fitting two distirbutions implies minimizing their difference,
+      i.e. "distance"
+    \item This "distance" is known as the divergence between the true distribution
+    $P$ and the approximate "learned" distribution Q.
+    \pause
+    \item Divergences must statisfy 2 properties:
+    \begin{itemize}
+      \item $D(P \parallel Q ) \geq 0 \quad \forall P, Q \in S$
+      \item $D(p \parallel Q ) = 0 \iff P = Q$
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Kullback-Leibler Divergence}
+  \begin{itemize}
+    \item The KL Divergence for distributions $P$ and $Q$ is defined as:
+    \begin{equation*}
+      D_{KL} (P \parallel Q) = \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx
+    \end{equation*}
+    \pause
+    \item Note: this implies that the KL Divergence is NOT symmetric:
+    \begin{equation*}
+      D_{KL} (P \parallel Q) \not= D_{KL} (Q \parallel P)
+    \end{equation*}
+    \item But we will come back to this later...
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Directionality: Forward KL}
+  \begin{itemize}
+    \item This direction is known as the Forward KL
+    \begin{equation*}
+      D_{KL} (P \parallel Q) = \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx
+    \end{equation*}
+    \pause
+    \item The Forward KL will sample from $P$, and evaluate the log probabilties of $P$ and $Q$
+    \pause
+    \item Note: Maximum Likelihood Estimation is equivalent to minimizing the Forward KL
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Digression: KL to Cross-Entropy}
+  \begin{itemize}
+    \item The KL Divergence can be decomposed into familiar terms:
+    \begin{equation*}
+      \begin{aligned}
+        D_{KL} (P \parallel Q) =& -\sum_{x \in \mathcal {X}} p(x)\log \left({\frac {q(x)}{p(x)}}\right) \\
+        \pause
+        =& - \sum_{x \in \mathcal {X}} p(x)\log q(x) + \sum_{x \in \mathcal {X}} p(x)\log p(x) \\
+        \pause
+        =& \underbrace{H(P, Q)}_{Cross-Entropy} - \underbrace{H(P)}_{Entropy} \\
+        \pause
+        \propto& \underbrace{H(P, Q)}_{Cross-Entropy}
+      \end{aligned}
+    \end{equation*}
+    \pause
+    \item If we consider $P(x_i) = y_i = \{0, 1\}$ and $Q(x_i) = \sigma(f(x_i))$:
+    \begin{equation*}
+      D_{KL} (P \parallel Q) \propto - \Big[ y_i \log \sigma\big(f(x_i)\big) + (1 - y_i) \log (1 - \sigma \big(f(x_i))\big) \Big]
+    \end{equation*}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Forward KL: Learning a Normal Distribution}
+  \begin{itemize}
+    \item Lets learn a simple Normal Distribution
+    \item SHOW PLOT
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Forward KL: Learning a Normal Distribution}
+  \begin{itemize}
+    \item SHOW STATS
+    \item SHOW PLOT
+    \item However, this is boring...
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Digression: Mixture Models}
+  \begin{itemize}
+    \item We can build a $K$ multi-modal distribution, with weights
+      $\mathbf{\pi}$, as follows:
+    \begin{equation*}
+      \begin{aligned}
+      z \; \sim& \; \text{Categorical}(\mathbf{\pi}) \\
+      x \,|\, z = k \; \sim& \; \text{Normal}(\mu_k, \sigma_k) \\
+    \end{aligned}
+    \end{equation*}
+    \item We can calculate log probabilities by marginalizing out $z$:
+    \begin{equation*}
+      \log p(x) = \log \sum_{k=1}^{K} \underbrace{p(z = k)}_{\text{Categorical}} \cdot \underbrace{p(x \,|\, z=k)}_{\text{Normal}}
+    \end{equation*}
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Forward KL: Fitting a Normal to a Bimodal Distribution}
+  \begin{itemize}
+    \item SHOW Models
+    \item SHOW TRAINING + RET
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Forward KL: Loss Landscape}
+  \begin{itemize}
+    \item Show Loss landscape
+    \item SHOW ret
+    \item Show eq + reason
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Forward KL: Zero-Avoiding}
+  \begin{equation*}
+    D_{KL} (P \parallel Q) = \int_{-\infty}^{\infty} \overbrace{p(x)}^{\text{Constant}}\log \left({\frac {\overbrace{p(x)}^{\text{Constant}}}{\underbrace{q(x)}_{Variable}}}\right)\,dx
+  \end{equation*}
+  \begin{itemize}
+    \item $p(x)$ is constant-valued, $q(x)$ is variable
+    \item If $Q$ does not support $P$, then we will sample a point that has a low
+      probability with respect to $Q$
+    \pause
+    \item As $q(x) \to 0$, our loss $D_{KL} \to infty$
+    \pause
+    \item Hence, the optimal solution is for $Q$ to cover $P$, i.e. averaging
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Directionality: Reverse KL}
+  \begin{equation*}
+    D_{KL} (P \parallel Q) = \int_{-\infty}^{\infty} \overbrace{p(x)}^{\text{Constant}}\log \left({\frac {\overbrace{p(x)}^{\text{Constant}}}{\underbrace{q(x)}_{Variable}}}\right)\,dx
+  \end{equation*}
+  \begin{itemize}
+    \item The Reverse KL will sample from $Q$, and evaluate the log probabilities from $P$ and $Q$
+    \item Recall: KL Divergence is not symmetric, and this has drastic implications...
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Digression: Differentiable Sampling via the Reparameterization Trick}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Digression: Common Reparameterization Tricks}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Reverse KL: Learning a Bimodal}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Reverse KL: Learning a Bimodal (Attempt 2)}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Reverse KL: Zero-Forcing}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Jensen - Shannon Divergence: A Symmetric Divergence}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Jensen - Shannon Divergence: Training}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{A Family of Divergences: $f$-Divergence}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{$f$-Divergence: Total Variation}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Other Meterics: Earth Mover's Distance}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Summary of Methods}
+  \begin{center}
+  \begin{tabular}{lC{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}}
+  \toprule
+  {} & \multicolumn{2}{c}{$P$} & \multicolumn{2}{c}{$Q$} \\
+  \cmidrule(lr){2-3}  \cmidrule(lr){4-5}
+  {} &  \multicolumn{1}{c}{$\log p(x)$} &  \multicolumn{1}{c|}{$x \sim P$} &  \multicolumn{1}{c}{$\log q(x)$} &  \multicolumn{1}{c}{$x \sim Q$} \\
+  \midrule
+  Cross-Entropy    &        & \cmark & \cmark &        \\
+  Forward KL       & \cmark & \cmark & \cmark &        \\
+  Reverse KL       & \cmark &        & \cmark & \cmark \\
+  JS Divergence    & \cmark & \cmark & \cmark & \cmark \\
+  $f$-Divergence   & \cmark & \cmark & \cmark & \cmark \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Potpurri: Advanced Techniques}
+  \begin{center}
+  \begin{tabular}{lC{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}}
+  \toprule
+  {} & \multicolumn{2}{c}{$P$} & \multicolumn{2}{c}{$Q$} \\
+  \cmidrule(lr){2-3}  \cmidrule(lr){4-5}
+  {} &  \multicolumn{1}{c}{$\log p(x)$} &  \multicolumn{1}{c|}{$x \sim P$} &  \multicolumn{1}{c}{$\log q(x)$} &  \multicolumn{1}{c}{$x \sim Q$} \\
+  \midrule
+  Cross-Entropy    &        & \cmark & \cmark &        \\
+  Forward KL       & \cmark & \cmark & \cmark &        \\
+  Reverse KL       & \cmark &        & \cmark & \cmark \\
+  JS Divergence    & \cmark & \cmark & \cmark & \cmark \\
+  $f$-Divergence   & \cmark & \cmark & \cmark & \cmark \\
+  \midrule
+  Adversarial      &        & \cmark &        & \cmark \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Potpurri: Advanced Techniques}
+  \begin{enumerate}
+    \item Variational Inference with ELBO
+    \item Transforms
+    \item Adversarial Training
+    \item MCMC Methods
+  \end{enumerate}
+
+\end{frame}
+
+
+
+
+
+
+
+\end{document}
