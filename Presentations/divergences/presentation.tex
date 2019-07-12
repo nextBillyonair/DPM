@@ -8,8 +8,6 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{amsmath}
-\DeclareMathOperator*{\argmax}{argmax}
-\DeclareMathOperator*{\argmin}{argmin}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{bayesnet}
@@ -23,18 +21,21 @@
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage{caption}
-\usepackage{subcaption}
+\usepackage{subfig}
 \usepackage{pifont}
 \usepackage{xcolor}
+\usepackage{algorithm,algorithmic}
 \newcommand{\cmark}{\textcolor{green!80!black}{\ding{51}}}
 \newcommand{\xmark}{\textcolor{red}{\ding{55}}}
+\DeclareMathOperator*{\argmin}{argmin}
 \urlstyle{same}
+\usepackage{listings}
 % \usetheme{Boadilla}
 
 \title{Introduction to Differentiable Probabilistic Models}
 % \subtitle{Using Beamer}
 \author{Bill Watson}
-% \institute{University of ShareLaTeX}
+\institute{S\&P Global}
 \date{\today}
 
 \begin{document}
@@ -51,10 +52,10 @@
   \begin{equation*}
   X =
     \begin{bmatrix}
-        x_{11} & x_{12} & \dots  & x_{1n} \\
-        x_{21} & x_{22} & \dots  & x_{2n} \\
+        x_{11} & x_{12} & \dots  & x_{1m} \\
+        x_{21} & x_{22} & \dots  & x_{2m} \\
         \vdots & \vdots & \ddots & \vdots \\
-        x_{m1} & x_{m2} & \dots  & x_{mn}
+        x_{n1} & x_{n2} & \dots  & x_{nm}
     \end{bmatrix}
     \quad \quad
     y =
@@ -68,9 +69,9 @@
   where $X$ is our data matrix, and $y$ are our labels.
 \pause
 \item Attempt to fit a model $f$ parameterized by $\theta$ with respect to
-an object function $\mathcal{L}$
+an objective function $\mathcal{L}$
 \begin{equation*}
-  \text{minimize} \; \mathcal{L} \big( f( X;\theta), \; y \big)
+  \theta^{*}  =  \argmin_{\theta} \; \mathcal{L} \big( f( X;\theta), \; y \big)
 \end{equation*}
 \end{itemize}
 \end{frame}
@@ -82,14 +83,14 @@ an object function $\mathcal{L}$
 \item Consider our model is a probability distribution $Q$
 \begin{itemize}
   \item No longer have labels $y$
-  \item But have probabilties and sampling
+  \item But have probabilities and sampling
 \end{itemize}
 \pause
 \item Consider that our data is sampled from the real world $P$:
 \begin{equation*}
   \begin{gathered}
   X \sim P \\
-  \text{minimize} \; \mathcal{L} \big( f(X;\theta) \big) \\
+  \theta^{*} = \argmin_{\theta} \; \mathcal{L} \big( f(X;\theta) \big) \\
 \end{gathered}
 \end{equation*}
 \pause
@@ -104,10 +105,10 @@ an object function $\mathcal{L}$
 \begin{frame}
   \frametitle{How do we "fit" Distributions?}
   \begin{itemize}
-    \item Fitting two distirbutions implies minimizing their difference,
+    \item Fitting two distributions implies minimizing their difference,
       i.e. "distance"
     \item This "distance" is known as the divergence between the true distribution
-    $P$ and the approximate "learned" distribution Q.
+    $P$ and the learned distribution Q.
     \pause
     \item Divergences must statisfy 2 properties:
     \begin{itemize}
@@ -126,7 +127,7 @@ an object function $\mathcal{L}$
       D_{KL} (P \parallel Q) = \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx
     \end{equation*}
     \pause
-    \item Note: this implies that the KL Divergence is NOT symmetric:
+    \item Note: the KL Divergence is NOT symmetric:
     \begin{equation*}
       D_{KL} (P \parallel Q) \not= D_{KL} (Q \parallel P)
     \end{equation*}
@@ -140,13 +141,34 @@ an object function $\mathcal{L}$
   \begin{itemize}
     \item This direction is known as the Forward KL
     \begin{equation*}
-      D_{KL} (P \parallel Q) = \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx
+      \begin{aligned}
+      D_{KL} (P \parallel Q) =& \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx \\
+      \pause
+      =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right]
+      \end{aligned}
     \end{equation*}
-    \pause
-    \item The Forward KL will sample from $P$, and evaluate the log probabilties of $P$ and $Q$
     \pause
     \item Note: Maximum Likelihood Estimation is equivalent to minimizing the Forward KL
   \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Digression: Implementing Expectations}
+    \begin{equation*}
+      \begin{aligned}
+      D_{KL} (P \parallel Q) =& \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx \\
+      =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right]
+      \end{aligned}
+    \end{equation*}
+    \pause
+    \begin{algorithm}[H]
+    \begin{algorithmic}[1]
+      \STATE $x_1, \hdots, x_n \sim P$ independently
+      \RETURN $\frac{1}{N}\sum_{x_i} f(x_i)$
+    \end{algorithmic}
+    \caption{$\mathbb{E}_{x \sim P}[f(x)]$\\Expectation of $f(x)$ with respect to $P$}
+    \end{algorithm}
 \end{frame}
 
 
@@ -156,44 +178,61 @@ an object function $\mathcal{L}$
     \item The KL Divergence can be decomposed into familiar terms:
     \begin{equation*}
       \begin{aligned}
-        D_{KL} (P \parallel Q) =& -\sum_{x \in \mathcal {X}} p(x)\log \left({\frac {q(x)}{p(x)}}\right) \\
+        \argmin_{Q} D_{KL} (P \parallel Q) =& \argmin_{Q} \sum_{x \in \mathcal {X}} p(x)\log \left({\frac {p(x)}{q(x)}}\right) \\
         \pause
-        =& - \sum_{x \in \mathcal {X}} p(x)\log q(x) + \sum_{x \in \mathcal {X}} p(x)\log p(x) \\
+        =& \argmin_{Q} - \sum_{x \in \mathcal {X}} p(x)\log q(x) \\
+        & \quad\quad\quad + \sum_{x \in \mathcal {X}} p(x)\log p(x) \\
         \pause
-        =& \underbrace{H(P, Q)}_{Cross-Entropy} - \underbrace{H(P)}_{Entropy} \\
+        =& \argmin_{Q} \underbrace{H(P, Q)}_{Cross-Entropy} - \underbrace{H(P)}_{Entropy} \\
         \pause
-        \propto& \underbrace{H(P, Q)}_{Cross-Entropy}
+        =& \argmin_{Q} \underbrace{H(P, Q)}_{Cross-Entropy}
       \end{aligned}
     \end{equation*}
-    \pause
-    \item If we consider $P(x_i) = y_i = \{0, 1\}$ and $Q(x_i) = \sigma(f(x_i))$:
-    \begin{equation*}
-      D_{KL} (P \parallel Q) \propto - \Big[ y_i \log \sigma\big(f(x_i)\big) + (1 - y_i) \log (1 - \sigma \big(f(x_i))\big) \Big]
-    \end{equation*}
   \end{itemize}
 \end{frame}
 
-
 \begin{frame}
-  \frametitle{Forward KL: Learning a Normal Distribution}
+  \frametitle{Digression: KL to Cross-Entropy}
   \begin{itemize}
-    \item Lets learn a simple Normal Distribution
-    \item SHOW PLOT
+    \item If we consider $P(y_i = 1 | x_i) = p_i$ and $Q(y_i = 1 | x_i) = \sigma(f_\theta (x_i))$:
   \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Forward KL: Learning a Normal Distribution}
+  \begin{equation*}
+    \begin{aligned}
+      \argmin_{\theta} \; & D_{KL} (P \parallel Q) = \\
+        & \argmin_{\theta} - \Big[ p_i \log \sigma\big(f_\theta (x_i)\big) + (1 - p_i) \log (1 - \sigma \big(f_\theta (x_i))\big) \Big]
+    \end{aligned}
+  \end{equation*}
   \begin{itemize}
-    \item SHOW STATS
-    \item SHOW PLOT
-    \item However, this is boring...
+    \item This is the Binary Cross-Entropy Loss
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Digression: Mixture Models}
+  \frametitle{Forward KL: Learning a Normal Distribution (Initial)}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{assets/forward_kl_normal_init}
+    \caption{$P \sim \mathcal{N}(-7.3, 3.2)$, $Q \sim \mathcal{N}(0, 1)$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Forward KL: Learning a Normal Distribution (Results)}
+  \begin{figure}
+    \centering
+    \includegraphics[height=4.3cm]{assets/forward_kl_normal_stats}
+  \end{figure}
+  \begin{figure}
+    \centering
+    \includegraphics[height=2.5cm]{assets/forward_kl_normal_result}
+    \caption{$P \sim \mathcal{N}(-7.3, 3.2)$, $Q \sim \mathcal{N}(-7.28, 3.24)$}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Digression: Gaussian Mixture Models}
   \begin{itemize}
     \item We can build a $K$ multi-modal distribution, with weights
       $\mathbf{\pi}$, as follows:
@@ -208,26 +247,51 @@ an object function $\mathcal{L}$
       \log p(x) = \log \sum_{k=1}^{K} \underbrace{p(z = k)}_{\text{Categorical}} \cdot \underbrace{p(x \,|\, z=k)}_{\text{Normal}}
     \end{equation*}
   \end{itemize}
+\end{frame}
 
+\begin{frame}
+  \frametitle{Digression: Mixture Models (Visual)}
+  \begin{columns}
+    \centering
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[scale=0.4]{assets/bimodal_example_1}
+        \caption{2 Mixture Components, Even Weights}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[scale=0.4]{assets/bimodal_example_2}
+        \caption{3 Mixture Components, Uneven Weights}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Forward KL: Fitting a Normal to a Bimodal Distribution}
-  \begin{itemize}
-    \item SHOW Models
-    \item SHOW TRAINING + RET
-  \end{itemize}
+  \frametitle{Forward KL: Learning a Bimodal (Initial)}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{assets/forward_kl_bimodal_init}
+    \caption{$P \sim \big\{\mathcal{N}(-7.3, 1.4), \; \mathcal{N}(7.3, 1.4) \big\}$\\$Q \sim \mathcal{N}(0, 1)$}
+  \end{figure}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Forward KL: Loss Landscape}
-  \begin{itemize}
-    \item Show Loss landscape
-    \item SHOW ret
-    \item Show eq + reason
-  \end{itemize}
+  \frametitle{Forward KL: Learning a Bimodal (Results)}
+  \begin{figure}
+    \centering
+    \includegraphics[height=2.5cm]{assets/forward_kl_bimodal_stats}
+  \end{figure}
+  \begin{figure}
+    \centering
+    \includegraphics[height=4.3cm]{assets/forward_kl_bimodal_result}
+    \caption{$Q \sim \mathcal{N}(0.08, 36.76)$}
+  \end{figure}
 \end{frame}
 
 \begin{frame}
@@ -240,17 +304,29 @@ an object function $\mathcal{L}$
     \item If $Q$ does not support $P$, then we will sample a point that has a low
       probability with respect to $Q$
     \pause
-    \item As $q(x) \to 0$, our loss $D_{KL} \to infty$
+    \item As $q(x) \to 0$, our loss $D_{KL} \to \infty$
     \pause
     \item Hence, the optimal solution is for $Q$ to cover $P$, i.e. averaging
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Forward KL: Loss Landscape}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{assets/forward_kl_bimodal_loss}
+    \caption{Loss Landscape for Forward KL Divergence}
+  \end{figure}
 \end{frame}
 
 
 \begin{frame}
   \frametitle{Directionality: Reverse KL}
   \begin{equation*}
-    D_{KL} (Q \parallel P) = \int_{-\infty}^{\infty} q(x)\log \left({\frac {q(x)}{p(x)}}\right)\,dx
+    \begin{aligned}
+    D_{KL} (Q \parallel P) =& \int_{-\infty}^{\infty} q(x)\log \left({\frac {q(x)}{p(x)}}\right)\,dx \\
+    =& \; \mathbb{E}_{x \sim Q} \left[ \log \left( \frac{q(x)}{p(x)} \right) \right]
+    \end{aligned}
   \end{equation*}
   \begin{itemize}
     \item The Reverse KL will sample from $Q$, and evaluate the log probabilities from $P$ and $Q$
@@ -268,35 +344,7 @@ an object function $\mathcal{L}$
 \begin{frame}
   \frametitle{Digression: Common Reparameterization Tricks}
   \begin{center}
-  \begin{tabular}{C{4cm}C{4cm}}
-  \toprule
-  {} & Reparameterized \\
-  \midrule
-  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
-  \bottomrule
-  \end{tabular}
-  \end{center}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Digression: Common Reparameterization Tricks}
-  \begin{center}
-  \begin{tabular}{C{4cm}C{4cm}}
-  \toprule
-  {} & Reparameterized \\
-  \midrule
-  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
-  \\
-  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
-  \bottomrule
-  \end{tabular}
-  \end{center}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Digression: Common Reparameterization Tricks}
-  \begin{center}
-  \begin{tabular}{C{4cm}C{4cm}}
+  \begin{tabular}{C{5cm}C{5cm}}
   \toprule
   {} & Reparameterized \\
   \midrule
@@ -315,7 +363,7 @@ an object function $\mathcal{L}$
 \begin{frame}
   \frametitle{Digression: Common Reparameterization Tricks}
   \begin{center}
-  \begin{tabular}{C{4cm}C{4cm}}
+  \begin{tabular}{C{5cm}C{5cm}}
   \toprule
   {} & Reparameterized \\
   \midrule
@@ -337,7 +385,7 @@ an object function $\mathcal{L}$
 \begin{frame}
   \frametitle{Digression: Common Reparameterization Tricks}
   \begin{center}
-  \begin{tabular}{C{4cm}C{4cm}}
+  \begin{tabular}{C{5cm}C{5cm}}
   \toprule
   {} & Reparameterized \\
   \midrule
@@ -359,44 +407,198 @@ an object function $\mathcal{L}$
 \end{frame}
 
 \begin{frame}
-  \frametitle{Reverse KL: Learning a Bimodal}
+  \frametitle{Reverse KL: Learning a Bimodal (Initial)}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{assets/reverse_kl_bimodal_init}
+    \caption{$P \sim \big\{\mathcal{N}(-7.3, 1.4), \; \mathcal{N}(7.3, 1.4) \big\}$\\$Q \sim \mathcal{N}(0, 1)$}
+  \end{figure}
+\end{frame}
 
+\begin{frame}
+  \frametitle{Reverse KL: Learning a Bimodal (Results)}
+  \begin{figure}
+    \centering
+    \includegraphics[height=2.5cm]{assets/reverse_kl_bimodal_stats_1}
+  \end{figure}
+  \begin{figure}
+    \centering
+    \includegraphics[height=4.3cm]{assets/reverse_kl_bimodal_result_1}
+    \caption{$Q \sim \mathcal{N}(-7.02, 1.41)$}
+  \end{figure}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Reverse KL: Learning a Bimodal (Attempt 2)}
-
+  \frametitle{Reverse KL: Learning a Bimodal Attempt 2 (Results)}
+  \begin{figure}
+    \centering
+    \includegraphics[height=2.5cm]{assets/reverse_kl_bimodal_stats_2}
+  \end{figure}
+  \begin{figure}
+    \centering
+    \includegraphics[height=4.3cm]{assets/reverse_kl_bimodal_result_2}
+    \caption{$Q \sim \mathcal{N}(7.01, 1.46)$}
+  \end{figure}
 \end{frame}
 
 
 \begin{frame}
   \frametitle{Reverse KL: Zero-Forcing}
-
+  \begin{equation*}
+    D_{KL} (Q \parallel P) = \int_{-\infty}^{\infty} q(x)\log \left({\frac {q(x)}{p(x)}}\right)\,dx
+  \end{equation*}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+    \begin{itemize}
+      \item Unlike the Forward KL, Reverse KL is Zero-forcing
+      \item Why? Because we no longer suffer a penalty from $q(x) = 0$
+      \item However, if $p(x) = 0$, then the optimal value for $q(x)$ is $0$
+      \item Result $\implies$ Mode Collapse
+    \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[scale=0.4]{assets/reverse_kl_bimodal_loss}
+        \caption{Loss Landscape for Reverse KL Divergence}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 
 \begin{frame}
   \frametitle{Jensen - Shannon Divergence: A Symmetric Divergence}
-
+  \begin{equation*}
+    \begin{aligned}
+      \text{JSD}(P \parallel Q) \;=&\; \frac{1}{2} D_{KL}(P \parallel M) + \frac{1}{2} D_{KL}(Q \parallel M) \\
+      M \;=&\; \frac{1}{2} (P + Q)
+    \end{aligned}
+  \end{equation*}
+  \begin{itemize}
+    \item The JS Divergence is a symmetrized version of the
+      KL Divergence
+    \item $M$ is the average of distributions $P$ and $Q$, and can be
+      represented as a Mixture Model
+  \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Jensen - Shannon Divergence: Training}
+  \frametitle{Jensen - Shannon Divergence: Bimodal (Initial)}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{assets/js_bimodal_center_init}
+    \caption{$P \sim \big\{\mathcal{N}(-7.3, 1.4), \; \mathcal{N}(7.3, 1.4) \big\}$\\$Q \sim \mathcal{N}(0, 1)$}
+  \end{figure}
+\end{frame}
 
+\begin{frame}
+  \frametitle{Jensen - Shannon Divergence: Bimodal (Result)}
+  \begin{figure}
+    \centering
+    \includegraphics[height=2.5cm]{assets/js_bimodal_center_stats}
+  \end{figure}
+  \begin{figure}
+    \centering
+    \includegraphics[height=4.3cm]{assets/js_bimodal_center_result}
+    \caption{$Q \sim \mathcal{N}(-0.04, 48.20)$}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Jensen - Shannon Divergence: Right Shift (Attempt 2)}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{assets/js_bimodal_right_init}
+    \caption{$P \sim \big\{\mathcal{N}(-7.3, 1.4), \; \mathcal{N}(7.3, 1.4) \big\}$\\$Q \sim \mathcal{N}(1, 1)$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Jensen - Shannon Divergence: Right Shift (Result)}
+  \begin{figure}
+    \centering
+    \includegraphics[height=2.5cm]{assets/js_bimodal_right_stats}
+  \end{figure}
+  \begin{figure}
+    \centering
+    \includegraphics[height=4.3cm]{assets/js_bimodal_right_result}
+    \caption{$Q \sim \mathcal{N}(6.99, 1.43)$}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Jensen - Shannon Divergence: Left Shift (Attempt 3)}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{assets/js_bimodal_left_init}
+    \caption{$P \sim \big\{\mathcal{N}(-7.3, 1.4), \; \mathcal{N}(7.3, 1.4) \big\}$\\$Q \sim \mathcal{N}(-1, 1)$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Jensen - Shannon Divergence: Left Shift (Result)}
+  \begin{figure}
+    \centering
+    \includegraphics[height=2.5cm]{assets/js_bimodal_left_stats}
+  \end{figure}
+  \begin{figure}
+    \centering
+    \includegraphics[height=4.3cm]{assets/js_bimodal_left_result}
+    \caption{$Q \sim \mathcal{N}(-6.98, 1.38)$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Jensen - Shannon Divergence Loss}
+  \begin{equation*}
+    \begin{aligned}
+      \text{JSD}(P \parallel Q) \;=&\; \frac{1}{2} D_{KL}(P \parallel M) + \frac{1}{2} D_{KL}(Q \parallel M) \\
+      M \;=&\; \frac{1}{2} (P + Q)
+    \end{aligned}
+  \end{equation*}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{assets/js_bimodal_loss}
+    \caption{Loss Landscape for JS Divergence}
+  \end{figure}
 \end{frame}
 
 
 \begin{frame}
   \frametitle{A Family of Divergences: $f$-Divergence}
-
+  \begin{itemize}
+    \item KL Divergence is a special case of the $f$-divergence
+    \item The $f$-divergence is a family of divergences that can be written as:
+    \begin{equation*}
+      D_{f}(P \parallel Q) = \int \overbrace{q(x)}^{\text{Weight}} f \underbrace{\left( \frac{p(x)}{q(x)} \right)}_{\text{Odds Ratio}} dx
+    \end{equation*}
+  \end{itemize}
 \end{frame}
 
-
 \begin{frame}
-  \frametitle{$f$-Divergence: Total Variation}
-
+  \frametitle{A Family of Divergences: $f$-Divergence}
+  \begin{equation*}
+    D_{f}(P \parallel Q) = \int \overbrace{q(x)}^{\text{Weight}} f \underbrace{\left( \frac{p(x)}{q(x)} \right)}_{\text{Odds Ratio}} dx
+  \end{equation*}
+  \begin{center}
+  \begin{tabular}{C{5cm}|C{5cm}}
+  \toprule
+  {Divergence} & $f(t)$ \\
+  \midrule
+  Forward KL   &  $t \log t$ \\
+  Reverse KL   &  $- \log t$ \\
+  Hellinger Distance  &  $\left(\sqrt{t} - 1 \right)^2$, $2 \left( 1 - \sqrt{t} \right)$ \\
+  Total Variation & $\frac{1}{2} \vert t - 1 \vert$ \\
+  Pearson $\chi^2$ & $\left( t-1 \right)^2$, $t^2 - 1$, $t^2 - t$ \\
+  Neyman $\chi^2$ (Reverse Pearson) & $\frac{1}{t} - 1$, $\frac{1}{t} - t$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
 \end{frame}
 
 
@@ -427,21 +629,22 @@ an object function $\mathcal{L}$
 
 
 \begin{frame}
-  \frametitle{Potpurri: Advanced Techniques}
+  \frametitle{Potpourri: Advanced Techniques}
   \begin{center}
   \begin{tabular}{lC{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}}
   \toprule
   {} & \multicolumn{2}{c}{$P$} & \multicolumn{2}{c}{$Q$} \\
   \cmidrule(lr){2-3}  \cmidrule(lr){4-5}
-  {} &  \multicolumn{1}{c}{$\log p(x)$} &  \multicolumn{1}{c|}{$x \sim P$} &  \multicolumn{1}{c}{$\log q(x)$} &  \multicolumn{1}{c}{$x \sim Q$} \\
+  {} &  \multicolumn{1}{c}{$\log p(x)$} &  \multicolumn{1}{c|}{$x \sim P$} &
+    \multicolumn{1}{c}{$\log q(x)$} &  \multicolumn{1}{c}{$x \sim Q$}  \\
   \midrule
-  Cross-Entropy    &        & \cmark & \cmark &        \\
-  Forward KL       & \cmark & \cmark & \cmark &        \\
-  Reverse KL       & \cmark &        & \cmark & \cmark \\
-  JS Divergence    & \cmark & \cmark & \cmark & \cmark \\
-  $f$-Divergence   & \cmark & \cmark & \cmark & \cmark \\
+  Cross-Entropy   &        & \cmark & \cmark &        \\
+  Forward KL      & \cmark & \cmark & \cmark &        \\
+  Reverse KL      & \cmark &        & \cmark & \cmark \\
+  JS Divergence   & \cmark & \cmark & \cmark & \cmark \\
+  $f$-Divergence  & \cmark & \cmark & \cmark & \cmark \\
   \midrule
-  Adversarial      &        & \cmark &        & \cmark \\
+  Adversarial     &        & \cmark &        & \cmark \\
   \bottomrule
   \end{tabular}
   \end{center}
@@ -449,12 +652,24 @@ an object function $\mathcal{L}$
 
 
 \begin{frame}
-  \frametitle{Potpurri: Advanced Techniques}
+  \frametitle{Potpourri: Advanced Techniques}
   \begin{enumerate}
-    \item Variational Inference with ELBO
     \item Transforms
-    \item Adversarial Training
-    \item MCMC Methods
+      \begin{itemize}
+        \item Normalizing Flow Models
+      \end{itemize}
+    \item Variational Inference
+      \begin{itemize}
+        \item ELBO
+      \end{itemize}
+    \item Adversarial Training (Forest of GANs)
+    \item Markov Chain Monte Carlo
+    \begin{itemize}
+      \item Metropolis-Hastings
+      \item Gibbs Sampling
+      \item Hamiltonian Monte Carol
+      \item NUTS
+    \end{itemize}
   \end{enumerate}
 
 \end{frame}

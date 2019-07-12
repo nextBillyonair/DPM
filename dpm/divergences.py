@@ -1,5 +1,6 @@
 import torch
 from torch.nn import Module
+from abc import abstractmethod, ABC
 from dpm.mixture_models import MixtureModel
 
 
@@ -49,7 +50,9 @@ def js_divergence_2(p_model, q_model, batch_size=64):
                   + _forward_kl(q_model, M, batch_size))
 
 
-
+def exponential_divergence(p_model, q_model, batch_size=64):
+    p_samples = p_model.sample(batch_size)
+    return (p_model.log_prob(p_samples) - q_model.log_prob(p_samples)).pow(2).mean()
 
 
 
