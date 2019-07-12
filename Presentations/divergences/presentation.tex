@@ -140,6 +140,7 @@ an objective function $\mathcal{L}$
   \frametitle{Directionality: Forward KL}
   \begin{itemize}
     \item This direction is known as the Forward KL
+  \end{itemize}
     \begin{equation*}
       \begin{aligned}
       D_{KL} (P \parallel Q) =& \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx \\
@@ -147,9 +148,6 @@ an objective function $\mathcal{L}$
       =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right]
       \end{aligned}
     \end{equation*}
-    \pause
-    \item Note: Maximum Likelihood Estimation is equivalent to minimizing the Forward KL
-  \end{itemize}
 \end{frame}
 
 
@@ -161,7 +159,6 @@ an objective function $\mathcal{L}$
       =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right]
       \end{aligned}
     \end{equation*}
-    \pause
     \begin{algorithm}[H]
     \begin{algorithmic}[1]
       \STATE $x_1, \hdots, x_n \sim P$ independently
@@ -175,20 +172,22 @@ an objective function $\mathcal{L}$
 \begin{frame}
   \frametitle{Digression: KL to Cross-Entropy}
   \begin{itemize}
+    \item Note: Maximum Likelihood Estimation is equivalent to minimizing the Forward KL
+    \pause
     \item The KL Divergence can be decomposed into familiar terms:
-    \begin{equation*}
-      \begin{aligned}
-        \argmin_{Q} D_{KL} (P \parallel Q) =& \argmin_{Q} \sum_{x \in \mathcal {X}} p(x)\log \left({\frac {p(x)}{q(x)}}\right) \\
-        \pause
-        =& \argmin_{Q} - \sum_{x \in \mathcal {X}} p(x)\log q(x) \\
-        & \quad\quad\quad + \sum_{x \in \mathcal {X}} p(x)\log p(x) \\
-        \pause
-        =& \argmin_{Q} \underbrace{H(P, Q)}_{Cross-Entropy} - \underbrace{H(P)}_{Entropy} \\
-        \pause
-        =& \argmin_{Q} \underbrace{H(P, Q)}_{Cross-Entropy}
-      \end{aligned}
-    \end{equation*}
   \end{itemize}
+  \begin{equation*}
+    \begin{aligned}
+      \argmin_{Q} D_{KL} (P \parallel Q) =& \argmin_{Q} \sum_{x \in \mathcal {X}} p(x)\log \left({\frac {p(x)}{q(x)}}\right) \\
+      \pause
+      =& \argmin_{Q} - \sum_{x \in \mathcal {X}} p(x)\log q(x) \\
+      & \quad\quad\quad + \sum_{x \in \mathcal {X}} p(x)\log p(x) \\
+      \pause
+      =& \argmin_{Q} \underbrace{H(P, Q)}_{Cross-Entropy} - \underbrace{H(P)}_{Entropy} \\
+      \pause
+      =& \argmin_{Q} \underbrace{H(P, Q)}_{Cross-Entropy}
+    \end{aligned}
+  \end{equation*}
 \end{frame}
 
 \begin{frame}
@@ -389,13 +388,13 @@ an objective function $\mathcal{L}$
   \toprule
   {} & Reparameterized \\
   \midrule
-  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
+  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \odot \mathcal{N}(0, 1)$ \\
   \\
-  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
+  $\mathcal{U}(a, b)$   &  $a + (b - a) \odot \mathcal{U}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
-  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \odot \text{Cauchy}(0, 1)$ \\
   \bottomrule
   \end{tabular}
   \end{center}
@@ -408,16 +407,16 @@ an objective function $\mathcal{L}$
   \toprule
   {} & Reparameterized \\
   \midrule
-  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
+  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \odot \mathcal{N}(0, 1)$ \\
   \\
-  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
+  $\mathcal{U}(a, b)$   &  $a + (b - a) \odot \mathcal{U}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
-  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \odot \text{Cauchy}(0, 1)$ \\
   \\
-  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
-                                          & $\mu - b \cdot \text{sgn}(u) \cdot \ln \big[-|u|+1 \big]$ \\
+  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \mathcal{U}(-1, 1)$ \\
+                                          & $\mu - b \odot \text{sgn}(u) \odot \ln \big[-|u|+1 \big]$ \\
   \bottomrule
   \end{tabular}
   \end{center}
@@ -430,16 +429,16 @@ an objective function $\mathcal{L}$
   \toprule
   {} & Reparameterized \\
   \midrule
-  $\text{Normal}(\mu, \sigma)$   &  $\mu + \sigma \cdot \text{Normal}(0, 1)$ \\
+  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \odot \mathcal{N}(0, 1)$ \\
   \\
-  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
+  $\mathcal{U}(a, b)$   &  $a + (b - a) \odot \mathcal{U}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
-  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \odot \text{Cauchy}(0, 1)$ \\
   \\
-  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
-                                          & $\mu - b \cdot \text{sgn}(u) \cdot \ln \big[-|u|+1 \big]$ \\
+  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \mathcal{U}(-1, 1)$ \\
+                                          & $\mu - b \odot \text{sgn}(u) \odot \ln \big[-|u|+1 \big]$ \\
                                           \\
   $\text{Categorical}(\pi)$ & \xmark \\
   \bottomrule
@@ -644,8 +643,15 @@ an objective function $\mathcal{L}$
 
 
 \begin{frame}
-  \frametitle{Other Metrics: Earth Mover's Distance}
-
+  \frametitle{Earth Mover's Distance (Wasserstein-1)}
+  \begin{equation*}
+    W\left(P, Q\right) = \inf_{\gamma \in \prod (P, Q)} \mathbb{E}_{(x, y) \sim \gamma} \big[ \parallel x - y \parallel \big]
+  \end{equation*}
+  \begin{itemize}
+    \item $\prod (P, Q)$ is the set of joint distributions $\gamma(x, y)$ whose marginals are $P$ and $Q$
+    \item $\gamma(x, y)$ indicated how much "mass" must be transported from $x$ to $y$ to transform $P$ to $Q$
+    \item EMD is the "cost" of the optimal transport plan
+  \end{itemize}
 \end{frame}
 
 
@@ -666,6 +672,22 @@ an objective function $\mathcal{L}$
   \bottomrule
   \end{tabular}
   \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Practical Uses of Divergences}
+  \begin{itemize}
+    \item Forward Kullback-Leibler
+      \begin{itemize} \item Maximum Likelihood Estimation \end{itemize}
+    \item Reverse Kullback-Leibler
+      \begin{itemize} \item Variational Autoencoders \item Variational Inference \end{itemize}
+    \item Jensen-Shannon Divergence
+      \begin{itemize} \item Generative Adversarial Network (Original) \end{itemize}
+    \item Earth Mover's Distance
+      \begin{itemize} \item Wasserstein GAN (WGAN) \end{itemize}
+    \item Pearson $\chi^2$ Divergence
+      \begin{itemize} \item Least Squares GAN (LSGAN) \end{itemize}
+  \end{itemize}
 \end{frame}
 
 
@@ -699,16 +721,17 @@ an objective function $\mathcal{L}$
       \begin{itemize}
         \item Normalizing Flow Models
       \end{itemize}
+    \item Expectation–Maximization
     \item Variational Inference
       \begin{itemize}
         \item ELBO
       \end{itemize}
-    \item Adversarial Training (Forest of GANs)
+    \item Adversarial Training (GANs, GANs, GANs)
     \item Markov Chain Monte Carlo
     \begin{itemize}
       \item Metropolis-Hastings
       \item Gibbs Sampling
-      \item Hamiltonian Monte Carol
+      \item Hamiltonian Monte Carlo
       \item NUTS
     \end{itemize}
   \end{enumerate}
