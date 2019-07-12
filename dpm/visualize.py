@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from dpm.distributions import Uniform, Normal
+from torch.nn.functional import softplus
+import torch
 plt.style.use('seaborn-darkgrid')
 
 def plot_stats(stats, goals=None):
@@ -210,16 +212,16 @@ def plot_loss_function_std(loss, q_ref=Normal, p_model=Normal(), iterations=10):
     plt.title("Learning Landscape")
 
 
-def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), n_plot=40, iterations=10):
+def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), n_plot=100, iterations=10):
     xlist = np.linspace(-15., 15.0, n_plot)
     ylist = np.linspace(1e-1, 50.0, n_plot)
     X, Y = np.meshgrid(xlist, ylist)
     Z = np.zeros((len(ylist), len(xlist)))
     for _ in range(iterations):
-        Z += np.array([[loss(p_model, q_ref(x, y), 64).item() for x in xlist] for y in ylist])
+        Z += np.array([[loss(p_model, q_ref(x, y), 128).item() for x in xlist] for y in ylist])
     Z /= iterations
-    Z = np.log(Z+1e-20)
-    cp = plt.contourf(X, Y, Z, levels=np.linspace(min(0., Z.min()), Z.max(), 100), cmap='RdGy')
+    Z = np.log1p(Z-Z.min())
+    cp = plt.contourf(X, Y, Z, levels=np.linspace(Z.min(), Z.max(), 100), cmap='RdGy')
     plt.title('Log Loss')
     plt.colorbar();
     plt.xlabel(r'$\mu$')

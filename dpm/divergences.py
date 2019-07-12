@@ -22,6 +22,11 @@ def js_divergence(p_model, q_model, batch_size=64):
                   + forward_kl(q_model, M, batch_size))
 
 
+
+################################################################################
+# Experimental
+
+
 def total_variation(p_model, q_model, batch_size=64):
     mixture_model = MixtureModel([p_model, q_model], [0.5, 0.5])
     samples = mixture_model.sample(batch_size)
@@ -54,6 +59,66 @@ def exponential_divergence(p_model, q_model, batch_size=64):
     p_samples = p_model.sample(batch_size)
     return (p_model.log_prob(p_samples) - q_model.log_prob(p_samples)).pow(2).mean()
 
+class FDivergence(ABC, Module):
+
+    def __init__(self):
+        super().__init__()
+
+    @abstractmethod
+    def f_div(self, t):
+        raise NotImplementedError()
+
+    def forward(self, p_model, q_model, batch_size=64):
+        q_samples = q_model.sample(batch_size)
+        odds_ratio = (p_model.log_prob(q_samples) - q_model.log_prob(q_samples)).exp()
+        # q_prob = q_model.log_prob(q_samples).exp()
+        # return (q_prob * self.f_div(odds_ratio)).sum(-1)
+        return self.f_div(odds_ratio).mean()
+
+
+class ForwardKL(FDivergence):
+
+    def f_div(self, t):
+        return t * (t + 1e-10).log()
+
+class ReverseKL(FDivergence):
+
+    def f_div(self, t):
+        return -(t + 1e-10).log()
+
+class TotalVariation(FDivergence):
+
+    def f_div(self, t):
+        return 0.5 * (t - 1.).abs()
+
+class HellingerDistance(FDivergence):
+
+    def f_div(self, t):
+        return (t.sqrt() - 1.).pow(2)
+
+class Pearson(FDivergence):
+
+    def f_div(self, t):
+        return (t - 1.).pow(2)
+
+class Neyman(FDivergence):
+
+    def f_div(self, t):
+        return (1 / t) - 1.
+
+
+class Alpha(FDivergence):
+
+    def __init__(self, alpha=1):
+        super().__init__()
+        self.alpha = 1
+
+    def f_div(self, t):
+        if self.alpha == -1:
+            return -t.log()
+        if self.alpha == 1:
+            return t * t.log()
+        return (4 / (1-self.alpha**2)) * (1 - t.pow((1+self.alpha)/2))
 
 
 # EOF
