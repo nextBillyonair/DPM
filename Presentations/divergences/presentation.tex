@@ -131,32 +131,34 @@ an objective function $\mathcal{L}$
     \begin{equation*}
       D_{KL} (P \parallel Q) \not= D_{KL} (Q \parallel P)
     \end{equation*}
+    \item Hence, this direction is known as the Forward KL
+    \pause
     \item But we will come back to this later...
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Directionality: Forward KL}
-  \begin{itemize}
-    \item This direction is known as the Forward KL
-  \end{itemize}
+  \frametitle{Digression: Monte Carlo Integration}
     \begin{equation*}
       \begin{aligned}
       D_{KL} (P \parallel Q) =& \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx \\
       \pause
-      =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right]
+      =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right] \\
+      \pause
+      \approx& \frac{1}{N}\sum_{i=1}^{N} \log \left( \frac{p(x_i)}{q(x_i)} \right) \quad x_i \sim P \vert_{i=1}^{N}
       \end{aligned}
     \end{equation*}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Digression: Implementing Expectations}
+  \frametitle{Digression: Monte Carlo Integration}
     \begin{equation*}
       \begin{aligned}
       D_{KL} (P \parallel Q) =& \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx \\
-      =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right]
+      =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right] \\
+      \approx& \frac{1}{N}\sum_{i=1}^{N} \log \left( \frac{p(x_i)}{q(x_i)} \right) \quad x_i \sim P \vert_{i=1}^{N}
       \end{aligned}
     \end{equation*}
     \begin{algorithm}[H]
@@ -388,13 +390,13 @@ an objective function $\mathcal{L}$
   \toprule
   {} & Reparameterized \\
   \midrule
-  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \odot \mathcal{N}(0, 1)$ \\
+  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \cdot \mathcal{N}(0, 1)$ \\
   \\
-  $\mathcal{U}(a, b)$   &  $a + (b - a) \odot \mathcal{U}(0, 1)$ \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \mathcal{U}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
-  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \odot \text{Cauchy}(0, 1)$ \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
   \bottomrule
   \end{tabular}
   \end{center}
@@ -407,16 +409,16 @@ an objective function $\mathcal{L}$
   \toprule
   {} & Reparameterized \\
   \midrule
-  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \odot \mathcal{N}(0, 1)$ \\
+  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \cdot \mathcal{N}(0, 1)$ \\
   \\
-  $\mathcal{U}(a, b)$   &  $a + (b - a) \odot \mathcal{U}(0, 1)$ \\
+  $\mathcal{U}(a, b)$   &  $a + (b - a) \cdot \mathcal{U}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
-  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \odot \text{Cauchy}(0, 1)$ \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
   \\
-  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \mathcal{U}(-1, 1)$ \\
-                                          & $\mu - b \odot \text{sgn}(u) \odot \ln \big[-|u|+1 \big]$ \\
+  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
+                                          & $\mu - b \cdot \text{sgn}(u) \ln \big[ 1 - \vert u \vert \big]$ \\
   \bottomrule
   \end{tabular}
   \end{center}
@@ -429,16 +431,16 @@ an objective function $\mathcal{L}$
   \toprule
   {} & Reparameterized \\
   \midrule
-  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \odot \mathcal{N}(0, 1)$ \\
+  $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \cdot \mathcal{N}(0, 1)$ \\
   \\
-  $\mathcal{U}(a, b)$   &  $a + (b - a) \odot \mathcal{U}(0, 1)$ \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \mathcal{U}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
-  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \odot \text{Cauchy}(0, 1)$ \\
+  $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
   \\
-  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \mathcal{U}(-1, 1)$ \\
-                                          & $\mu - b \odot \text{sgn}(u) \odot \ln \big[-|u|+1 \big]$ \\
+  \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
+                                          & $\mu - b \cdot \text{sgn}(u) \ln \big[ 1 - \vert u \vert \big]$ \\
                                           \\
   $\text{Categorical}(\pi)$ & \xmark \\
   \bottomrule
@@ -678,39 +680,45 @@ an objective function $\mathcal{L}$
   \frametitle{Practical Uses of Divergences}
   \begin{itemize}
     \item Forward Kullback-Leibler
-      \begin{itemize} \item Maximum Likelihood Estimation \end{itemize}
-    \item Reverse Kullback-Leibler
-      \begin{itemize} \item Variational Autoencoders \item Variational Inference \end{itemize}
-    \item Jensen-Shannon Divergence
-      \begin{itemize} \item Generative Adversarial Network (Original) \end{itemize}
-    \item Earth Mover's Distance
-      \begin{itemize} \item Wasserstein GAN (WGAN) \end{itemize}
-    \item Pearson $\chi^2$ Divergence
-      \begin{itemize} \item Least Squares GAN (LSGAN) \end{itemize}
+    \begin{itemize}
+      \item Maximum Likelihood Estimation (MSE, BCE)
+      \begin{itemize}
+        \item $\ell_2$: Mean Squared Error (Normally Distributed)
+        \item $\ell_1$: Mean Absolute Error (Laplace Distributed)
+        \item Binary Cross Entropy (Bernoulli Distributed)
+        \item Cross Entropy (Multinomially Distributed)
+      \end{itemize}
+      \item Log-Likelihood Models
+      \begin{itemize}
+        \item PixelCNN
+        \item Glow
+        \item Variational Autoencoders
+      \end{itemize}
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Potpourri: Advanced Techniques}
-  \begin{center}
-  \begin{tabular}{lC{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}}
-  \toprule
-  {} & \multicolumn{2}{c}{$P$} & \multicolumn{2}{c}{$Q$} \\
-  \cmidrule(lr){2-3}  \cmidrule(lr){4-5}
-  {} &  \multicolumn{1}{c}{$\log p(x)$} &  \multicolumn{1}{c|}{$x \sim P$} &
-    \multicolumn{1}{c}{$\log q(x)$} &  \multicolumn{1}{c}{$x \sim Q$}  \\
-  \midrule
-  Cross-Entropy   &        & \cmark & \cmark &        \\
-  Forward KL      & \cmark & \cmark & \cmark &        \\
-  Reverse KL      & \cmark &        & \cmark & \cmark \\
-  JS Divergence   & \cmark & \cmark & \cmark & \cmark \\
-  $f$-Divergence  & \cmark & \cmark & \cmark & \cmark \\
-  \midrule
-  Adversarial     &        & \cmark &        & \cmark \\
-  \bottomrule
-  \end{tabular}
-  \end{center}
+  \frametitle{Practical Uses of Divergences}
+  \begin{itemize}
+    \item Reverse Kullback-Leibler
+      \begin{itemize}
+        \item Evidence Lower Bound (ELBO)
+      \end{itemize}
+    \item Jensen-Shannon Divergence
+      \begin{itemize}
+        \item Generative Adversarial Network (Original)
+      \end{itemize}
+    \item Earth Mover's Distance
+      \begin{itemize}
+        \item Wasserstein GAN (WGAN)
+      \end{itemize}
+    \item Pearson $\chi^2$ Divergence
+      \begin{itemize}
+        \item Least Squares GAN (LSGAN)
+      \end{itemize}
+  \end{itemize}
 \end{frame}
 
 
@@ -735,7 +743,6 @@ an objective function $\mathcal{L}$
       \item NUTS
     \end{itemize}
   \end{enumerate}
-
 \end{frame}
 
 
