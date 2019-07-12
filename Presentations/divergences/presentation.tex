@@ -110,7 +110,7 @@ an objective function $\mathcal{L}$
     \item This "distance" is known as the divergence between the true distribution
     $P$ and the learned distribution Q.
     \pause
-    \item Divergences must statisfy 2 properties:
+    \item Divergences must satisfy 2 properties:
     \begin{itemize}
       \item $D(P \parallel Q ) \geq 0 \quad \forall P, Q \in S$
       \item $D(P \parallel Q ) = 0 \iff P = Q$
@@ -337,8 +337,49 @@ an objective function $\mathcal{L}$
 
 \begin{frame}
   \frametitle{Digression: Differentiable Sampling via the Reparameterization Trick}
-
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=1.5cm,on grid,auto]
+      \node[draw,diamond]  (sig)  {$\sigma$};
+      \node[draw,diamond]  (mu)  [left=of sig] {$\mu$};
+      \node[draw,circle]   (z) [above=of sig, label=right:{$\sim \mathcal{N}(\mu, \sigma)$}] {$z$};
+      \node[] (x) [above=of z] {$x$};
+      \node[red] (l1) [left=of x, xshift=0.9cm] {$\frac{\partial \mathcal{L}}{\partial x}$};
+      \node[red] (l2) [left=of z, xshift=0.9cm] {\xmark};
+      \draw[->] (sig) to (z) node [] {};
+      \draw[->] (mu) to (z) node [] {};
+      \draw[->] (z) to (x) node [] {};
+      \draw[red,->] (l1) to (l2) node [] {};
+    \end{tikzpicture}
+    \caption{Original Form}
+  \end{figure}
 \end{frame}
+
+
+\begin{frame}
+  \frametitle{Digression: Differentiable Sampling via the Reparameterization Trick}
+    \begin{figure}
+      \centering
+      \begin{tikzpicture}[shorten >=1pt,node distance=1.5cm,on grid,auto]
+        \node[draw,diamond]  (sig)  {$\sigma$};
+        \node[draw,diamond]  (mu)  [left=of sig] {$\mu$};
+        \node[draw,diamond]  (z) [above=of sig, label=right:{$z = \mu + \sigma \odot \epsilon$}] {$z$};
+        \node[draw,circle]   (e) [right=of sig, label=right:{$\sim \mathcal{N}(0, 1)$}] {$\epsilon$};
+        \node[] (x) [above=of z] {$x$};
+        \node[red] (l1) [left=of x, xshift=0.75cm] {$\frac{\partial \mathcal{L}}{\partial x}$};
+        \node[red] (l2) [left=of z, xshift=0.75cm] {$\frac{\partial \mathcal{L}}{\partial z}$};
+        \node[red] (l3) [left=of mu, xshift=0.75cm] {$\frac{\partial \mathcal{L}}{\partial \mu}$};
+        \draw[->] (sig) to (z);
+        \draw[->] (mu) to (z);
+        \draw[->] (e) to (z);
+        \draw[->] (z) to (x);
+        \draw[red,->] (l1) to (l2);
+        \draw[red,->] (l2) to (l3);
+      \end{tikzpicture}
+      \caption{Reparameterized Version}
+    \end{figure}
+\end{frame}
+
 
 
 \begin{frame}
@@ -603,7 +644,7 @@ an objective function $\mathcal{L}$
 
 
 \begin{frame}
-  \frametitle{Other Meterics: Earth Mover's Distance}
+  \frametitle{Other Metrics: Earth Mover's Distance}
 
 \end{frame}
 
