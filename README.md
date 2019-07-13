@@ -16,10 +16,11 @@ Differentiable Probabilistic Models
 2. [Transforms](#transforms)
 3. [Mixture Models](#mixture-models)
 4. [Divergences](#divergences)
-5. [Adversarial Loss](#adversarial-loss)
-6. [ELBO](#elbo)
-7. [MCMC Methods](#mcmc-methods)
-8. [Notes](#notes)
+5. [Earth Mover's Distance](#emd)
+6. [Adversarial Loss](#adversarial-loss)
+7. [ELBO](#elbo)
+8. [MCMC Methods](#mcmc-methods)
+9. [Notes](#notes)
 
 ---
 
@@ -55,7 +56,7 @@ Differentiable Probabilistic Models
   21. ChiSquare
   22. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
   23. Generator
-      * Uses a latent distribution to sample inputs to a neural network to 
+      * Uses a latent distribution to sample inputs to a neural network to
       generate a distribution. Train with the adversarial losses.
 
 
@@ -99,9 +100,14 @@ Differentiable Probabilistic Models
   5. In Progress:
       * Total Variation
       * Pearson
+      * F-Divergence
       * Quadrature Methods for F-Divergence
 
-# 5. Adversarial Loss <a name="adversarial-loss"></a>
+# 5. Earth Mover's Distance for Discrete Distributions <a name="emd"></a>
+    * Linear Programming solution to 2 discrete distributions (histograms)
+    * Primal and Dual Formulation
+
+# 6. Adversarial Loss <a name="adversarial-loss"></a>
   1. [Adversarial Loss (aka GAN Loss)](https://arxiv.org/pdf/1711.10337.pdf)
       * Hides a discriminator under the loss function, and computes the adversarial loss
       * P Model -> Sampling (rsample)
@@ -113,16 +119,16 @@ Differentiable Probabilistic Models
           3. [WGAN Loss](https://arxiv.org/pdf/1701.07875.pdf)
           4. [LSGAN Loss](https://arxiv.org/pdf/1611.04076.pdf)
 
-# 6. ELBO <a name="elbo"></a>
+# 7. ELBO <a name="elbo"></a>
   1. Implements SVI with ELBO loss.
   2. Requires a Conditional Model to learn, in addition to P and Q models.
 
-# 7. MCMC Methods <a name="mcmc-methods"></a>
+# 8. MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
       * MCMC sampling method to generate samples from a unknown distribution
         * Requires distribution to have a log_prob method implemented.
 
-# 8. Notes <a name="notes"></a>
+# 9. Notes <a name="notes"></a>
   * Sampling must be done through a reparameterized version of the
     distribution to allow gradients to back-prop through samples.
   * Probabilities are in log form, for numerical stability.
