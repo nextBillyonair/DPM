@@ -645,15 +645,30 @@ an objective function $\mathcal{L}$
 
 
 \begin{frame}
-  \frametitle{Earth Mover's Distance (Wasserstein-1)}
+  \frametitle{Earth Mover's Distance (Wasserstein Distance)}
   \begin{equation*}
-    W\left(P, Q\right) = \inf_{\gamma \in \prod (P, Q)} \mathbb{E}_{(x, y) \sim \gamma} \big[ \parallel x - y \parallel \big]
+    \text{EMD}\left(P_r, P_{\theta}\right) = \inf_{\gamma \in \prod} \sum_{x, y} \overbrace{\parallel x - y \parallel}^{\ell_2 \text{Norm}} \underbrace{\gamma \left( x, y \right)}_{\text{Joint Marginal}}
   \end{equation*}
   \begin{itemize}
-    \item $\prod (P, Q)$ is the set of joint distributions $\gamma(x, y)$ whose marginals are $P$ and $Q$
-    \item $\gamma(x, y)$ indicated how much "mass" must be transported from $x$ to $y$ to transform $P$ to $Q$
-    \item EMD is the "cost" of the optimal transport plan
+    \item For discrete distributions $P_r$, $P_{\theta}$
+    \item $\gamma \left( x, y \right)$ states how we distribute the amount of "earth" from one place $x$ over the domain of $y$, or vice versa
+    \item EMD is the minimal total amount of work it takes to transform one distribution into the other
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Earth Mover's Distance (Wasserstein Distance)}
+  \begin{equation*}
+    \text{EMD}\left(P_r, P_{\theta}\right) = \inf_{\gamma \in \prod} \sum_{x, y} \parallel x - y \parallel  \gamma \left( x, y \right)
+  \end{equation*}
+  \begin{figure}
+    \centering
+    \includegraphics[height=4cm]{assets/transport_plan}
+  \end{figure}
+  \begin{figure}
+    \centering
+    \includegraphics[height=2cm]{assets/earth_move}
+  \end{figure}
 \end{frame}
 
 
@@ -676,12 +691,13 @@ an objective function $\mathcal{L}$
   \end{center}
 \end{frame}
 
+
 \begin{frame}
   \frametitle{Practical Uses of Divergences}
   \begin{itemize}
     \item Forward Kullback-Leibler
     \begin{itemize}
-      \item Maximum Likelihood Estimation (MSE, BCE)
+      \item Maximum Likelihood Estimation
       \begin{itemize}
         \item $\ell_2$: Mean Squared Error (Normally Distributed)
         \item $\ell_1$: Mean Absolute Error (Laplace Distributed)
@@ -744,11 +760,6 @@ an objective function $\mathcal{L}$
     \end{itemize}
   \end{enumerate}
 \end{frame}
-
-
-
-
-
 
 
 \end{document}
