@@ -1,7 +1,7 @@
 from dpm.visualize import (
     plot_stats, plot_models,
     plot_model, plot_hists,
-    plot_hist, plot_mcmc, 
+    plot_hist, plot_mcmc,
     plot_loss_function
 )
 from dpm.distributions import (
@@ -125,9 +125,9 @@ def test_mcmc_plot(dist, n_dims):
 losses = [
     forward_kl, reverse_kl, js_divergence, cross_entropy,
 ]
-@pytest.mark.parametrize("loss", losses) 
+@pytest.mark.parametrize("loss", losses)
 def test_plot_loss(loss):
-    plot_loss_function(loss)
+    plot_loss_function(loss, iterations=1, n_plot=5)
 
 
 
