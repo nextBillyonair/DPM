@@ -445,10 +445,11 @@ an objective function $\mathcal{L}$
   \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
                                           & $\mu - b \cdot \text{sgn}(u) \cdot \ln \big[ 1 - \vert u \vert \big]$ \\
                                           \\
-  $\text{Categorical}(\pi)$ & \xmark \\
+  $\text{Categorical}(\pi)$\footnotemark & \xmark \\
   \bottomrule
   \end{tabular}
   \end{center}
+  \footnotetext{Can be approximated with Gumbel Softmax}
 \end{frame}
 
 \begin{frame}
@@ -719,7 +720,7 @@ an objective function $\mathcal{L}$
   \bottomrule
   \end{tabular}
   \end{center}
-  \footnotetext[1]{Wasserstein GAN}
+  \footnotetext{Wasserstein GAN}
 \end{frame}
 
 
@@ -790,6 +791,28 @@ an objective function $\mathcal{L}$
       \item NUTS
     \end{itemize}
   \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Source Code}
+  \begin{itemize}
+    \item \href{https://github.com/nextBillyonair/DPM}{Repo for Differentiable Probabilistic Models}
+    \item \href{https://github.com/nextBillyonair/DPM/blob/master/Notebooks/DivergencePresentationExamples.ipynb}{Notebook to generate training examples}
+    \item \href{https://github.com/nextBillyonair/DPM/blob/master/Notebooks/EMD.ipynb}{Notebook for EMD}
+    \item \href{https://github.com/nextBillyonair/DPM/blob/master/Presentations/divergences/presentation.tex}{\LaTeX \, source code for presentation}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Further Reading}
+  \begin{itemize}
+    \item Machine Learning: A Probabilistic Perspective by Kevin Murphy
+    \item \href{http://rdipietro.github.io/friendly-intro-to-cross-entropy-loss/}{Friendly Introduction to Cross-Entropy Loss}
+    \item \href{https://arxiv.org/pdf/1611.01144.pdf}{Categorical Reparameterization with Gumbel Softmax}
+    \item \href{https://vincentherrmann.github.io/blog/wasserstein/}{Wasserstein GAN and the Kantorovich-Rubinstein Duality}
+    \item \href{https://arxiv.org/pdf/1711.10337.pdf}{Are all GAN's created Equal?}
+    \item \href{http://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html}{Tutorial on MCMC Methods}
+  \end{itemize}
 \end{frame}
 
 
