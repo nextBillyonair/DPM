@@ -53,14 +53,12 @@ def emd(P_r, P_t, dual=False):
         emd = -opt_res.fun
         f = opt_res.x[0:pr_len]
         g = opt_res.x[pr_len:]
-        print("dual EMD: ", emd)
         return emd, (f, g)
 
     # primal
     opt_res = linprog(c, A_eq=A, b_eq=b, bounds=[0, None])
     emd = opt_res.fun
     gamma = opt_res.x.reshape((pr_len, pt_len))
-    print("EMD: ", emd, "\n")
     return emd, gamma
 
 
