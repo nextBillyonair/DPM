@@ -647,11 +647,11 @@ an objective function $\mathcal{L}$
 \begin{frame}
   \frametitle{Earth Mover's Distance (Wasserstein Distance)}
   \begin{equation*}
-    \text{EMD}\left(P_r, P_{\theta}\right) = \inf_{\gamma \in \prod} \sum_{x, y} \overbrace{\parallel x - y \parallel}^{\ell_2 \text{Norm}} \underbrace{\gamma \left( x, y \right)}_{\text{Joint Marginal}}
+    % W(P, Q) = \inf_{\gamma \in \prod} \iint\limits_{p,q} \parallel p - q \parallel  \gamma \left( p, q \right) \, \mathrm{d} p \, \mathrm{d} q
+    \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{x,y} \overbrace{\Vert p - q \Vert}^{\ell_2 \text{Norm}} \underbrace{\gamma \left( p, q \right)}_{\text{Joint Marginal}}
   \end{equation*}
   \begin{itemize}
-    \item For discrete distributions $P_r$, $P_{\theta}$
-    \item $\gamma \left( x, y \right)$ states how we distribute the amount of "earth" from one place $x$ over the domain of $y$, or vice versa
+    \item $\gamma \left( p, q \right)$ states how we distribute the amount of "earth" from one place $p$ over the domain of $q$, or vice versa
     \item EMD is the minimal total amount of work it takes to transform one distribution into the other
   \end{itemize}
   \begin{columns}
@@ -673,16 +673,28 @@ an objective function $\mathcal{L}$
 \begin{frame}
   \frametitle{Earth Mover's Distance (Wasserstein Distance)}
   \begin{equation*}
-    \text{EMD}\left(P_r, P_{\theta}\right) = \inf_{\gamma \in \prod} \sum_{x, y} \parallel x - y \parallel  \gamma \left( x, y \right)
+    \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{x,y} \lVert p - q \lVert  \gamma \left( p, q \right)
+    % W(P, Q) = \inf_{\gamma \in \prod} \iint\limits_{p,q} \parallel p - q \parallel  \gamma \left( p, q \right) \, \mathrm{d} p \, \mathrm{d} q
   \end{equation*}
   \begin{figure}
     \centering
-    \includegraphics[height=3.75cm]{assets/transport_plan}
+    \includegraphics[height=3cm]{assets/transport_plan}
   \end{figure}
-  \begin{figure}
-    \centering
-    \includegraphics[height=2.2cm]{assets/earth_move}
-  \end{figure}
+  \vspace{-7mm}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=5cm]{assets/earth_move_1}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=5cm]{assets/earth_move_2}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 
@@ -700,6 +712,7 @@ an objective function $\mathcal{L}$
   Reverse KL       & \cmark &        & \cmark & \cmark \\
   JS Divergence    & \cmark & \cmark & \cmark & \cmark \\
   $f$-Divergence   & \cmark & \cmark & \cmark & \cmark \\
+  Wasserstein      &        & \cmark &        & \cmark \\
   \bottomrule
   \end{tabular}
   \end{center}
