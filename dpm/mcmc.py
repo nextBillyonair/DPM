@@ -3,10 +3,15 @@ from torch.distributions import MultivariateNormal
 
 
 def metropolis_hastings(true_model, epochs=10000, burn_in=1000,
-                        keep = 200, variance=None):
-    x_t = torch.zeros((1, true_model.n_dims))
+                        keep = 200, variance=None, random_init=True):
+    if random_init:
+        x_t = torch.randn((1, true_model.n_dims))
+    else:
+        x_t = torch.zeros((1, true_model.n_dims))
+
     if variance is None:
         variance = torch.eye(true_model.n_dims)
+
     t = 0
     samples = [x_t]
     while t < epochs:

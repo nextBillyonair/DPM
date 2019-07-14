@@ -17,6 +17,7 @@ def test_mcmc_2d():
 
     samples = metropolis_hastings(true, epochs=100, burn_in=10)
     samples = metropolis_hastings(true, epochs=100, burn_in=10, keep=5)
+    samples = metropolis_hastings(true, epochs=10, burn_in=1, keep=5, random_init=False)
 
 test_dists = [
     (Normal(0., 1.), 1),
@@ -59,3 +60,4 @@ test_dists = [
 @pytest.mark.parametrize("dist,n_dims", test_dists)
 def test_mcmc_complete(dist, n_dims):
     samples = metropolis_hastings(dist, epochs=10, burn_in=1, keep=5)
+    samples = metropolis_hastings(dist, epochs=3, burn_in=1, keep=1, random_init=False)
