@@ -395,7 +395,7 @@ an objective function $\mathcal{L}$
   \midrule
   $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \cdot \mathcal{N}(0, 1)$ \\
   \\
-  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \mathcal{U}(0, 1)$ \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
@@ -414,14 +414,14 @@ an objective function $\mathcal{L}$
   \midrule
   $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \cdot \mathcal{N}(0, 1)$ \\
   \\
-  $\mathcal{U}(a, b)$   &  $a + (b - a) \cdot \mathcal{U}(0, 1)$ \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
   $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
   \\
   \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
-                                          & $\mu - b \cdot \text{sgn}(u) \ln \big[ 1 - \vert u \vert \big]$ \\
+                                          & $\mu - b \cdot \text{sgn}(u) \cdot \ln \big[ 1 - \vert u \vert \big]$ \\
   \bottomrule
   \end{tabular}
   \end{center}
@@ -436,14 +436,14 @@ an objective function $\mathcal{L}$
   \midrule
   $\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \cdot \mathcal{N}(0, 1)$ \\
   \\
-  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \mathcal{U}(0, 1)$ \\
+  $\text{Uniform}(a, b)$   &  $a + (b - a) \cdot \text{Uniform}(0, 1)$ \\
   \\
   $\text{Exp}(\lambda)$   &  $\text{Exp}(1) / \lambda$ \\
   \\
   $\text{Cauchy}(\mu, \gamma)$   &  $\mu + \gamma \cdot \text{Cauchy}(0, 1)$ \\
   \\
   \multirow{2}{*}{$\text{Laplace}(\mu, b)$}  &  $u \sim \text{Uniform}(-1, 1)$ \\
-                                          & $\mu - b \cdot \text{sgn}(u) \ln \big[ 1 - \vert u \vert \big]$ \\
+                                          & $\mu - b \cdot \text{sgn}(u) \cdot \ln \big[ 1 - \vert u \vert \big]$ \\
                                           \\
   $\text{Categorical}(\pi)$ & \xmark \\
   \bottomrule
