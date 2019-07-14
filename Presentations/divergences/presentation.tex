@@ -194,6 +194,9 @@ an objective function $\mathcal{L}$
 
 \begin{frame}
   \frametitle{Digression: KL to Cross-Entropy}
+  \begin{equation*}
+    H(P, Q) = - \sum_{x \in \mathcal {X}} p(x) \log q(x)
+  \end{equation*}
   \begin{itemize}
     \item If we consider $P(y_i = 1 | x_i) = p_i$ and $Q(y_i = 1 | x_i) = \sigma(f_\theta (x_i))$:
   \end{itemize}
@@ -769,7 +772,7 @@ an objective function $\mathcal{L}$
 \begin{frame}
   \frametitle{Potpourri: Advanced Techniques}
   \begin{enumerate}
-    \item Transforms
+    \item Invertible Transforms
       \begin{itemize}
         \item Normalizing Flow Models
       \end{itemize}
@@ -778,7 +781,7 @@ an objective function $\mathcal{L}$
       \begin{itemize}
         \item ELBO
       \end{itemize}
-    \item Adversarial Training (GANs, GANs, GANs)
+    \item Adversarial Training (Forest of GANs)
     \item Markov Chain Monte Carlo
     \begin{itemize}
       \item Metropolis-Hastings
