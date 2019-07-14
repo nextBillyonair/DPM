@@ -13,7 +13,7 @@ def make_distance_matrix(pr_len, pt_len):
     return D
 
 
-def make_A_matrix(pr_len, pt_len):
+def make_constraint_matrix(pr_len, pt_len):
     n = pr_len * pt_len
     m = pr_len + pt_len
 
@@ -41,7 +41,7 @@ def emd(P_r, P_t, dual=False):
     pt_len = len(P_t)
 
     D = make_distance_matrix(pr_len, pt_len)
-    A = make_A_matrix(pr_len, pt_len)
+    A = make_constraint_matrix(pr_len, pt_len)
     b = np.concatenate((P_r, P_t), axis=0)
     c = D.flatten()
 
