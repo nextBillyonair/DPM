@@ -21,8 +21,8 @@ class AdversarialLoss(ABC, Module):
             prev_size = h
         layers.append(nn.Linear(prev_size, 1))
         self.discriminator_model = nn.Sequential(*layers)
-        self.d_optimizer = optim.RMSprop(self.discriminator_model.parameters(),
-                                         lr=lr)
+        self.optimizer = optim.RMSprop(self.discriminator_model.parameters(),
+                                       lr=lr)
 
     @abstractmethod
     def discriminator_loss(self, p_values, q_values):
@@ -33,7 +33,7 @@ class AdversarialLoss(ABC, Module):
         raise NotImplementedError()
 
     def forward(self, p_model, q_model, batch_size=64):
-        self.d_optimizer.zero_grad()
+        self.optimizer.zero_grad()
 
         p_samples = p_model.sample(batch_size)
         p_values = self.discriminator_model(p_samples.detach())
@@ -43,7 +43,7 @@ class AdversarialLoss(ABC, Module):
 
         d_loss = self.discriminator_loss(p_values, q_values)
         d_loss.backward()
-        self.d_optimizer.step()
+        self.optimizer.step()
 
         q_samples = q_model.sample(batch_size)
         q_values = self.discriminator_model(q_samples)
