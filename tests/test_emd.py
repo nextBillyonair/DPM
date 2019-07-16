@@ -1,4 +1,5 @@
 from dpm.emd import emd
+from dpm.distributions import Normal
 import numpy as np
 
 
@@ -14,7 +15,7 @@ def test_emd():
     assert gamma_primal.shape == (len(P_r), len(P_t))
 
     # valid marginal
-    assert gamma_primal.sum() == 1.0
+    assert (gamma_primal.sum() - 1.0 < 1e-5)
     # assert constraints followed
     assert (gamma_primal.sum(0) - P_t < 1e-5).all()
     assert (gamma_primal.sum(1) - P_r < 1e-5).all()
@@ -26,7 +27,17 @@ def test_emd():
     assert f.shape == (len(P_r),)
     assert g.shape == (len(P_t),)
 
-    assert np.abs(f.sum()) == 1
-    assert np.abs(g.sum()) == 1
+    assert (np.abs(f.sum()) - 1 < 1e-5)
+    assert (np.abs(g.sum()) - 1 < 1e-5)
 
-    assert (f + g).sum() == 0
+    assert ((f + g).sum() - 0 < 1e-5)
+
+
+def test_emd_distribution():
+    p_model = Normal(0., 1.)
+    q_model = Normal(-4., 3.)
+
+    emd_primal, gamma_primal = emd(p_model, q_model, batch_size=1024, n_bins=20)
+    emd_dual, (f, g) = emd(p_model, q_model, dual=True, batch_size=1024, n_bins=20)
+
+    assert gamma_primal.sum() - 1. < 1e-2
