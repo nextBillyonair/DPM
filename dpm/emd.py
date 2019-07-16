@@ -53,7 +53,6 @@ def model_to_bins(p_model, q_model, batch_size=64, n_bins=10):
 def emd(p_model, q_model, batch_size=64, dual=False, n_bins=10):
 
     if isinstance(p_model, Distribution) and isinstance(q_model, Distribution):
-        print('HI')
         p_model, q_model = model_to_bins(p_model, q_model, batch_size, n_bins)
 
     p_len = len(p_model)
