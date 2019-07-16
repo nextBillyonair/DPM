@@ -48,7 +48,6 @@ def model_to_bins(p_model, q_model, batch_size=64, n_bins=10):
 
 
 # P, Q must be discrete histograms
-# Q -> P
 # rows -> p_len, cols ->q_len
 def emd(p_model, q_model, batch_size=64, dual=False, n_bins=10):
 

@@ -1,8 +1,12 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from matplotlib import cm
+import matplotlib
 import seaborn as sns
 from dpm.distributions import Uniform, Normal
+from dpm.emd import make_distance_matrix
 from torch.nn.functional import softplus
 import torch
 plt.style.use('seaborn-darkgrid')
@@ -223,6 +227,75 @@ def plot_loss_function(loss, q_ref=Normal, p_model=Normal(), n_plot=100, batch_s
     plt.colorbar();
     plt.xlabel(r'$\mu$')
     plt.ylabel(r'$\sigma$')
+
+
+
+def get_emd_colormap(vmin=0, vmax=10, cmap=cm.rainbow):
+    cNorm = colors.Normalize(vmin=vmin, vmax=vmax)
+    return cm.ScalarMappable(norm=cNorm, cmap=cmap)
+
+
+def plot_emd_hist(hist, title=r"", ylim=0.25, cmap=cm.rainbow, colorMap=None):
+    if colorMap is None:
+        cNorm = colors.Normalize(vmin=0, vmax=len(hist))
+        colorMap = cm.ScalarMappable(norm=cNorm, cmap=cm.rainbow)
+
+    for i in range(len(hist)):
+    	plt.bar(i, hist[i], 1, color=colorMap.to_rgba(i), edgecolor="white", linewidth=1)
+
+    plt.title(title, y=-0.2, x=0.5, fontsize=20)
+    plt.axis('off')
+    plt.ylim(0, ylim)
+
+
+def plot_emd_gamma(gamma):
+    D = make_distance_matrix(gamma.shape[0], gamma.shape[1])
+    fig, ax = plt.subplots(1, 2)
+    fig.set_figheight(15)
+    fig.set_figwidth(15)
+
+    ax[0].imshow(gamma, cmap=cm.gist_heat, interpolation='nearest')
+    ax[0].axis('off')
+    ax[0].set_title(r"$\mathbf{\Gamma}$", y=-0.13, fontsize=40)
+    ax[1].imshow(D, cmap=cm.gist_heat, interpolation='nearest')
+    ax[1].set_title(r"$\mathbf{D}$", y=-0.13, fontsize=40)
+    ax[1].axis('off')
+
+
+def plot_emd_partition(gamma, colorMap, titles=[r"", r""], ylim=0.25):
+    fig, ax = plt.subplots(2, 1)
+    fig.set_figheight(6)
+    fig.set_figwidth(10)
+
+    pr_len = gamma.shape[0]
+    pt_len = gamma.shape[1]
+
+    r = range(pr_len)
+    current_bottom = np.zeros(pr_len)
+
+    for i in range(pt_len).__reversed__():
+    	ax[0].bar(r, gamma[r, i], 1, color=colorMap.to_rgba(r), bottom=current_bottom,
+                edgecolor="white", linewidth=1)
+    	current_bottom = current_bottom + gamma[r, i]
+
+    ax[0].axis('off')
+    ax[0].set_ylim(0, ylim)
+    ax[0].set_title(titles[0], y=-0.25, x=0.5, fontsize=20)
+
+    current_bottom = np.zeros(pt_len)
+    r = range(pt_len)
+
+    for i in range(pr_len):
+    	ax[1].bar(r, gamma[i, r], 1, color=colorMap.to_rgba(i), bottom=current_bottom,
+                edgecolor="white", linewidth=1)
+    	current_bottom = current_bottom + gamma[i, r]
+
+    ax[1].axis('off')
+    ax[1].set_ylim(0, ylim)
+    ax[1].set_title(titles[1], y=-0.25, x=0.5, fontsize=20)
+
+
+
 
 
 # EOF
