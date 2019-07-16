@@ -146,7 +146,7 @@ an objective function $\mathcal{L}$
       \pause
       =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right] \\
       \pause
-      \approx& \frac{1}{N}\sum_{i=1}^{N} \log \left( \frac{p(x_i)}{q(x_i)} \right) \quad x_i \sim P \vert_{i=1}^{N}
+      \approx& \frac{1}{N}\sum_{i=1}^{N} \log \left( \frac{p(x_i)}{q(x_i)} \right) \quad x_i \sim P
       \end{aligned}
     \end{equation*}
 \end{frame}
@@ -158,7 +158,7 @@ an objective function $\mathcal{L}$
       \begin{aligned}
       D_{KL} (P \parallel Q) =& \int_{-\infty}^{\infty} p(x)\log \left({\frac {p(x)}{q(x)}}\right)\,dx \\
       =& \; \mathbb{E}_{x \sim P} \left[ \log \left( \frac{p(x)}{q(x)} \right) \right] \\
-      \approx& \frac{1}{N}\sum_{i=1}^{N} \log \left( \frac{p(x_i)}{q(x_i)} \right) \quad x_i \sim P \vert_{i=1}^{N}
+      \approx& \frac{1}{N}\sum_{i=1}^{N} \log \left( \frac{p(x_i)}{q(x_i)} \right) \quad x_i \sim P
       \end{aligned}
     \end{equation*}
     \begin{algorithm}[H]
@@ -652,7 +652,7 @@ an objective function $\mathcal{L}$
   \frametitle{Earth Mover's Distance (Wasserstein Distance)}
   \begin{equation*}
     % W(P, Q) = \inf_{\gamma \in \prod} \iint\limits_{p,q} \parallel p - q \parallel  \gamma \left( p, q \right) \, \mathrm{d} p \, \mathrm{d} q
-    \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{x,y} \overbrace{\Vert p - q \Vert}^{\ell_2 \text{Norm}} \underbrace{\gamma \left( p, q \right)}_{\text{Joint Marginal}}
+    \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{x,y} \overbrace{\Vert p - q \Vert}^{\ell_2 \; \text{Norm}} \underbrace{\gamma \left( p, q \right)}_{\text{Joint Marginal}}
   \end{equation*}
   \begin{itemize}
     \item $\gamma \left( p, q \right)$ states how we distribute the amount of "earth" from one place $p$ over the domain of $q$, or vice versa
@@ -806,7 +806,7 @@ an objective function $\mathcal{L}$
 \begin{frame}
   \frametitle{Further Reading}
   \begin{itemize}
-    \item Machine Learning: A Probabilistic Perspective by Kevin Murphy
+    \item \href{https://www.amazon.com/Machine-Learning-Probabilistic-Perspective-Computation/dp/0262018020/ref=sr_1_1?crid=H86XX87O0ID8&keywords=murphy+machine+learning&qid=1563237149&s=gateway&sprefix=murphy+machine%2Caps%2C120&sr=8-1}{Machine Learning: A Probabilistic Perspective by Kevin Murphy}
     \item \href{http://rdipietro.github.io/friendly-intro-to-cross-entropy-loss/}{Friendly Introduction to Cross-Entropy Loss}
     \item \href{https://arxiv.org/pdf/1611.01144.pdf}{Categorical Reparameterization with Gumbel Softmax}
     \item \href{https://vincentherrmann.github.io/blog/wasserstein/}{Wasserstein GAN and the Kantorovich-Rubinstein Duality}
