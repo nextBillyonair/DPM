@@ -2,8 +2,10 @@ from dpm.visualize import (
     plot_stats, plot_models,
     plot_model, plot_hists,
     plot_hist, plot_mcmc,
-    plot_loss_function
+    plot_loss_function, plot_emd_partition, plot_emd_gamma,
+    plot_emd_hist, get_emd_colormap
 )
+from dpm.emd import emd, make_distance_matrix
 from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
     Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
@@ -16,6 +18,7 @@ from dpm.train import train
 from dpm.divergences import (
     forward_kl, reverse_kl, js_divergence, cross_entropy
 )
+import numpy as np
 import matplotlib.pyplot as plt
 import pytest
 
@@ -130,6 +133,21 @@ def test_plot_loss(loss):
     plot_loss_function(loss, batch_size=16, n_plot=5)
 
 
+def test_emd_plots_discrete():
+    Q = np.array([12,7,4,1,19,14,9,6,3,2])
+    P = np.array([1,5,11,17,13,9,6,4,3,2])
+
+    Q = Q / np.sum(Q)
+    P = P / np.sum(P)
+
+    colormap = get_emd_colormap(vmax=max(len(P), len(Q)))
+    plot_emd_hist(Q, title=r"Q", colorMap=colormap)
+    plot_emd_hist(Q, title=r"Q")
+    plot_emd_hist(P, title=r"P", colorMap=colormap)
+    emd_primal, gamma_primal = emd(Q, P)
+    plot_emd_gamma(gamma_primal)
+    plot_emd_partition(gamma_primal, colormap)
+    plot_emd_partition(gamma_primal.T, colormap)
 
 
 

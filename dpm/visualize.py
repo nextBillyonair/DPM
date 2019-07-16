@@ -237,8 +237,7 @@ def get_emd_colormap(vmin=0, vmax=10, cmap=cm.rainbow):
 
 def plot_emd_hist(hist, title=r"", ylim=0.25, cmap=cm.rainbow, colorMap=None):
     if colorMap is None:
-        cNorm = colors.Normalize(vmin=0, vmax=len(hist))
-        colorMap = cm.ScalarMappable(norm=cNorm, cmap=cm.rainbow)
+        colorMap = get_emd_colormap(vmin=0, vmax=len(hist), cmap=cm.rainbow)
 
     for i in range(len(hist)):
     	plt.bar(i, hist[i], 1, color=colorMap.to_rgba(i), edgecolor="white", linewidth=1)
