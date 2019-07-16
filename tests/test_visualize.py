@@ -127,7 +127,7 @@ losses = [
 ]
 @pytest.mark.parametrize("loss", losses)
 def test_plot_loss(loss):
-    plot_loss_function(loss, iterations=1, n_plot=5)
+    plot_loss_function(loss, batch_size=16, n_plot=5)
 
 
 
