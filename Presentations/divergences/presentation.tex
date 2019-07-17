@@ -652,7 +652,7 @@ an objective function $\mathcal{L}$
   \frametitle{Earth Mover's Distance (Wasserstein Distance)}
   \begin{equation*}
     % W(P, Q) = \inf_{\gamma \in \prod} \iint\limits_{p,q} \parallel p - q \parallel  \gamma \left( p, q \right) \, \mathrm{d} p \, \mathrm{d} q
-    \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{x,y} \overbrace{\Vert p - q \Vert}^{\ell_2 \; \text{Norm}} \underbrace{\gamma \left( p, q \right)}_{\text{Joint Marginal}}
+    \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{p,q} \overbrace{\Vert p - q \Vert}^{\ell_2 \; \text{Norm}} \underbrace{\gamma \left( p, q \right)}_{\text{Joint Marginal}}
   \end{equation*}
   \begin{itemize}
     \item $\gamma \left( p, q \right)$ states how we distribute the amount of "earth" from one place $p$ over the domain of $q$, or vice versa
@@ -677,7 +677,7 @@ an objective function $\mathcal{L}$
 \begin{frame}
   \frametitle{Earth Mover's Distance (Wasserstein Distance)}
   \begin{equation*}
-    \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{x,y} \lVert p - q \lVert  \gamma \left( p, q \right)
+    \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{p,q} \lVert p - q \lVert  \gamma \left( p, q \right)
     % W(P, Q) = \inf_{\gamma \in \prod} \iint\limits_{p,q} \parallel p - q \parallel  \gamma \left( p, q \right) \, \mathrm{d} p \, \mathrm{d} q
   \end{equation*}
   \begin{figure}
