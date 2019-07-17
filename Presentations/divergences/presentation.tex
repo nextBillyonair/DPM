@@ -655,7 +655,7 @@ an objective function $\mathcal{L}$
     \text{EMD}\left(P, Q\right) = \inf_{\gamma \in \prod}  \, \sum\limits_{p,q} \overbrace{\Vert p - q \Vert}^{\ell_2 \; \text{Norm}} \underbrace{\gamma \left( p, q \right)}_{\text{Joint Marginal}}
   \end{equation*}
   \begin{itemize}
-    \item $\gamma \left( p, q \right)$ states how we distribute the amount of "earth" from one place $p$ over the domain of $q$, or vice versa
+    \item $\gamma \left( p, q \right)$ states how we distribute the amount of "earth" from one place $q$ over the domain of $p$, or vice versa
     \item EMD is the minimal total amount of work it takes to transform one distribution into the other
   \end{itemize}
   \begin{columns}
@@ -715,7 +715,7 @@ an objective function $\mathcal{L}$
   Forward KL       & \cmark & \cmark & \cmark &        \\
   Reverse KL       & \cmark &        & \cmark & \cmark \\
   JS Divergence    & \cmark & \cmark & \cmark & \cmark \\
-  $f$-Divergence   & \cmark & \cmark & \cmark & \cmark \\
+  $f$-Divergence   & \cmark &        & \cmark & \cmark \\
   Wasserstein\footnotemark      &        & \cmark &        & \cmark \\
   \bottomrule
   \end{tabular}
