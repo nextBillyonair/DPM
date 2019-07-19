@@ -7,6 +7,7 @@ import numpy as np
 import math
 
 from dpm.transforms import Logit, Affine
+import dpm.monte_carlo as monte_carlo
 
 class Distribution(ABC, Module):
 
@@ -22,7 +23,7 @@ class Distribution(ABC, Module):
         raise NotImplementedError("sample method is not implemented")
 
     def entropy(self, batch_size=10000):
-        return -self.log_prob(self.sample(batch_size)).mean()
+        return -monte_carlo.monte_carlo(self.log_prob, self, batch_size)
 
     def cross_entropy(self, model, batch_size=10000):
         return -model.log_prob(self.sample(batch_size)).mean()
@@ -31,6 +32,18 @@ class Distribution(ABC, Module):
         inv = (value.exp() - 1.0).log()
         inv[value > threshold] = value[value > threshold]
         return inv
+
+    def cdf(self, c, batch_size=10000):
+        return monte_carlo.cdf(self, c, batch_size)
+
+    def expectation(self, batch_size=10000):
+        return monte_carlo.expectation(self, batch_size)
+
+    def variance(self, batch_size=10000):
+        return monte_carlo.variance(self, batch_size)
+
+    def median(self, batch_size=10000):
+        return monte_carlo.median(self, batch_size)
 
 
 class Normal(Distribution):
@@ -697,7 +710,7 @@ class Generator(Distribution):
     def get_parameters(self):
         return {'latent':self.latent_distribution.get_parameters()}
 
-        
+
 # Uses dist + transforms
 class TransformDistribution(Distribution):
 
@@ -815,7 +828,7 @@ class Logistic(Distribution):
     @property
     def scale(self):
         return softplus(self._scale)
-    
+
     def entropy(self, batch_size=None):
         return self.scale.log() + 2.
 
