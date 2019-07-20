@@ -129,8 +129,10 @@ Differentiable Probabilistic Models
   1. Expectation -> average of samples
   1. Variance -> average of squared difference between samples and mean
   1. Median -> median of samples
-  1. CDF -> proprotion of samples <= c
+  1. CDF -> proportion of samples <= c
   1. Entropy -> average negative log_prob of samples
+  1. Max -> approximate Maximum limit of model
+  1. Min -> approximate Minimum limit of model
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
