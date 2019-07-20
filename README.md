@@ -130,12 +130,12 @@ Differentiable Probabilistic Models
 
 # Monte Carlo Approximations <a name="monte_carlo"></a>
   1. Monte Carlo Approximation: Expectation of F(X) wrt X ~ Model
-      * Samples from X, then averages F(x_i), see below for specific examples
-  1. Expectation
-  1. Variance
-  1. Median
-  1. CDF
-  1. Entropy
+      * x_i sampled from Model, then averages F(x_i), see below for specific examples
+  1. Expectation -> average of samples
+  1. Variance -> average of squared difference between samples and mean
+  1. Median -> median of samples
+  1. CDF -> proprotion of samples <= c
+  1. Entropy -> average negative log_prob of samples
 
 # Notes <a name="notes"></a>
   * Sampling must be done through a reparameterized version of the
