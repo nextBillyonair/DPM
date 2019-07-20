@@ -1,4 +1,3 @@
-import torch
 
 # E_M [f(x)]
 def monte_carlo(function, model, batch_size=1024):
