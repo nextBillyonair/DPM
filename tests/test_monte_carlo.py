@@ -1,6 +1,6 @@
 import dpm.monte_carlo as monte_carlo
 from dpm.distributions import (
-    Normal, Beta, Exponential, Gamma
+    Normal, Beta, Exponential, Gamma, Uniform
 )
 import pytest
 
@@ -66,6 +66,15 @@ test_entropy = [
 @pytest.mark.parametrize("dist", test_entropy)
 def test_monte_carlo_entropy(dist):
     assert dist.entropy(15000) - monte_carlo.entropy(dist, 15000) < 0.2
+
+
+def test_max_min():
+    model = Uniform(-1., 5.)
+    assert monte_carlo.max(model) - 5. < 1e-2
+    assert monte_carlo.min(model) + 1. < 1e-2
+
+
+
 
 
 

@@ -26,4 +26,11 @@ def entropy(model, batch_size=1024):
     return -monte_carlo(model.log_prob, model, batch_size)
 
 
+def max(model, batch_size=1024):
+    return model.sample(batch_size).max()
+
+
+def min(model, batch_size=1024):
+    return model.sample(batch_size).min()
+
 # EOF
