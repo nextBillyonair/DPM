@@ -19,8 +19,8 @@ Differentiable Probabilistic Models
 1. [Earth Mover's Distance](#emd)
 1. [Adversarial Loss](#adversarial-loss)
 1. [ELBO](#elbo)
-1. [MCMC Methods](#mcmc-methods)
 1. [Monte Carlo Approximations](#monte_carlo)
+1. [MCMC Methods](#mcmc-methods)
 1. [Notes](#notes)
 
 ---
@@ -123,11 +123,6 @@ Differentiable Probabilistic Models
   1. Implements SVI with ELBO loss.
   1. Requires a Conditional Model to learn, in addition to P and Q models.
 
-# MCMC Methods <a name="mcmc-methods"></a>
-  1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
-      * MCMC sampling method to generate samples from a unknown distribution
-        * Requires distribution to have a log_prob method implemented.
-
 # Monte Carlo Approximations <a name="monte_carlo"></a>
   1. Monte Carlo Approximation: Expectation of F(X) wrt X ~ Model
       * x_i sampled from Model, then averages F(x_i), see below for specific examples
@@ -136,6 +131,11 @@ Differentiable Probabilistic Models
   1. Median -> median of samples
   1. CDF -> proprotion of samples <= c
   1. Entropy -> average negative log_prob of samples
+
+# MCMC Methods <a name="mcmc-methods"></a>
+  1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
+      * MCMC sampling method to generate samples from a unknown distribution
+        * Requires distribution to have a log_prob method implemented.
 
 # Notes <a name="notes"></a>
   * Sampling must be done through a reparameterized version of the
