@@ -22,4 +22,8 @@ def cdf(model, c, batch_size=1024):
     return (model.sample(batch_size) <= c).sum().float().div(batch_size)
 
 
+def entropy(model, batch_size=1024):
+    return -monte_carlo(model.log_prob, model, batch_size)
+
+
 # EOF

@@ -20,6 +20,7 @@ Differentiable Probabilistic Models
 1. [Adversarial Loss](#adversarial-loss)
 1. [ELBO](#elbo)
 1. [MCMC Methods](#mcmc-methods)
+1. [Monte Carlo Approximations](#monte_carlo)
 1. [Notes](#notes)
 
 ---
@@ -126,6 +127,15 @@ Differentiable Probabilistic Models
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
       * MCMC sampling method to generate samples from a unknown distribution
         * Requires distribution to have a log_prob method implemented.
+
+# Monte Carlo Approximations <a name="monte_carlo"></a>
+  1. Monte Carlo Approximation: Expectation of F(X) wrt X ~ Model
+      * Samples from X, then averages F(x_i), see below for specific examples
+  1. Expectation
+  1. Variance
+  1. Median
+  1. CDF
+  1. Entropy
 
 # Notes <a name="notes"></a>
   * Sampling must be done through a reparameterized version of the

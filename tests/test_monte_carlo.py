@@ -28,8 +28,8 @@ test_var = [
 
 @pytest.mark.parametrize("dist,value", test_var)
 def test_monte_carlo_variance(dist, value):
-    assert monte_carlo.variance(dist, 15000) - value < 1e-1
-    assert dist.variance(15000) - value < 1e-1
+    assert monte_carlo.variance(dist, 15000) - value < 0.2
+    assert dist.variance(15000) - value < 0.2
 
 
 test_median = [
@@ -41,8 +41,8 @@ test_median = [
 
 @pytest.mark.parametrize("dist,value", test_median)
 def test_monte_carlo_median(dist, value):
-    assert monte_carlo.median(dist, 15000) - value < 1e-1
-    assert dist.median(15000) - value < 1e-1
+    assert monte_carlo.median(dist, 15000) - value < 0.2
+    assert dist.median(15000) - value < 0.2
 
 
 
@@ -55,6 +55,17 @@ def test_monte_carlo_cdf():
         assert monte_carlo.cdf(dist, c, 10000) - p < 1e-2
         assert dist.cdf(c, 10000) - p < 1e-2
 
+test_entropy = [
+    Normal(0., 1.),
+    Normal(-7., 1.),
+    Exponential(4.),
+    Beta(0.5, 0.5),
+    Gamma(0.5, 0.5)
+]
+
+@pytest.mark.parametrize("dist", test_entropy)
+def test_monte_carlo_entropy(dist):
+    assert dist.entropy(15000) - monte_carlo.entropy(dist, 15000) < 0.2
 
 
 
