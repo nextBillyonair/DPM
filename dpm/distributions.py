@@ -25,6 +25,9 @@ class Distribution(ABC, Module):
     def entropy(self, batch_size=10000):
         return -monte_carlo.monte_carlo(self.log_prob, self, batch_size)
 
+    def perplexity(self, batch_size=10000):
+        return self.entropy(batch_size).exp()
+
     def cross_entropy(self, model, batch_size=10000):
         return -model.log_prob(self.sample(batch_size)).mean()
 
