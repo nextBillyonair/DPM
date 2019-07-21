@@ -70,10 +70,18 @@ def test_monte_carlo_entropy(dist):
 
 def test_max_min():
     model = Uniform(-1., 5.)
-    assert monte_carlo.max(model) - 5. < 1e-2
-    assert monte_carlo.min(model) + 1. < 1e-2
+    assert monte_carlo.max(model) - 5. < 1e-1
+    assert monte_carlo.min(model) + 1. < 1e-1
 
 
+def test_rejection_sampling():
+    samples = monte_carlo.rejection_sampling(Normal(-7.3, 3.),
+                                Normal(-7.3, 3., learnable=False),
+                                10,
+                                batch_size=100000)
+
+    assert samples.mean() + 7.3 < 0.2
+    assert samples.var() - 3. < 0.2
 
 
 

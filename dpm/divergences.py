@@ -3,12 +3,12 @@ from torch.nn import Module
 from abc import abstractmethod, ABC
 from dpm.mixture_models import MixtureModel
 
-def perplexity(p_model, q_model, batch_size=64):
-    return cross_entropy(p_model, q_model, batch_size).exp()
-
-
 def cross_entropy(p_model, q_model, batch_size=64):
     return p_model.cross_entropy(q_model, batch_size)
+
+
+def perplexity(p_model, q_model, batch_size=64):
+    return cross_entropy(p_model, q_model, batch_size).exp()
 
 
 def forward_kl(p_model, q_model, batch_size=64):

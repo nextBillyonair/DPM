@@ -1,7 +1,7 @@
 import torch
 from dpm.divergences import (
-    cross_entropy, forward_kl, reverse_kl,
-    js_divergence
+    cross_entropy, perplexity, forward_kl,
+    reverse_kl, js_divergence
 )
 from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
@@ -65,13 +65,16 @@ test_dists = [
 def test_train(p_model, q_model):
 
     train(p_model, q_model, cross_entropy, epochs=3)
+    train(p_model, q_model, perplexity, epochs=3)
     train(p_model, q_model, forward_kl, epochs=3)
     train(p_model, q_model, reverse_kl, epochs=3)
     train(p_model, q_model, js_divergence, epochs=3)
 
 @pytest.mark.parametrize("p_model,q_model", test_dists)
 def test_train_with_gradient_clipping(p_model, q_model):
+
     train(p_model, q_model, cross_entropy, epochs=3, clip_gradients=1.)
+    train(p_model, q_model, perplexity, epochs=3, clip_gradients=1.)
     train(p_model, q_model, forward_kl, epochs=3, clip_gradients=1.)
     train(p_model, q_model, reverse_kl, epochs=3, clip_gradients=1.)
     train(p_model, q_model, js_divergence, epochs=3, clip_gradients=1.)

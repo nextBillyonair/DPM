@@ -1,7 +1,7 @@
 import torch
 from dpm.divergences import (
-    cross_entropy, forward_kl, reverse_kl,
-    js_divergence
+    cross_entropy, perplexity, forward_kl,
+    reverse_kl, js_divergence
 )
 from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
@@ -63,6 +63,9 @@ test_dists = [
 def test_divergences(p_model, q_model):
     cross_entropy(p_model, q_model, batch_size=1)
     cross_entropy(p_model, q_model, batch_size=64)
+
+    perplexity(p_model, q_model, batch_size=1)
+    perplexity(p_model, q_model, batch_size=64)
 
     forward_kl(p_model, q_model, batch_size=1)
     forward_kl(p_model, q_model, batch_size=64)

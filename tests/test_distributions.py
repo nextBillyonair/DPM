@@ -36,6 +36,7 @@ def test_normal_dist(dist, n_dims):
 
     dist.get_parameters()
     dist.entropy()
+    dist.perplexity()
 
 
 
