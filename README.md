@@ -89,6 +89,7 @@ Differentiable Probabilistic Models
 
 # Divergences <a name="divergences"></a>
   1. [Cross Entropy](https://en.wikipedia.org/wiki/Cross_entropy)
+  1. [Perplexity](https://en.wikipedia.org/wiki/Perplexity)
   1. [Forward KL Divergence](https://en.wikipedia.org/wiki/Kullback–Leibler_divergence)
       * P Model -> Sampling (rsample)
       * Q Model -> PDF Function (log_prob)
@@ -104,9 +105,9 @@ Differentiable Probabilistic Models
       * F-Divergence
       * Quadrature Methods for F-Divergence
 
-# Earth Mover's Distance for Discrete Distributions <a name="emd"></a>
-    * Linear Programming solution to 2 discrete distributions (histograms)
-    * Primal and Dual Formulation
+# [Earth Mover's Distance](https://en.wikipedia.org/wiki/Earth_mover%27s_distance) for Discrete Distributions <a name="emd"></a>
+   1. Linear Programming solution to 2 discrete distributions (histograms)
+   1. Primal and Dual Formulation
 
 # Adversarial Loss <a name="adversarial-loss"></a>
   1. [Adversarial Loss (aka GAN Loss)](https://arxiv.org/pdf/1711.10337.pdf)
@@ -124,7 +125,7 @@ Differentiable Probabilistic Models
   1. Requires a Conditional Model to learn, in addition to P and Q models.
 
 # Monte Carlo Approximations <a name="monte_carlo"></a>
-  1. Monte Carlo Approximation: Expectation of F(X) wrt X ~ Model
+  1. [Monte Carlo Approximation:](https://en.wikipedia.org/wiki/Monte_Carlo_method) Expectation of F(X) wrt X ~ Model
       * x_i sampled from Model, then averages F(x_i), see below for specific examples
   1. Expectation -> average of samples
   1. Variance -> average of squared difference between samples and mean
@@ -133,7 +134,7 @@ Differentiable Probabilistic Models
   1. Entropy -> average negative log_prob of samples
   1. Max -> approximate Maximum limit of model
   1. Min -> approximate Minimum limit of model
-  1. Rejection Sampling - given a model, proposal model, and M, attempt to create samples similar to model via sampling the proposal model.
+  1. [Rejection Sampling](https://en.wikipedia.org/wiki/Rejection_sampling) -> given a model, proposal model, and M, attempt to create samples similar to model via sampling the proposal model.
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
