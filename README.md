@@ -133,6 +133,7 @@ Differentiable Probabilistic Models
   1. Entropy -> average negative log_prob of samples
   1. Max -> approximate Maximum limit of model
   1. Min -> approximate Minimum limit of model
+  1. Rejection Sampling - given a model, proposal model, and M, attempt to create samples similar to model via sampling the proposal model.
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)

@@ -19,7 +19,7 @@ def metropolis_hastings(true_model, epochs=10000, burn_in=1000,
         x_prime = model.sample((1,))
         p_prob = true_model.log_prob(x_prime) - true_model.log_prob(x_t)
         A = min(0, p_prob)
-        u = torch.log(torch.rand(1))
+        u = torch.rand(1).log()
         if u <= A :
             x_t = x_prime
             if t >= burn_in:
