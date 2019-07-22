@@ -40,6 +40,12 @@ def min(model, batch_size=1024):
 
 # SAMPLING
 
+# function is the inverse CDF
+def inverse_sampling(function, batch_size=10000, n_dims=1):
+    U = torch.rand((batch_size, n_dims))
+    return function(U)
+
+
 def rejection_sampling(model, test_model, M, batch_size=10000):
     if M <= 1: raise ValueError(f'Error: M should be larger than 1; got {M}')
     model_samples = test_model.sample(batch_size)
