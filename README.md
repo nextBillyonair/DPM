@@ -19,7 +19,8 @@ Differentiable Probabilistic Models
 1. [Earth Mover's Distance](#emd)
 1. [Adversarial Loss](#adversarial-loss)
 1. [ELBO](#elbo)
-1. [Monte Carlo Approximations](#monte_carlo)
+1. [Monte Carlo Approximations](#monte_carlo_approximation)
+1. [Monte Carlo Sampling](#monte_carlo_sampling)
 1. [MCMC Methods](#mcmc-methods)
 1. [Notes](#notes)
 
@@ -124,7 +125,7 @@ Differentiable Probabilistic Models
   1. Implements SVI with ELBO loss.
   1. Requires a Conditional Model to learn, in addition to P and Q models.
 
-# Monte Carlo Approximations <a name="monte_carlo"></a>
+# Monte Carlo Approximations <a name="monte_carlo_approximation"></a>
   1. [Monte Carlo Approximation:](https://en.wikipedia.org/wiki/Monte_Carlo_method) Expectation of F(X) wrt X ~ Model
       * x_i sampled from Model, then averages F(x_i), see below for specific examples
   1. Expectation -> average of samples
@@ -134,7 +135,14 @@ Differentiable Probabilistic Models
   1. Entropy -> average negative log_prob of samples
   1. Max -> approximate Maximum limit of model
   1. Min -> approximate Minimum limit of model
+
+# Monte Carlo Sampling <a name="monte_carlo_sampling"></a>
   1. [Rejection Sampling](https://en.wikipedia.org/wiki/Rejection_sampling) -> given a model, proposal model, and M, attempt to create samples similar to model via sampling the proposal model.
+  1. Box Muller -> Generates a Standard Normal
+  1. Marsaglia-Bray -> Generates a Standard Normal
+  1. TESTING:
+      1. Beta Sampling
+      1. Double Exponential Sampling
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
