@@ -70,7 +70,7 @@ def marsaglia_bray(batch_size=10000, n_dims=1):
     Z1 = Z1[X <= 1].reshape(-1, n_dims)
     Z2 = Z2[X <= 1].reshape(-1, n_dims)
     return torch.cat((Z1, Z2))
-    
+
 
 # possible broken for values, dowsn't work for n_dims > 2
 def beta_sampling(alpha, beta, batch_size=10000, n_dims=1):
@@ -78,7 +78,7 @@ def beta_sampling(alpha, beta, batch_size=10000, n_dims=1):
     c = (alpha - 1) / (alpha + beta - 2)
     U1 = torch.rand((batch_size, n_dims))
     U2 = torch.rand((batch_size, 1))
-    accepted = c * U2 <= f.log_prob(U1)
+    accepted = c + U2.log() <= f.log_prob(U1)
     return U1[accepted].reshape(-1, n_dims)
 
 # possible broken for values, dowsn't work for n_dims > 2
