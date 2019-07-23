@@ -60,6 +60,7 @@ Differentiable Probabilistic Models
   1. Generator
       * Uses a latent distribution to sample inputs to a neural network to
       generate a distribution. Train with the adversarial losses.
+  1. Arcsine
 
 
 # Transforms <a name="transforms"></a>
@@ -137,6 +138,7 @@ Differentiable Probabilistic Models
   1. Min -> approximate Minimum limit of model
 
 # Monte Carlo Sampling <a name="monte_carlo_sampling"></a>
+  1. Inverse CDF Sampling
   1. [Rejection Sampling](https://en.wikipedia.org/wiki/Rejection_sampling) -> given a model, proposal model, and M, attempt to create samples similar to model via sampling the proposal model.
   1. [Box Muller](https://en.wikipedia.org/wiki/Box–Muller_transform) -> Generates a Standard Normal
   1. [Marsaglia-Bray](https://en.wikipedia.org/wiki/Marsaglia_polar_method) -> Generates a Standard Normal
