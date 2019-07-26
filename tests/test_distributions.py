@@ -35,9 +35,14 @@ def test_normal_dist(dist, n_dims):
     assert log_probs.shape == (64, )
 
     dist.get_parameters()
-    dist.entropy()
-    dist.perplexity()
-
+    try:
+        dist.entropy()
+    except NotImplementedError:
+        pass
+    try:
+        dist.perplexity()
+    except NotImplementedError:
+        pass
 
 
 test_normal_dists = [
@@ -119,7 +124,10 @@ def test_shapes(dist, n_dims):
     assert log_probs.shape == (64, )
 
     dist.get_parameters()
-    dist.entropy()
+    try:
+        dist.entropy()
+    except NotImplementedError:
+        pass
 
 
 gumbels = [
@@ -140,7 +148,10 @@ def test_gumbel_softmax(dist, n_dims):
     assert log_probs.shape == (64, n_dims)
 
     dist.get_parameters()
-    dist.entropy()
+    try:
+        dist.entropy()
+    except NotImplementedError:
+        pass
 
 
 dirac_locs = [

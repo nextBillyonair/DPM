@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABC
 import torch
-from torch import nn, distributions
+from torch import nn
+from torch import distributions as dists
 from torch.nn import Module, Parameter, ModuleList
 from torch.nn.functional import softplus
 import numpy as np
@@ -23,7 +24,7 @@ class Distribution(ABC, Module):
         raise NotImplementedError("sample method is not implemented")
 
     def entropy(self, batch_size=10000):
-        return -monte_carlo.monte_carlo(self.log_prob, self, batch_size)
+        raise NotImplementedError('Entropy not implemented, use monte carlo approximation')
 
     def perplexity(self, batch_size=10000):
         return self.entropy(batch_size).exp()
@@ -36,17 +37,23 @@ class Distribution(ABC, Module):
         inv[value > threshold] = value[value > threshold]
         return inv
 
-    def cdf(self, c, batch_size=10000):
-        return monte_carlo.cdf(self, c, batch_size)
+    def cdf(self, c):
+        raise NotImplementedError('CDF not implemented, use monte carlo approximation')
 
-    def expectation(self, batch_size=10000):
-        return monte_carlo.expectation(self, batch_size)
+    def icdf(self, c):
+        raise NotImplementedError('ICDF not implemented, use monte carlo approximation')
 
-    def variance(self, batch_size=10000):
-        return monte_carlo.variance(self, batch_size)
+    @property
+    def expectation(self):
+        raise NotImplementedError('Expectation not implemented, use monte carlo approximation')
 
-    def median(self, batch_size=10000):
-        return monte_carlo.median(self, batch_size)
+    @property
+    def variance(self):
+        raise NotImplementedError('Variance not implemented, use monte carlo approximation')
+
+    @property
+    def median(self):
+        raise NotImplementedError('Median not implemented, use monte carlo approximation')
 
 
 class Normal(Distribution):
@@ -67,15 +74,21 @@ class Normal(Distribution):
             self.cholesky_decomp = Parameter(self.cholesky_decomp)
 
     def log_prob(self, value):
-        model = distributions.MultivariateNormal(self.loc, self.scale)
-        return model.log_prob(value)
+        return dists.MultivariateNormal(self.loc, self.scale).log_prob(value)
 
     def sample(self, batch_size):
-        model = distributions.MultivariateNormal(self.loc, self.scale)
-        return model.rsample((batch_size,))
+        return dists.MultivariateNormal(self.loc, self.scale).rsample((batch_size,))
 
     def entropy(self, batch_size=None):
-        return 0.5 * torch.logdet(2.0 * math.pi * math.e * self.scale)
+        return 0.5 * torch.det(2 * math.pi * math.e * self.scale).log()
+
+    @property
+    def expectation(self):
+        return self.loc
+
+    @property
+    def variance(self):
+        return self.scale
 
     @property
     def scale(self):
@@ -100,15 +113,31 @@ class Exponential(Distribution):
             self._rate = Parameter(self._rate)
 
     def log_prob(self, value):
-        model = distributions.Exponential(self.rate)
-        return model.log_prob(value).sum(dim=-1)
+        return dists.Exponential(self.rate).log_prob(value).sum(dim=-1)
 
     def sample(self, batch_size):
-        model = distributions.Exponential(self.rate)
-        return model.rsample((batch_size,))
+        return dists.Exponential(self.rate).rsample((batch_size,))
 
     def entropy(self, batch_size=None):
         return 1 - self.rate.log()
+
+    def cdf(self, value):
+        return 1 - torch.exp(-self.rate * value)
+
+    def icdf(self, value):
+        return -(1 - value).log() / self.rate
+
+    @property
+    def expectation(self):
+        return self.rate.pow(-1)
+
+    @property
+    def variance(self):
+        return self.rate.pow(-2)
+
+    @property
+    def median(self):
+        return self.rate.pow(-1) * np.log(2.)
 
     @property
     def rate(self):
@@ -135,7 +164,7 @@ class GumbelSoftmax(Distribution):
             self.logits = Parameter(self.logits)
 
     def log_prob(self, value):
-        model = distributions.Categorical(probs=self.probs)
+        model = dists.Categorical(probs=self.probs)
         return model.log_prob(value)
 
     def sample(self, batch_size):
@@ -174,15 +203,23 @@ class Cauchy(Distribution):
             self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
-        model = distributions.Cauchy(self.loc, self.scale)
-        return model.log_prob(value).sum(-1)
+        return dists.Cauchy(self.loc, self.scale).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.Cauchy(self.loc, self.scale)
-        return model.rsample((batch_size,))
+        return dists.Cauchy(self.loc, self.scale).rsample((batch_size,))
+
+    def cdf(self, value):
+        return torch.atan((value - self.loc) / self.scale) / math.pi + 0.5
+
+    def icdf(self, value):
+        return torch.tan(math.pi * (value - 0.5)) * self.scale + self.loc
 
     def entropy(self, batch_size=None):
         return (4 * math.pi * self.scale).log()
+
+    @property
+    def median(self):
+        return self.loc
 
     @property
     def scale(self):
@@ -211,15 +248,22 @@ class Beta(Distribution):
             self._beta = Parameter(self._beta)
 
     def log_prob(self, value):
-        model = distributions.Beta(self.alpha, self.beta)
-        return model.log_prob(value).sum(-1)
+        return dists.Beta(self.alpha, self.beta).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.Beta(self.alpha, self.beta)
-        return model.rsample((batch_size,))
+        return dists.Beta(self.alpha, self.beta).rsample((batch_size,))
 
     def entropy(self, batch_size=None):
-        return distributions.Beta(self.alpha, self.beta).entropy()
+        return dists.Beta(self.alpha, self.beta).entropy()
+
+    @property
+    def expectation(self):
+        return self.alpha / (self.alpha + self.beta)
+
+    @property
+    def variance(self):
+        total = self.alpha + self.beta
+        return (self.alpha * self.beta) / ((total).pow(2) * (total + 1))
 
     @property
     def alpha(self):
@@ -252,15 +296,26 @@ class LogNormal(Distribution):
             self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
-        model = distributions.LogNormal(self.loc, self.scale)
-        return model.log_prob(value).sum(-1)
+        return dists.LogNormal(self.loc, self.scale).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.LogNormal(self.loc, self.scale)
-        return model.rsample((batch_size,))
+        return dists.LogNormal(self.loc, self.scale).rsample((batch_size,))
+
+    @property
+    def expectation(self):
+        return (self.loc + self.scale.pow(2) / 2).exp()
+
+    @property
+    def variance(self):
+        s_square = self.scale.pow(2)
+        return (s_square.exp() - 1) * (2 * self.loc + s_square).exp()
+
+    @property
+    def median(self):
+        return self.loc.exp()
 
     def entropy(self, batch_size=None):
-        return distributions.LogNormal(self.loc, self.scale).entropy()
+        return dists.LogNormal(self.loc, self.scale).entropy()
 
     @property
     def scale(self):
@@ -289,15 +344,21 @@ class Gamma(Distribution):
             self._beta = Parameter(self._beta)
 
     def log_prob(self, value):
-        model = distributions.Gamma(self.alpha, self.beta)
-        return model.log_prob(value).sum(dim=-1)
+        return dists.Gamma(self.alpha, self.beta).log_prob(value).sum(dim=-1)
 
     def sample(self, batch_size):
-        model = distributions.Gamma(self.alpha, self.beta)
-        return model.rsample((batch_size,))
+        return dists.Gamma(self.alpha, self.beta).rsample((batch_size,))
 
     def entropy(self, batch_size=None):
-        return distributions.Gamma(self.alpha, self.beta).entropy()
+        return dists.Gamma(self.alpha, self.beta).entropy()
+
+    @property
+    def expectation(self):
+        return self.alpha / self.beta
+
+    @property
+    def variance(self):
+        return self.alpha / self.beta.pow(2)
 
     @property
     def alpha(self):
@@ -327,11 +388,11 @@ class RelaxedBernoulli(Distribution):
             self.logits = Parameter(self.logits)
 
     def log_prob(self, value):
-        model = distributions.RelaxedBernoulli(self.temperature, self.probs)
+        model = dists.RelaxedBernoulli(self.temperature, self.probs)
         return model.log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.RelaxedBernoulli(self.temperature, self.probs)
+        model = dists.RelaxedBernoulli(self.temperature, self.probs)
         return model.sample((batch_size,))
 
     @property
@@ -359,15 +420,31 @@ class Uniform(Distribution):
             self.beta = Parameter(self.beta)
 
     def log_prob(self, value):
-        model = distributions.Uniform(self.low, self.high)
-        return model.log_prob(value).sum(-1)
+        return dists.Uniform(self.low, self.high).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.Uniform(self.low, self.high)
-        return model.rsample((batch_size,))
+        return dists.Uniform(self.low, self.high).rsample((batch_size,))
 
     def entropy(self, batch_size=None):
         return (self.high - self.low).log()
+
+    def cdf(self, value):
+        return ((value - self.low) / (self.high - self.low)).clamp(min=0, max=1)
+
+    def icdf(self, value):
+        return value * (self.high - self.low) + self.low
+
+    @property
+    def expectation(self):
+        return (self.high + self.low) / 2
+
+    @property
+    def variance(self):
+        return (self.high - self.low).pow(2) / 12
+
+    @property
+    def median(self):
+        return self.expectation
 
     @property
     def low(self):
@@ -404,15 +481,22 @@ class StudentT(Distribution):
             self._df = Parameter(self._df)
 
     def log_prob(self, value):
-        model = distributions.StudentT(self.df, self.loc, self.scale)
+        model = dists.StudentT(self.df, self.loc, self.scale)
         return model.log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.StudentT(self.df, self.loc, self.scale)
+        model = dists.StudentT(self.df, self.loc, self.scale)
         return model.rsample((batch_size,))
 
     def entropy(self, batch_size=None):
-        return distributions.StudentT(self.df, self.loc, self.scale).entropy()
+        return dists.StudentT(self.df, self.loc, self.scale).entropy()
+
+    @property
+    def expectation(self):
+        return dists.StudentT(self.df, self.loc, self.scale).mean
+    @property
+    def variance(self):
+        return dists.StudentT(self.df, self.loc, self.scale).variance
 
     @property
     def scale(self):
@@ -443,15 +527,13 @@ class Dirichlet(Distribution):
             self._alpha = Parameter(self._alpha)
 
     def log_prob(self, value):
-        model = distributions.Dirichlet(self.alpha)
-        return model.log_prob(value)
+        return dists.Dirichlet(self.alpha).log_prob(value)
 
     def sample(self, batch_size):
-        model = distributions.Dirichlet(self.alpha)
-        return model.rsample((batch_size,))
+        return dists.Dirichlet(self.alpha).rsample((batch_size,))
 
     def entropy(self, batch_size=None):
-        return distributions.Dirichlet(self.alpha).entropy()
+        return dists.Dirichlet(self.alpha).entropy()
 
     @property
     def alpha(self):
@@ -479,12 +561,10 @@ class FisherSnedecor(Distribution):
             self._df_2 = Parameter(self._df_2)
 
     def log_prob(self, value):
-        model = distributions.FisherSnedecor(self.df_1, self.df_2)
-        return model.log_prob(value).sum(-1)
+        return dists.FisherSnedecor(self.df_1, self.df_2).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.FisherSnedecor(self.df_1, self.df_2)
-        return model.rsample((batch_size,))
+        return dists.FisherSnedecor(self.df_1, self.df_2).rsample((batch_size,))
 
     @property
     def df_1(self):
@@ -513,15 +593,13 @@ class HalfCauchy(Distribution):
             self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
-        model = distributions.HalfCauchy(self.scale)
-        return model.log_prob(value).sum(-1)
+        return dists.HalfCauchy(self.scale).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.HalfCauchy(self.scale)
-        return model.rsample((batch_size,))
+        return dists.HalfCauchy(self.scale).rsample((batch_size,))
 
     def entropy(self, batch_size=None):
-        return distributions.HalfCauchy(self.scale).entropy()
+        return dists.HalfCauchy(self.scale).entropy()
 
     @property
     def scale(self):
@@ -545,12 +623,10 @@ class HalfNormal(Distribution):
             self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
-        model = distributions.HalfNormal(self.scale)
-        return model.log_prob(value).sum(-1)
+        return dists.HalfNormal(self.scale).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.HalfNormal(self.scale)
-        return model.rsample((batch_size,))
+        return dists.HalfNormal(self.scale).rsample((batch_size,))
 
     def entropy(self, batch_size=None):
         return 0.5 * (0.5 * math.pi * self.scale.pow(2)).log() + 0.5
@@ -581,15 +657,31 @@ class Laplace(Distribution):
             self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
-        model = distributions.Laplace(self.loc, self.scale)
-        return model.log_prob(value).sum(-1)
+        return dists.Laplace(self.loc, self.scale).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        model = distributions.Laplace(self.loc, self.scale)
-        return model.rsample((batch_size,))
+        return dists.Laplace(self.loc, self.scale).rsample((batch_size,))
+
+    def cdf(self, value):
+        return dists.Laplace(self.loc, self.scale).cdf(value)
+
+    def icdf(self, value):
+        return dists.Laplace(self.loc, self.scale).icdf(value)
 
     def entropy(self, batch_size=None):
         return (2 * self.scale * math.e).log()
+
+    @property
+    def expectation(self):
+        return self.loc
+
+    @property
+    def variance(self):
+        return 2 * self.scale.pow(2)
+
+    @property
+    def median(self):
+        return self.loc
 
     @property
     def scale(self):
@@ -778,13 +870,13 @@ class ChiSquare(Distribution):
     def log_prob(self, value):
         alpha = 0.5 * self.df
         beta = torch.zeros_like(alpha).fill_(0.5)
-        model = distributions.Gamma(alpha, beta)
+        model = dists.Gamma(alpha, beta)
         return model.log_prob(value).sum(dim=-1)
 
     def sample(self, batch_size):
         alpha = 0.5 * self.df
         beta = torch.zeros_like(alpha).fill_(0.5)
-        model = distributions.Gamma(alpha, beta)
+        model = dists.Gamma(alpha, beta)
         return model.rsample((batch_size,))
 
     @property
@@ -834,6 +926,18 @@ class Logistic(Distribution):
 
     def entropy(self, batch_size=None):
         return self.scale.log() + 2.
+
+    @property
+    def expectation(self):
+        return self.loc
+
+    @property
+    def variance(self):
+        return self.scale.pow(2) * (math.pi**2) / 3
+
+    @property
+    def median(self):
+        return self.loc
 
     def get_parameters(self):
         if self.n_dims == 1:
