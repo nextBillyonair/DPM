@@ -1,42 +1,7 @@
 import torch
-import torch.distributions as dist
+from torch.distributions import Beta
 import numpy as np
 import math
-
-# E_M [f(x)]
-def monte_carlo(function, model, batch_size=1024):
-    return function(model.sample(batch_size)).mean()
-
-
-def expectation(model, batch_size=1024):
-    return model.sample(batch_size).mean()
-
-
-def variance(model, batch_size=1024):
-    samples = model.sample(batch_size)
-    return (samples - samples.mean()).pow(2).mean()
-
-
-def median(model, batch_size=1024):
-    return model.sample(batch_size).median()
-
-
-def cdf(model, c, batch_size=1024):
-    # look into clamp for Differentiable?
-    return (model.sample(batch_size) <= c).sum().float().div(batch_size)
-
-
-def entropy(model, batch_size=1024):
-    return -monte_carlo(model.log_prob, model, batch_size)
-
-
-def max(model, batch_size=1024):
-    return model.sample(batch_size).max()
-
-
-def min(model, batch_size=1024):
-    return model.sample(batch_size).min()
-
 
 # SAMPLING
 
@@ -80,7 +45,7 @@ def marsaglia_bray(batch_size=10000, n_dims=1):
 
 # possible broken for values, dowsn't work for n_dims > 2
 def beta_sampling(alpha, beta, batch_size=10000, n_dims=1):
-    f = dist.Beta(alpha, beta)
+    f = Beta(alpha, beta)
     c = (alpha - 1) / (alpha + beta - 2)
     U1 = torch.rand((batch_size, n_dims))
     U2 = torch.rand((batch_size, 1))
@@ -95,14 +60,3 @@ def double_exponential(batch_size=10000, n_dims=1):
     X[U3 <= 0.5] = -X[U3 <= 0.5]
     threshold = (-0.5 * ((X - 1).pow(2))).exp()
     return X[U2 > threshold].reshape(-1, n_dims)
-
-
-
-
-
-
-
-
-
-
-# EOF

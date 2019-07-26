@@ -13,7 +13,7 @@ from dpm.distributions import (
     Logistic, ChiSquare
 )
 from dpm.mixture_models import MixtureModel, GumbelMixtureModel
-from dpm.mcmc import metropolis_hastings
+from dpm.monte_carlo import metropolis_hastings
 from dpm.train import train
 from dpm.divergences import (
     forward_kl, reverse_kl, js_divergence, cross_entropy

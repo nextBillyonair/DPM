@@ -6,7 +6,7 @@ from dpm.distributions import (
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
 )
-from dpm.mcmc import metropolis_hastings
+from dpm.monte_carlo import metropolis_hastings
 import pytest
 
 def test_mcmc_2d():
