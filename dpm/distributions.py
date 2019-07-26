@@ -494,6 +494,7 @@ class StudentT(Distribution):
     @property
     def expectation(self):
         return dists.StudentT(self.df, self.loc, self.scale).mean
+
     @property
     def variance(self):
         return dists.StudentT(self.df, self.loc, self.scale).variance
@@ -870,14 +871,14 @@ class ChiSquare(Distribution):
     def log_prob(self, value):
         alpha = 0.5 * self.df
         beta = torch.zeros_like(alpha).fill_(0.5)
-        model = dists.Gamma(alpha, beta)
-        return model.log_prob(value).sum(dim=-1)
+        model = Gamma(alpha, beta, learnable=False)
+        return model.log_prob(value)
 
     def sample(self, batch_size):
         alpha = 0.5 * self.df
         beta = torch.zeros_like(alpha).fill_(0.5)
-        model = dists.Gamma(alpha, beta)
-        return model.rsample((batch_size,))
+        model = Gamma(alpha, beta, learnable=False)
+        return model.sample(batch_size)
 
     @property
     def df(self):
