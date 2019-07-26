@@ -41,7 +41,7 @@ class Distribution(ABC, Module):
         raise NotImplementedError('CDF not implemented, use monte carlo approximation')
 
     def icdf(self, c):
-        raise NotImplementedError('ICDF not implemented, use monte carlo approximation')
+        raise NotImplementedError('ICDF not implemented')
 
     @property
     def expectation(self):
