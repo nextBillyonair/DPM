@@ -1,7 +1,6 @@
 import torch
 from torch.distributions import Categorical
-from torch.nn import Module, ModuleList, Parameter
-from torch.nn.functional import softplus
+from torch.nn import ModuleList
 import numpy as np
 
 from dpm.distributions import Distribution

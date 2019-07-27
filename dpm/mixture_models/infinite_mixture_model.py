@@ -1,11 +1,9 @@
 import torch
-from torch.distributions import Categorical
-from torch.nn import Module, ModuleList, Parameter
+from torch.nn import Parameter
 from torch.nn.functional import softplus
-import numpy as np
-
 from dpm.distributions import Distribution, Gamma, Normal
 import dpm.utils as utils
+
 
 # Infinite Mixture Version of Gaussian
 class InfiniteMixtureModel(Distribution):

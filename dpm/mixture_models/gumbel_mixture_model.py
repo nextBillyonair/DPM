@@ -1,10 +1,6 @@
 import torch
-from torch.nn import Module, ModuleList, Parameter
-from torch.nn.functional import softplus
-import numpy as np
-
+from torch.nn import ModuleList
 from dpm.distributions import Distribution, GumbelSoftmax
-
 
 
 # Differentiable, Learnable Mixture Weights
