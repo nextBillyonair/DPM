@@ -17,6 +17,7 @@ from .gumbel_softmax import GumbelSoftmax
 from .half_cauchy import HalfCauchy
 from .half_normal import HalfNormal
 from .laplace import Laplace
+from .log_cauchy import LogCauchy
 from .log_normal import LogNormal
 from .logistic import Logistic
 from .normal import Normal

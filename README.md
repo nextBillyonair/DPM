@@ -27,41 +27,39 @@ Differentiable Probabilistic Models
 ---
 
 # Distributions <a name="distributions"></a>
-  1. [Normal (Multivariate)](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)
-  1. [Exponential](https://en.wikipedia.org/wiki/Exponential_distribution)
-  1. [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution)
+  1. Arcsine
   1. [Beta](https://en.wikipedia.org/wiki/Beta_distribution)
-  1. [Log Normal](https://en.wikipedia.org/wiki/Log-normal_distribution)
-  1. [Gamma](https://en.wikipedia.org/wiki/Gamma_distribution)
-  1. [Relaxed Bernoulli](https://arxiv.org/abs/1611.00712)
-  1. [Gumbel Softmax (Relaxed Categorical)](https://arxiv.org/abs/1611.01144)
-  1. [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous))
-  1. [Student T](https://en.wikipedia.org/wiki/Student%27s_t-distribution)
-  1. [Dirichlet](https://en.wikipedia.org/wiki/Dirichlet_distribution)
-  1. [Fisher-Snedecor (F-Distribution)](https://en.wikipedia.org/wiki/F-distribution)
-  1. [Dirac Delta](https://en.wikipedia.org/wiki/Dirac_delta_function)
-  1. [Laplace](https://en.wikipedia.org/wiki/Laplace_distribution)
-  1. Half Cauchy
-  1. Half Normal
-  1. Data Distribution
-      * Randomly sample from a given set of data.
+  1. [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution)
+  1. [ChiSquare](https://en.wikipedia.org/wiki/Chi-squared_distribution)
   1. Conditional Model
       * Uses a Neural Network to take inputs and create the parameters of a distribution.
       * Sampling -> takes a value, runs the network to create the distribution,
         sample from conditional distribution.
       * Log Prob -> Create distribution conditioned on X, take log_prob w.r.t. Z
-  1. Transform Distribution
-      * Composes a list of [transforms](#transforms) on a distribution
-      * Example: Exp(Normal) ~ LogNormal
-  1. [Convolution](https://en.wikipedia.org/wiki/List_of_convolutions_of_probability_distributions)
-      * Sum of component distributions, only allows sampling
-  1. [ChiSquare](https://en.wikipedia.org/wiki/Chi-squared_distribution)
-  1. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
+  1. [Convolution](https://en.wikipedia.org/wiki/List_of_convolutions_of_probability_distributions) -Sum of component distributions, only allows sampling
+  1. Data Distribution - Randomly sample from a given set of data.
+  1. [Dirac Delta](https://en.wikipedia.org/wiki/Dirac_delta_function)
+  1. [Dirichlet](https://en.wikipedia.org/wiki/Dirichlet_distribution)
+  1. [Exponential](https://en.wikipedia.org/wiki/Exponential_distribution)
+  1. [Fisher-Snedecor (F-Distribution)](https://en.wikipedia.org/wiki/F-distribution)
+  1. [Gamma](https://en.wikipedia.org/wiki/Gamma_distribution)
   1. Generator
       * Uses a latent distribution to sample inputs to a neural network to
       generate a distribution. Train with the adversarial losses.
-  1. Arcsine
-
+  1. [Gumbel Softmax (Relaxed Categorical)](https://arxiv.org/abs/1611.01144)
+  1. Half Cauchy
+  1. Half Normal
+  1. [Laplace](https://en.wikipedia.org/wiki/Laplace_distribution)
+  1. [Log Cauchy](https://en.wikipedia.org/wiki/Log-Cauchy_distribution)
+  1. [Log Normal](https://en.wikipedia.org/wiki/Log-normal_distribution)  
+  1. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
+  1. [Normal (Multivariate)](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)
+  1. [Relaxed Bernoulli](https://arxiv.org/abs/1611.00712)
+  1. [Student T](https://en.wikipedia.org/wiki/Student%27s_t-distribution)
+  1. Transform Distribution
+      * Composes a list of [transforms](#transforms) on a distribution
+      * Example: Exp(Normal) ~ LogNormal
+  1. [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous))
 
 # Transforms <a name="transforms"></a>
   1. Exp
