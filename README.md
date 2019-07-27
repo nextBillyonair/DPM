@@ -62,21 +62,21 @@ Differentiable Probabilistic Models
   1. [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous))
 
 # Transforms <a name="transforms"></a>
-  1. Exp
-  1. Log
-  1. Power
-  1. Reciprocal
-  1. Square
-  1. Sigmoid
-  1. Logit
   1. Affine
+  1. Exp
   1. Expm1
   1. Gumbel
+  1. InverseTransform (Inverts a transform)
+  1. Log
+  1. Logit
+  1. Power
+  1. Reciprocal
+  1. Sigmoid
   1. SinhArcsinh
   1. Softplus
   1. Softsign
+  1. Square
   1. Tanh
-  1. InverseTransform (Inverts a transform)
 
 # Mixture Models <a name="mixture-models"></a>
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)
