@@ -27,7 +27,8 @@ class Arcsine(Distribution):
         return - (math.pi * ((value - self.low) * (self.high - value)).sqrt()).log().sum(-1)
 
     def sample(self, batch_size):
-        raise NotImplementedError("sample not implemented")
+        u = torch.rand((batch_size, self.n_dims))
+        return self.icdf(u)
 
     def cdf(self, value):
         return (2. / math.pi) * torch.asin(((x - self.low) / (self.high - self.low)).sqrt())
