@@ -41,6 +41,10 @@ class LogCauchy(Distribution):
         std_term = (value.log() - self.loc) / self.scale
         return (1. / math.pi) * torch.atan(std_term) + 0.5
 
+    def icdf(self, value):
+        cauchy_icdf = torch.tan(math.pi * (value - 0.5)) * self.scale + self.loc
+        return cauchy_icdf.exp()
+
     @property
     def scale(self):
         return softplus(self._scale)
