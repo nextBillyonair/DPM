@@ -51,6 +51,7 @@ Differentiable Probabilistic Models
   1. Half Normal
   1. [Laplace](https://en.wikipedia.org/wiki/Laplace_distribution)
   1. [Log Cauchy](https://en.wikipedia.org/wiki/Log-Cauchy_distribution)
+  1. [Log Laplace](https://en.wikipedia.org/wiki/Log-Laplace_distribution)
   1. [Log Normal](https://en.wikipedia.org/wiki/Log-normal_distribution)  
   1. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
   1. [Normal (Multivariate)](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)
