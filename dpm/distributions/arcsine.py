@@ -34,7 +34,7 @@ class Arcsine(Distribution):
         return (2. / math.pi) * torch.asin(((x - self.low) / (self.high - self.low)).sqrt())
 
     def icdf(self, value):
-        u = torch.sin((value * math.pi) / 2.).pow(2)
+        u = 0.5 - 0.5 * torch.cos(value * math.pi)
         return self.low + (self.high - self.low) * u
 
     @property
