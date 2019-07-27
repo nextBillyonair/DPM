@@ -1,6 +1,4 @@
 import torch
-from torch import nn
-from torch import distributions as dists
 from torch.nn import Module, Parameter, ModuleList
 from torch.nn.functional import softplus
 import numpy as np
