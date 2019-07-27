@@ -12,7 +12,7 @@ class Tanh(Transform):
         return x.tanh()
 
     def inverse(self, y):
-        return utils.atanh(y)
+        return utils.arctanh(y)
 
     def log_abs_det_jacobian(self, x, y):
         return 2.0 * (np.log(2.0) - x - softplus(-2.0 * x))

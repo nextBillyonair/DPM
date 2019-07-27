@@ -20,14 +20,14 @@ class SinhArcsinh(Transform):
             self._tailweight = Parameter(self._tailweight)
 
     def forward(self, x):
-        return torch.sinh((utils.asinh(x) + self.skewness) * self.tailweight)
+        return torch.sinh((utils.arcsinh(x) + self.skewness) * self.tailweight)
 
     def inverse(self, y):
-        return torch.sinh(utils.asinh(y) / self.tailweight - self.skewness)
+        return torch.sinh(utils.arcsinh(y) / self.tailweight - self.skewness)
 
     def log_abs_det_jacobian(self, x, y):
         return (torch.log(
-                torch.cosh((utils.asinh(x) + self.skewness) * self.tailweight)
+                torch.cosh((utils.arcsinh(x) + self.skewness) * self.tailweight)
                 / utils.sqrtx2p1(x + 1e-10)) + torch.log(self.tailweight))
 
     @property
