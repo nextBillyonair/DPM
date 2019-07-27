@@ -21,6 +21,7 @@ from .log_cauchy import LogCauchy
 from .log_normal import LogNormal
 from .logistic import Logistic
 from .normal import Normal
+from .rayleigh import Rayleigh
 from .relaxed_bernoulli import RelaxedBernoulli
 from .student_t import StudentT
 from .transform_distribution import TransformDistribution

@@ -1,5 +1,11 @@
 import torch
 
+# constants
+
+euler_mascheroni = 0.57721566490153286060651209008240243104215933593992
+
+
+#functions
 
 def arcsinh(x):
     return torch.log(x + (x.pow(2) + 1).sqrt())
