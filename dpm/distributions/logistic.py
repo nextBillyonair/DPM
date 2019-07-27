@@ -9,7 +9,7 @@ from .distribution import Distribution
 from .uniform import Uniform
 from .transform_distribution import TransformDistribution
 from dpm.transforms import Logit, Affine
-
+import dpm.utils as utils
 
 class Logistic(Distribution):
 
@@ -21,7 +21,7 @@ class Logistic(Distribution):
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(-1)
         self.loc = loc
-        self._scale = self.softplus_inverse(scale)
+        self._scale = utils.softplus_inverse(scale)
         if learnable:
             self.loc = Parameter(self.loc)
             self._scale = Parameter(self._scale)

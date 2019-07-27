@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
-
+import dpm.utils as utils
 
 class RelaxedBernoulli(Distribution):
 
@@ -16,7 +16,7 @@ class RelaxedBernoulli(Distribution):
         self.temperature = torch.tensor(temperature)
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs)
-        self.logits = self.softplus_inverse(probs)
+        self.logits = utils.softplus_inverse(probs)
         if learnable:
             self.logits = Parameter(self.logits)
 

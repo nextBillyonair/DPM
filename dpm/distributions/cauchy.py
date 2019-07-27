@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
-
+import dpm.utils as utils
 
 class Cauchy(Distribution):
 
@@ -18,7 +18,7 @@ class Cauchy(Distribution):
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(-1)
         self.loc = loc
-        self._scale = self.softplus_inverse(scale)
+        self._scale = utils.softplus_inverse(scale)
         if learnable:
             self.loc = Parameter(self.loc)
             self._scale = Parameter(self._scale)

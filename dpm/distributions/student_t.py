@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
-
+import dpm.utils as utils
 
 class StudentT(Distribution):
 
@@ -20,8 +20,8 @@ class StudentT(Distribution):
         if not isinstance(df, torch.Tensor):
             df = torch.tensor(df).view(-1)
         self.loc = loc
-        self._scale = self.softplus_inverse(scale)
-        self._df = self.softplus_inverse(df)
+        self._scale = utils.softplus_inverse(scale)
+        self._df = utils.softplus_inverse(df)
         if learnable:
             self.loc = Parameter(self.loc)
             self._scale = Parameter(self._scale)

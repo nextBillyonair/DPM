@@ -5,7 +5,7 @@ from torch.nn.functional import softplus
 import numpy as np
 
 from dpm.distributions import Distribution, Gamma, Normal
-
+import dpm.utils as utils
 
 # Infinite Mixture Version of Gaussian
 class InfiniteMixtureModel(Distribution):
@@ -18,10 +18,10 @@ class InfiniteMixtureModel(Distribution):
         self.n_dims = len(self.loc)
         if loc_learnable:
             self.loc = Parameter(self.loc)
-        self._scale = self.softplus_inverse(torch.tensor(scale).view(-1))
+        self._scale = utils.softplus_inverse(torch.tensor(scale).view(-1))
         if scale_learnable:
             self._scale = Parameter(self._scale)
-        self._df = self.softplus_inverse(torch.tensor(df).view(-1))
+        self._df = utils.softplus_inverse(torch.tensor(df).view(-1))
         if df_learnable:
             self._df = Parameter(self._df)
 

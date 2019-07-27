@@ -7,7 +7,7 @@ import numpy as np
 import math
 from .distribution import Distribution
 from .gamma import Gamma
-
+import dpm.utils as utils
 
 class ChiSquare(Distribution):
 
@@ -15,7 +15,7 @@ class ChiSquare(Distribution):
         super().__init__()
         if not isinstance(df, torch.Tensor):
             df = torch.tensor(df).view(-1)
-        self._df = self.softplus_inverse(df)
+        self._df = utils.softplus_inverse(df)
         self.n_dims = len(df)
         if learnable:
             self._df = Parameter(self._df)

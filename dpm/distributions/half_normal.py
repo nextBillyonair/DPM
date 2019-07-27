@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
-
+import dpm.utils as utils
 
 class HalfNormal(Distribution):
 
@@ -15,7 +15,7 @@ class HalfNormal(Distribution):
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(-1)
         self.n_dims = len(scale)
-        self._scale = self.softplus_inverse(scale)
+        self._scale = utils.softplus_inverse(scale)
         if learnable:
             self._scale = Parameter(self._scale)
 

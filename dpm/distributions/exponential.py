@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
-
+import dpm.utils as utils
 
 class Exponential(Distribution):
 
@@ -15,7 +15,7 @@ class Exponential(Distribution):
         if not isinstance(rate, torch.Tensor):
             rate = torch.tensor(rate).view(-1)
         self.n_dims = len(rate)
-        self._rate = self.softplus_inverse(rate)
+        self._rate = utils.softplus_inverse(rate)
         if learnable:
             self._rate = Parameter(self._rate)
 

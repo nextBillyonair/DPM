@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
-
+import dpm.utils as utils
 
 class Gamma(Distribution):
 
@@ -17,8 +17,8 @@ class Gamma(Distribution):
         self.n_dims = len(alpha)
         if not isinstance(beta, torch.Tensor):
             beta = torch.tensor(beta).view(-1)
-        self._alpha = self.softplus_inverse(alpha)
-        self._beta = self.softplus_inverse(beta)
+        self._alpha = utils.softplus_inverse(alpha)
+        self._beta = utils.softplus_inverse(beta)
         if learnable:
             self._alpha = Parameter(self._alpha)
             self._beta = Parameter(self._beta)

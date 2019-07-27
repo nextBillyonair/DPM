@@ -24,11 +24,6 @@ class Distribution(ABC, Module):
     def cross_entropy(self, model, batch_size=10000):
         return -model.log_prob(self.sample(batch_size)).mean()
 
-    def softplus_inverse(self, value, threshold=20):
-        inv = (value.exp() - 1.0).log()
-        inv[value > threshold] = value[value > threshold]
-        return inv
-
     def cdf(self, c):
         raise NotImplementedError('CDF not implemented, use monte carlo approximation')
 

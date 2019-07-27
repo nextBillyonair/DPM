@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
-
+import dpm.utils as utils
 
 class FisherSnedecor(Distribution):
 
@@ -17,8 +17,8 @@ class FisherSnedecor(Distribution):
         self.n_dims = len(df_1)
         if not isinstance(df_2, torch.Tensor):
             df_2 = torch.tensor(df_2).view(-1)
-        self._df_1 = self.softplus_inverse(df_1)
-        self._df_2 = self.softplus_inverse(df_2)
+        self._df_1 = utils.softplus_inverse(df_1)
+        self._df_2 = utils.softplus_inverse(df_2)
         if learnable:
             self._df_1 = Parameter(self._df_1)
             self._df_2 = Parameter(self._df_2)

@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
-
+import dpm.utils as utils
 
 class Dirichlet(Distribution):
 
@@ -15,7 +15,7 @@ class Dirichlet(Distribution):
         if not isinstance(alpha, torch.Tensor):
             alpha = torch.tensor(alpha).view(-1)
         self.n_dims = len(alpha)
-        self._alpha = self.softplus_inverse(alpha)
+        self._alpha = utils.softplus_inverse(alpha)
         if learnable:
             self._alpha = Parameter(self._alpha)
 
