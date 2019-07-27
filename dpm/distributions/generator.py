@@ -18,7 +18,7 @@ class Generator(Distribution):
         super().__init__()
         self.latent_distribution = latent_distribution
         if latent_distribution is None:
-            self.latent_distribution = Normal(torch.zeros(8), torch.eye(8), learnable=False)
+            self.latent_distribution = Normal(torch.zeros(input_dim), torch.eye(input_dim), learnable=False)
         self.conditional_model = ConditionalModel(input_dim, hidden_sizes, activation,
                                                   output_shapes, output_activations, DiracDelta)
         self.n_dims = output_shapes[0]
