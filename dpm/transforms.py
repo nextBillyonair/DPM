@@ -5,6 +5,8 @@ from torch.nn import Module, Parameter
 from torch.nn.functional import softplus
 import numpy as np
 
+import dpm.utils as utils
+
 
 class Transform(ABC, Module):
 
@@ -22,11 +24,6 @@ class Transform(ABC, Module):
     @abstractmethod
     def log_abs_det_jacobian(self, x, y):
         raise NotImplementedError("Log Abs Det Jacobian not implemented")
-
-    def softplus_inverse(self, value, threshold=20):
-        inv = torch.log((value.exp() - 1.0))
-        inv[value > threshold] = value[value > threshold]
-        return inv
 
     def get_parameters(self):
         raise NotImplementedError('Get Parameters not implemented')
@@ -230,7 +227,7 @@ class Gumbel(Transform):
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(1, -1)
         self.loc = loc
-        self._scale = self.softplus_inverse(scale)
+        self._scale = utils.softplus_inverse(scale)
         if learnable:
             self.loc = Parameter(self.loc)
             self._scale = Parameter(self._scale)
@@ -263,7 +260,7 @@ class SinhArcsinh(Transform):
         if not isinstance(tailweight, torch.Tensor):
             tailweight = torch.tensor(tailweight).view(1, -1)
         self.skewness = skewness
-        self._tailweight = self.softplus_inverse(tailweight)
+        self._tailweight = utils.softplus_inverse(tailweight)
         if learnable:
             self.skewness = Parameter(self.skewness)
             self._tailweight = Parameter(self._tailweight)
@@ -309,7 +306,7 @@ class Softplus(Transform):
         return self.hinge_softness * softplus(x / self.hinge_softness)
 
     def inverse(self, y):
-        return self.hinge_softness * self.softplus_inverse(y / self.hinge_softness)
+        return self.hinge_softness * utils.softplus_inverse(y / self.hinge_softness)
 
     def log_abs_det_jacobian(self, x, y):
         return -softplus(-x / self.hinge_softness)
@@ -343,14 +340,11 @@ class Tanh(Transform):
     def __init__(self):
         super().__init__()
 
-    def atanh(self, x):
-        return 0.5 * (torch.log(1 + x) - torch.log(1 - x))
-
     def forward(self, x):
         return x.tanh()
 
     def inverse(self, y):
-        return self.atanh(y)
+        return utils.atanh(y)
 
     def log_abs_det_jacobian(self, x, y):
         return 2.0 * (np.log(2.0) - x - softplus(-2.0 * x))
