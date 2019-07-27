@@ -24,10 +24,29 @@ class Arcsine(Distribution):
             self.beta = Parameter(self.beta)
 
     def log_prob(self, value):
-        return - (math.pi * ((value - self.low) * (self.high - value)).sqrt()).log().reshape(-1)
+        return - (math.pi * ((value - self.low) * (self.high - value)).sqrt()).log().sum(-1)
 
     def sample(self, batch_size):
         raise NotImplementedError("sample not implemented")
+
+    def cdf(self, value):
+        return (2. / math.pi) * torch.asin(((x - self.low) / (self.high - self.low)).sqrt())
+
+    def icdf(self, value):
+        u = torch.sin((value * math.pi) / 2.).pow(2)
+        return self.low + (self.high - self.low) * u
+
+    @property
+    def expectation(self):
+        return (self.low + self.high) / 2.
+
+    @property
+    def variance(self):
+        return (self.high - self.low).pow(2) / 8.
+
+    @property
+    def median(self):
+        return self.expectation
 
     @property
     def low(self):
