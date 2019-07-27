@@ -1,10 +1,7 @@
 import torch
 from torch import nn
-from torch import distributions as dists
-from torch.nn import Module, Parameter, ModuleList
+from torch.nn import Parameter
 from torch.nn.functional import softplus
-import numpy as np
-import math
 from .distribution import Distribution
 
 
@@ -24,10 +21,13 @@ class Uniform(Distribution):
             self.beta = Parameter(self.beta)
 
     def log_prob(self, value):
-        return dists.Uniform(self.low, self.high).log_prob(value).sum(-1)
+        lb = value.ge(self.low).float()
+        ub = value.lt(self.high).float()
+        return (lb.mul(ub).log() - (self.high - self.low).log()).sum(-1)
 
     def sample(self, batch_size):
-        return dists.Uniform(self.low, self.high).rsample((batch_size,))
+        u = torch.rand((batch_size, self.n_dims))
+        return self.low + (self.high - self.low) * u
 
     def entropy(self, batch_size=None):
         return (self.high - self.low).log()

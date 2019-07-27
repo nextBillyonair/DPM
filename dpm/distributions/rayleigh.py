@@ -3,6 +3,7 @@ from torch.nn import Parameter
 from torch.nn.functional import softplus
 from .distribution import Distribution
 import dpm.utils as utils
+import math
 
 class Rayleigh(Distribution):
     def __init__(self, scale=1., learnable=True):
@@ -23,7 +24,7 @@ class Rayleigh(Distribution):
         return self.scale * (-2 * u.log()).sqrt()
 
     def entropy(self, batch_size=None):
-        return 1. + (self.scale / np.sqrt(2.)).log() + utils.euler_mascheroni / 2.
+        return 1. + (self.scale / math.sqrt(2.)).log() + utils.euler_mascheroni / 2.
 
     def cdf(self, value):
         exponent = -value.pow(2) / (2 * self.scale.pow(2))
@@ -34,7 +35,7 @@ class Rayleigh(Distribution):
 
     @property
     def expectation(self):
-        return self.scale * np.sqrt(math.pi / 2.)
+        return self.scale * math.sqrt(math.pi / 2.)
 
     @property
     def variance(self):
@@ -42,7 +43,7 @@ class Rayleigh(Distribution):
 
     @property
     def median(self):
-        return self.scale * np.sqrt((2. * np.log(2.)))
+        return self.scale * math.sqrt((2. * math.log(2.)))
 
     @property
     def scale(self):

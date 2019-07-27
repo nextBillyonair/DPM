@@ -1,9 +1,6 @@
 import torch
-from torch import nn
-from torch import distributions as dists
-from torch.nn import Module, Parameter, ModuleList
+from torch.nn import Parameter
 from torch.nn.functional import softplus
-import numpy as np
 import math
 from .distribution import Distribution
 import dpm.utils as utils
@@ -24,10 +21,12 @@ class Cauchy(Distribution):
             self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
-        return dists.Cauchy(self.loc, self.scale).log_prob(value).sum(-1)
+        ret = (1 + ((value - self.loc) / self.scale).pow(2)).log()
+        return (-math.log(math.pi) - self.scale.log() - ret).sum(-1)
 
     def sample(self, batch_size):
-        return dists.Cauchy(self.loc, self.scale).rsample((batch_size,))
+        eps = torch.empty((batch_size, self.n_dims)).cauchy_()
+        return self.loc + eps * self.scale
 
     def cdf(self, value):
         return torch.atan((value - self.loc) / self.scale) / math.pi + 0.5
