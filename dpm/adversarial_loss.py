@@ -5,13 +5,13 @@ from torch.nn import (
     Module, Sequential, Linear, LeakyReLU,
     BCEWithLogitsLoss, MSELoss
 )
-import dpm.utils as utils
+import dpm.newton as newton
 
 class AdversarialLoss(ABC, Module):
 
     def __init__(self, input_dim, hidden_sizes=[24, 24],
                  activation='LeakyReLU',
-                 lr=1e-3, gp_penalty=10.):
+                 lr=1e-3, grad_penalty=10.):
         super().__init__()
         self.n_dims = input_dim
         prev_size = input_dim
@@ -24,7 +24,7 @@ class AdversarialLoss(ABC, Module):
         self.discriminator_model = nn.Sequential(*layers)
         self.optimizer = optim.RMSprop(self.discriminator_model.parameters(),
                                        lr=lr)
-        self.gp_penalty = gp_penalty
+        self.grad_penalty = grad_penalty
 
     @abstractmethod
     def discriminator_loss(self, p_values, q_values):
@@ -101,8 +101,8 @@ class WGANGPLoss(WGANLoss):
         x_hat = eps * p_samples + (1 - eps) * q_samples
         x_hat.requires_grad = True
         x_hat_values = self.discriminator_model(x_hat).mean()
-        gp = utils.gradient(x_hat_values, x_hat)
-        penalty = self.gp_penalty * (torch.norm(gp, p=2) - 1).pow(2)
+        gp = newton.gradient(x_hat_values, x_hat)
+        penalty = self.grad_penalty * (torch.norm(gp, p=2) - 1).pow(2)
         return penalty
 
 
