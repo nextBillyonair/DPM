@@ -37,7 +37,7 @@ test_dists = [
     (Logistic(0., 1.), Logistic(0., 1.)),
     (ChiSquare(4.), ChiSquare(4.)),
 
-    (Normal([0., 0.], [1., 1.], diag=True), Normal([0., 0.], [1., 1.], diag=True)),
+    (Normal([0., 0.], [1., 1.]), Normal([0., 0.], [1., 1.])),
     (Exponential([0.5, 0.5]), Exponential([0.5, 0.5])),
     (Cauchy([0., 0.], [1., 1.]), Cauchy([0., 0.], [1., 1.])),
     (Beta([0.5, 0.5], [1., 1.]), Beta([0.5, 0.5], [1., 1.])),
@@ -51,10 +51,10 @@ test_dists = [
     (Laplace([0., 0.], [1., 1.]), Laplace([0., 0.], [1., 1.])),
     (MixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75]),
      MixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75])),
-    (GumbelMixtureModel([Normal([0., 0.], [1., 1.], diag=True), Normal([1., 1.], [3., 3.], diag=True)], [0.25, 0.75]),
-     GumbelMixtureModel([Normal([0., 0.], [1., 1.], diag=True), Normal([1., 1.], [3., 3.], diag=True)], [0.25, 0.75])),
-    (GumbelMixtureModel([Normal([0., 0.], [1., 1.], diag=True), Normal([1., 1.], [3., 3.], diag=True)], [0.25, 0.75], hard=False),
-     GumbelMixtureModel([Normal([0., 0.], [1., 1.], diag=True), Normal([1., 1.], [3., 3.], diag=True)], [0.25, 0.75], hard=False)),
+    (GumbelMixtureModel([Normal([0., 0.], [1., 1.]), Normal([1., 1.], [3., 3.])], [0.25, 0.75]),
+     GumbelMixtureModel([Normal([0., 0.], [1., 1.]), Normal([1., 1.], [3., 3.])], [0.25, 0.75])),
+    (GumbelMixtureModel([Normal([0., 0.], [1., 1.]), Normal([1., 1.], [3., 3.])], [0.25, 0.75], hard=False),
+     GumbelMixtureModel([Normal([0., 0.], [1., 1.]), Normal([1., 1.], [3., 3.])], [0.25, 0.75], hard=False)),
     (ChiSquare([4., 4.]), ChiSquare([4., 4.])),
     (Logistic([0., 0.], [1., 1.]), Logistic([0., 0.], [1., 1.])),
 ]

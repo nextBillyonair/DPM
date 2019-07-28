@@ -7,13 +7,13 @@ import pytest
 
 mm_models = [
     (MixtureModel([Normal(0.0, 1.0), Normal(0.0, 1.0)], [0.5, 0.5]), 1),
-    (MixtureModel([Normal([0.0, 0.0], [1.0, 1.0], diag=True),
+    (MixtureModel([Normal([0.0, 0.0], [1.0, 1.0]),
                    Normal([0.0, 0.0], [1.0, 0.0, 0.0, 1.0])], [0.5, 0.5]), 2),
     (GumbelMixtureModel([Normal(0.0, 1.0), Normal(0.0, 1.0)], [0.5, 0.5]), 1),
-    (GumbelMixtureModel([Normal([0.0, 0.0], [1.0, 1.0], diag=True),
+    (GumbelMixtureModel([Normal([0.0, 0.0], [1.0, 1.0]),
                          Normal([0.0, 0.0], [1.0, 0.0, 0.0, 1.0])], [0.5, 0.5]), 2),
     (GumbelMixtureModel([Normal(0.0, 1.0), Normal(0.0, 1.0)], [0.5, 0.5], hard=False), 1),
-    (GumbelMixtureModel([Normal([0.0, 0.0], [1.0, 1.0], diag=True),
+    (GumbelMixtureModel([Normal([0.0, 0.0], [1.0, 1.0]),
                          Normal([0.0, 0.0], [1.0, 0.0, 0.0, 1.0])], [0.5, 0.5], hard=False), 2),
 ]
 @pytest.mark.parametrize("model,n_dims", mm_models)

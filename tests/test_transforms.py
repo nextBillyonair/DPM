@@ -11,7 +11,7 @@ import pytest
 
 transforms_dist_list = [
     (TransformDistribution(Normal(0., 1.), [Exp()]), 1),
-    (TransformDistribution(Normal([0., 0.], [1., 1.], diag=True), [Exp()]), 2),
+    (TransformDistribution(Normal([0., 0.], [1., 1.]), [Exp()]), 2),
     (TransformDistribution(Normal(0.0, 1.0), [Affine(1.0, 2.0)]), 1),
 ]
 

@@ -10,14 +10,14 @@ from .distribution import Distribution
 
 class Normal(Distribution):
 
-    def __init__(self, loc=0., scale=1., learnable=True, diag=False):
+    def __init__(self, loc=0., scale=1., learnable=True):
         super().__init__()
         if not isinstance(loc, torch.Tensor):
             loc = torch.tensor(loc).view(-1)
         self.n_dims = len(loc)
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(-1)
-        if diag:
+        if scale.shape == loc.shape:
             scale = torch.diag(scale)
         self.loc = loc
         self.cholesky_decomp = scale.view(self.n_dims, self.n_dims).cholesky()
