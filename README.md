@@ -22,6 +22,7 @@ Differentiable Probabilistic Models
 1. [Monte Carlo Approximations](#monte_carlo_approximation)
 1. [Monte Carlo Sampling](#monte_carlo_sampling)
 1. [MCMC Methods](#mcmc-methods)
+1. [Newton](#newton)
 1. [Notes](#notes)
 
 ---
@@ -151,6 +152,12 @@ Differentiable Probabilistic Models
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
       * MCMC sampling method to generate samples from a unknown distribution
         * Requires distribution to have a log_prob method implemented.
+
+# Newton Methods <a name=""></a>
+  1. Gradient (Infers whether Jacobian or regular grad is used)
+  1. Jacobian (First Order on vector output)
+  1. Hessian (Second Order)
+  1. Newton Step (Computes the newton update w.r.t. to output y, input x)
 
 # Notes <a name="notes"></a>
   * Sampling must be done through a reparameterized version of the
