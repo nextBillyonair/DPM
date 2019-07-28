@@ -39,7 +39,7 @@ def logit(x):
 
 # Gradient Functions
 # (loss scalar, inputs)
-def grad(y, xs):
+def gradient(y, xs):
     dys = torch.autograd.grad(y, xs, create_graph=True)
     if isinstance(xs, tuple) or isinstance(xs, list):
         return dys
@@ -47,9 +47,9 @@ def grad(y, xs):
 
 # loss, inputs, optional return gradient to save time
 def hessian(y, xs, return_grad=False):
-    dys = grad(y, xs)
+    dys = gradient(y, xs)
     flat_dy = torch.cat([dy.reshape(-1) for dy in dys])
-    H = torch.stack([torch.cat([Hij.reshape(-1) for Hij in grad(dyi, xs)])
+    H = torch.stack([torch.cat([Hij.reshape(-1) for Hij in gradient(dyi, xs)])
                      for dyi in flat_dy])
     if return_grad: return H, dys
     return H
