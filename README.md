@@ -122,8 +122,8 @@ Differentiable Probabilistic Models
   1. [GAN Loss](https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf)
   1. [MMGAN Loss](https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf)
   1. [WGAN Loss](https://arxiv.org/pdf/1701.07875.pdf)
-  1. [WGAN GP Loss](https://arxiv.org/pdf/1704.00028)
   1. [LSGAN Loss](https://arxiv.org/pdf/1611.04076.pdf)
+  1. Optional gradient penalty and spectral norm regularizers for all GANs
 
 # ELBO <a name="elbo"></a>
   1. Implements SVI with ELBO loss.
