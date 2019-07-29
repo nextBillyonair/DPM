@@ -19,7 +19,7 @@ class Distribution(ABC, Module):
         raise NotImplementedError('Entropy not implemented, use monte carlo approximation')
 
     def perplexity(self):
-        return self.entropy(batch_size).exp()
+        return self.entropy().exp()
 
     def cross_entropy(self, model):
         raise NotImplementedError('Cross Entropy not implemented, use divergence method')

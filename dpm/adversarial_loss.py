@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABC
 import torch
 from torch import nn, optim
+from torch.nn.utils import spectral_norm
 from torch.nn import (
     Module, Sequential, Linear, LeakyReLU,
     BCEWithLogitsLoss, MSELoss
@@ -11,16 +12,24 @@ class AdversarialLoss(ABC, Module):
 
     def __init__(self, input_dim, hidden_sizes=[24, 24],
                  activation='LeakyReLU',
-                 lr=1e-3, grad_penalty=10.):
+                 lr=1e-3, grad_penalty=None, use_spectral_norm=False):
         super().__init__()
         self.n_dims = input_dim
         prev_size = input_dim
         layers = []
         for h in hidden_sizes:
-            layers.append(nn.Linear(prev_size, h))
+            if use_spectral_norm:
+                layers.append(spectral_norm(nn.Linear(prev_size, h)))
+            else:
+                layers.append(nn.Linear(prev_size, h))
             layers.append(getattr(nn, activation)())
             prev_size = h
-        layers.append(nn.Linear(prev_size, 1))
+
+        if use_spectral_norm:
+            layers.append(spectral_norm(nn.Linear(prev_size, 1)))
+        else:
+            layers.append(nn.Linear(prev_size, 1))
+
         self.discriminator_model = nn.Sequential(*layers)
         self.optimizer = optim.RMSprop(self.discriminator_model.parameters(),
                                        lr=lr)
@@ -34,6 +43,15 @@ class AdversarialLoss(ABC, Module):
     def generator_loss(self, q_values):
         raise NotImplementedError()
 
+    def calculate_gp(self, p_samples, q_samples):
+        eps = torch.rand((p_samples.shape))
+        x_hat = eps * p_samples + (1 - eps) * q_samples
+        x_hat.requires_grad = True
+        x_hat_values = self.discriminator_model(x_hat).mean()
+        gp = newton.gradient(x_hat_values, x_hat)
+        penalty = self.grad_penalty * (torch.norm(gp, p=2) - 1).pow(2)
+        return penalty
+
     def forward(self, p_model, q_model, batch_size=64):
         self.optimizer.zero_grad()
 
@@ -44,7 +62,8 @@ class AdversarialLoss(ABC, Module):
         q_values = self.discriminator_model(q_samples.detach())
 
         d_loss = self.discriminator_loss(p_values, q_values)
-        if 'calculate_gp' in dir(self):
+
+        if self.grad_penalty:
             d_loss += self.calculate_gp(p_samples.detach(), q_samples.detach())
 
         d_loss.backward()
@@ -92,18 +111,6 @@ class WGANLoss(AdversarialLoss):
 
     def generator_loss(self, q_values):
         return q_values.mean()
-
-
-class WGANGPLoss(WGANLoss):
-
-    def calculate_gp(self, p_samples, q_samples):
-        eps = torch.rand((p_samples.shape))
-        x_hat = eps * p_samples + (1 - eps) * q_samples
-        x_hat.requires_grad = True
-        x_hat_values = self.discriminator_model(x_hat).mean()
-        gp = newton.gradient(x_hat_values, x_hat)
-        penalty = self.grad_penalty * (torch.norm(gp, p=2) - 1).pow(2)
-        return penalty
 
 
 class LSGANLoss(AdversarialLoss):
