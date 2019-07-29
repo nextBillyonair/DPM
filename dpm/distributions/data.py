@@ -8,20 +8,29 @@ from .distribution import Distribution
 
 class Data(Distribution):
 
-    def __init__(self, data, learnable=False):
+    def __init__(self, *data, learnable=False):
         super().__init__()
-        if not isinstance(data, torch.Tensor):
-            data = torch.tensor(data)
-        self.n_dims = data.size(-1)
-        self.n_samples = len(data)
-        self.data = data
+        torch_data = []
+        for i, d in enumerate(data):
+            if not isinstance(d, torch.Tensor):
+                d = torch.tensor(d)
+            torch_data.append(d)
+
+        assert (np.array([d.shape for d in torch_data]) == torch_data[0].shape).all()
+        self.n_dims = torch_data[0].size(-1)
+        self.n_samples = len(torch_data[0])
+        self.n_pairs = len(data)
+        self.data = torch_data
 
     def log_prob(self, value):
         raise NotImplementedError("Data Distribution log_prob not implemented")
 
     def sample(self, batch_size):
-        idx = torch.tensor(np.random.choice(self.data.size(0), size=batch_size))
-        return self.data[idx]
+        idx = torch.tensor(np.random.choice(self.data[0].size(0), size=batch_size))
+        samples = tuple(d[idx] for d in self.data)
+        if self.n_pairs == 1:
+            return samples[0]
+        return samples
 
     def get_parameters(self):
         return {'n_dims':self.n_dims, 'n_samples':self.n_samples}

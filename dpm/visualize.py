@@ -5,7 +5,7 @@ import matplotlib.colors as colors
 from matplotlib import cm
 import matplotlib
 import seaborn as sns
-from dpm.distributions import Uniform, Normal
+from dpm.distributions import Uniform, Normal, Data
 from dpm.emd import make_distance_matrix
 from torch.nn.functional import softplus
 import torch
@@ -31,8 +31,8 @@ def plot_models(p_model, q_model, batch_size=10000, n_plot=500):
     return plot_models_2D(p_model, q_model, batch_size, n_plot)
 
 def plot_models_1D(p_model, q_model, batch_size=10000):
-    q_samples = q_model.sample(batch_size).detach().numpy()
     p_samples = p_model.sample(batch_size).detach().numpy()
+    q_samples = q_model.sample(batch_size).detach().numpy()
     ax = sns.distplot(q_samples, color = '#003f5c', label="Learned Model")
     ax = sns.distplot(p_samples, color = '#ffa600', label="True Model")
     plt.xlabel("Sample")
