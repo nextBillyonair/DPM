@@ -53,4 +53,6 @@ def pinverse(X):
     rows = np.prod(X.shape[:len(X.shape)//2])
     return torch.pinverse(X.reshape(rows, rows)).reshape(original)
 
+
+
 # EOF

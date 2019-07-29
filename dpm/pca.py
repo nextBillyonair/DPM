@@ -1,4 +1,6 @@
 import torch
+from torch.nn import Parameter
+from dpm.distributions import Distribution
 
 # spin off into class
 def pca(X, k=2):
@@ -48,6 +50,15 @@ class PCA():
         return self.explained_variance_ratio_[:self.k]
 
 
+class ProbabilisticPCA(Distributions):
 
+    def __init__(self):
+        pass
+
+    def log_prob(self, value):
+        pass
+
+    def sample(self, value):
+        pass
 
 # EOF
