@@ -15,14 +15,14 @@ class Distribution(ABC, Module):
     def sample(self, batch_size):
         raise NotImplementedError("sample method is not implemented")
 
-    def entropy(self, batch_size=10000):
+    def entropy(self):
         raise NotImplementedError('Entropy not implemented, use monte carlo approximation')
 
-    def perplexity(self, batch_size=10000):
+    def perplexity(self):
         return self.entropy(batch_size).exp()
 
-    def cross_entropy(self, model, batch_size=10000):
-        return -model.log_prob(self.sample(batch_size)).mean()
+    def cross_entropy(self, model):
+        raise NotImplementedError('Cross Entropy not implemented, use divergence method')
 
     def cdf(self, c):
         raise NotImplementedError('CDF not implemented, use monte carlo approximation')
