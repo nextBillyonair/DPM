@@ -13,6 +13,20 @@ def variance(model, batch_size=1024):
     return (samples - samples.mean()).pow(2).mean()
 
 
+def standard_deviation(model, batch_size=1024):
+    return variance(model, batch_size).sqrt()
+
+
+def skewness(model, batch_size=1024):
+    samples = model.sample(batch_size)
+    return ((samples - samples.mean()) / samples.std()).pow(3).mean()
+
+
+def kurtosis(model, batch_size=1024):
+    samples = model.sample(batch_size)
+    return ((samples - samples.mean()) / samples.std()).pow(4).mean() - 3.
+
+
 def median(model, batch_size=1024):
     return model.sample(batch_size).median()
 
