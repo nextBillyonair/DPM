@@ -6,7 +6,7 @@ from dpm.newton import gradient
 from .normal import Normal
 from .distribution import Distribution
 
-# Uses langevin dynamics to samples
+# Adds langevin dynamics to the model
 class Langevin(Distribution):
 
     def __init__(self, x_t, model, tau=1.):
