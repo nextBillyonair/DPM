@@ -143,9 +143,9 @@ Differentiable Probabilistic Models
   1. Min -> approximate Minimum limit of model
 
 # Monte Carlo Sampling <a name="monte_carlo_sampling"></a>
-  1. Linear Congruential Generator
+  1. [Linear Congruential Generator](https://en.wikipedia.org/wiki/Linear_congruential_generator)
   1. Uniform Sampling with LCG
-  1. Inverse CDF Sampling
+  1. [Inverse CDF Sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling)
   1. [Rejection Sampling](https://en.wikipedia.org/wiki/Rejection_sampling) -> given a model, proposal model, and M, attempt to create samples similar to model via sampling the proposal model.
   1. [Box Muller](https://en.wikipedia.org/wiki/Box–Muller_transform) -> Generates a Standard Normal
   1. [Marsaglia-Bray](https://en.wikipedia.org/wiki/Marsaglia_polar_method) -> Generates a Standard Normal
