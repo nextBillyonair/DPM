@@ -51,6 +51,8 @@ Differentiable Probabilistic Models
   1. [Gumbel Softmax (Relaxed Categorical)](https://arxiv.org/abs/1611.01144)
   1. Half Cauchy
   1. Half Normal
+  1. [Langevin](https://en.wikipedia.org/wiki/Metropolis-adjusted_Langevin_algorithm)
+      * Adds Langevin Dynamics to sampling methods (see wikipedia)
   1. [Laplace](https://en.wikipedia.org/wiki/Laplace_distribution)
   1. [Log Cauchy](https://en.wikipedia.org/wiki/Log-Cauchy_distribution)
   1. [Log Laplace](https://en.wikipedia.org/wiki/Log-Laplace_distribution)
@@ -141,6 +143,8 @@ Differentiable Probabilistic Models
   1. Min -> approximate Minimum limit of model
 
 # Monte Carlo Sampling <a name="monte_carlo_sampling"></a>
+  1. Linear Congruential Generator
+  1. Uniform Sampling with LCG
   1. Inverse CDF Sampling
   1. [Rejection Sampling](https://en.wikipedia.org/wiki/Rejection_sampling) -> given a model, proposal model, and M, attempt to create samples similar to model via sampling the proposal model.
   1. [Box Muller](https://en.wikipedia.org/wiki/Box–Muller_transform) -> Generates a Standard Normal
@@ -153,6 +157,10 @@ Differentiable Probabilistic Models
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
       * MCMC sampling method to generate samples from a unknown distribution
         * Requires distribution to have a log_prob method implemented.
+  1. [Metropolis]()
+      * MCMC with a symmetric proposal (Multivariate Normal)
+  1. [Metropolis-Langevin](https://en.wikipedia.org/wiki/Metropolis-adjusted_Langevin_algorithm)
+      * MCMC with proposal update using Langevin Dynamics
 
 # Newton Methods <a name="newton"></a>
   1. Gradient (Infers whether Jacobian or regular grad is used)

@@ -16,6 +16,7 @@ from .generator import Generator
 from .gumbel_softmax import GumbelSoftmax
 from .half_cauchy import HalfCauchy
 from .half_normal import HalfNormal
+from .langevin import Langevin
 from .laplace import Laplace
 from .log_cauchy import LogCauchy
 from .log_laplace import LogLaplace

@@ -13,7 +13,7 @@ from dpm.distributions import (
     Logistic, ChiSquare
 )
 from dpm.mixture_models import MixtureModel, GumbelMixtureModel
-from dpm.monte_carlo import metropolis_hastings
+from dpm.monte_carlo import metropolis
 from dpm.train import train
 from dpm.divergences import (
     forward_kl, reverse_kl, js_divergence, cross_entropy
@@ -119,7 +119,7 @@ mcmc_models = [
 ]
 @pytest.mark.parametrize("dist,n_dims", mcmc_models)
 def test_mcmc_plot(dist, n_dims):
-    samples = metropolis_hastings(dist, epochs=10, burn_in=2, keep=2)
+    samples = metropolis(dist, epochs=10, burn_in=2, keep_every=2)
     assert samples.size(1) == n_dims
     plot_mcmc(samples)
     plt.close()

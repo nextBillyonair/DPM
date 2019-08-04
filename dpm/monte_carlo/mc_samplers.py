@@ -5,6 +5,18 @@ import math
 
 # SAMPLING
 
+def lcg(modulus=2147483563, a=40014, c=0, seed=42):
+    while True:
+        seed = (a * seed + c) % modulus
+        yield seed
+
+def rand(batch_size=10000, generator=None):
+    if generator is None:
+        generator = lcd()
+    samples = torch.tensor([[next(generator)] for _ in range(batch_size)]).float()
+    return samples / 2147483563.
+
+
 # function is the inverse CDF
 def inverse_sampling(function, batch_size=10000, n_dims=1):
     U = torch.rand((batch_size, n_dims))
@@ -22,25 +34,25 @@ def rejection_sampling(model, test_model, M, batch_size=10000):
     return model_samples[accepted]
 
 # Works!
-def box_muller(batch_size=10000, n_dims=1):
-    U1 = torch.rand((batch_size, n_dims))
-    U2 = torch.rand((batch_size, n_dims))
-    R, V = -3 * U1.log(), 2 * math.pi * U2
+def box_muller(batch_size=10000):
+    U1 = torch.rand((batch_size, 1))
+    U2 = torch.rand((batch_size, 1))
+    R, V = -2 * U1.log(), 2 * np.pi * U2
     Z1 = R.sqrt() * torch.cos(V)
     Z2 = R.sqrt() * torch.sin(V)
-    return torch.cat((Z1, Z2))
+    return Z1, Z2
 
 # Works!
-def marsaglia_bray(batch_size=10000, n_dims=1):
-    U1 = torch.rand((batch_size, n_dims))
-    U2 = torch.rand((batch_size, n_dims))
+def marsaglia_bray(batch_size=10000):
+    U1 = torch.rand((batch_size, 1))
+    U2 = torch.rand((batch_size, 1))
     U1, U2 = 2 * U1 - 1, 2 * U2 - 1
     X = U1.pow(2) + U2.pow(2)
     Y = torch.sqrt(-2 * X.log() / X)
     Z1, Z2 = U1 * Y, U2 * Y
-    Z1 = Z1[X <= 1].reshape(-1, n_dims)
-    Z2 = Z2[X <= 1].reshape(-1, n_dims)
-    return torch.cat((Z1, Z2))
+    Z1 = Z1[X <= 1].reshape(-1, 1)
+    Z2 = Z2[X <= 1].reshape(-1, 1)
+    return Z1, Z2
 
 
 # possible broken for values, dowsn't work for n_dims > 2

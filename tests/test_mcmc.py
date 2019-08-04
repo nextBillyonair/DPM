@@ -6,7 +6,7 @@ from dpm.distributions import (
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
 )
-from dpm.monte_carlo import metropolis_hastings
+from dpm.monte_carlo import metropolis
 import pytest
 
 def test_mcmc_2d():
@@ -15,9 +15,9 @@ def test_mcmc_2d():
                     Normal([-5.2, -5.2], [[1.5, 0.0], [0.0, 1.5]])],
                     [0.25, 0.5, 0.25])
 
-    samples = metropolis_hastings(true, epochs=100, burn_in=10)
-    samples = metropolis_hastings(true, epochs=100, burn_in=10, keep=5)
-    samples = metropolis_hastings(true, epochs=10, burn_in=1, keep=5, random_init=False)
+    samples = metropolis(true, epochs=100, burn_in=10)
+    samples = metropolis(true, epochs=100, burn_in=10, keep_every=5)
+    samples = metropolis(true, epochs=10, burn_in=1, keep_every=5, init=None)
 
 test_dists = [
     (Normal(0., 1.), 1),
@@ -59,5 +59,8 @@ test_dists = [
 
 @pytest.mark.parametrize("dist,n_dims", test_dists)
 def test_mcmc_complete(dist, n_dims):
-    samples = metropolis_hastings(dist, epochs=10, burn_in=1, keep=5)
-    samples = metropolis_hastings(dist, epochs=3, burn_in=1, keep=1, random_init=False)
+    samples = metropolis(dist, epochs=10, burn_in=1, keep_every=5)
+    if dist.n_dims == 1:
+        samples = metropolis(dist, epochs=3, burn_in=1, keep_every=1, init=4.)
+    else:
+        samples = metropolis(dist, epochs=3, burn_in=1, keep_every=1, init=[4., 4.])

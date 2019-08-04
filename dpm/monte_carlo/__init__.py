@@ -1,4 +1,6 @@
-from .mcmc import metropolis_hastings
+from .mcmc import (
+    metropolis, metropolis_langevin, metropolis_hastings
+)
 
 from .mc_approximations import (
     monte_carlo, expectation, variance, median, cdf, entropy,
@@ -6,6 +8,7 @@ from .mc_approximations import (
 )
 
 from .mc_samplers import (
+    lcg, rand,
     inverse_sampling, rejection_sampling, box_muller,
     marsaglia_bray, beta_sampling, double_exponential
 )
