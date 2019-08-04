@@ -9,23 +9,31 @@ from .distribution import Distribution
 # Uses langevin dynamics to samples
 class Langevin(Distribution):
 
-    def __init__(self, distribution=Normal, tau=1., *args, **kwargs):
+    def __init__(self, x_t, model, tau=1.):
         super().__init__()
-        self.n_dims = distribution.n_dims
-        self.distribution = distribution(*args, **kwargs)
+        self.model = model
+        self.n_dims = self.model.n_dims
         self.tau = tau
-        self.noise = Normal(torch.zeros(self.n_dims), torch.ones(self.n_dims))
+        self.x_t = x_t
+        self.noise = Normal(torch.zeros(self.n_dims),
+                     (2. * self.tau) * torch.ones(self.n_dims))
 
     def log_prob(self, value):
-        return self.distribution.log_prob(value)
+        samples = self.x_t.expand_as(value)
+        samples.requires_grad = True
+        log_probs = self.model.log_prob(samples)
+        noise_sample = samples - value + self.tau * gradient(log_probs, samples).squeeze(0)
+        tmp = self.noise.log_prob(noise_sample).detach()
+        return tmp
 
     def sample(self, batch_size):
-        samples = self.distribution.sample(batch_size)
-        log_probs = self.distribution.log_prob(samples)
-        eta = (2. * self.tau).sqrt() * self.noise.sample(batch_size)
-        samples = samples + self.tau * gradient(log_probs) + eta
-        return samples
+        samples = self.x_t.expand(batch_size, self.n_dims).detach()
+        samples.requires_grad = True
+        log_probs = self.model.log_prob(samples)
+        eta = self.noise.sample(batch_size)
+        samples = samples + self.tau * gradient(log_probs, samples).squeeze(0) + eta
+        return samples.detach()
 
     def get_parameters(self):
-        return {'distribution':self.distribution.get_parameters(),
+        return {'distribution':self.model.get_parameters(),
                 'tau': self.tau}

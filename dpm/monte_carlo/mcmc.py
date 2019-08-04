@@ -13,9 +13,9 @@ def metropolis(true_model, epochs=10000, burn_in=1000, keep_every=1,
                                keep_every, init)
 
 
-def metropolis_langevin(true_model, proposal_model, tau=1., epochs=10000,
+def metropolis_langevin(true_model, tau=1., epochs=10000,
                         burn_in=1000, keep_every=1, init=None):
-    langevin_model = partial(Langevin, distribution=proposal_model, tau=tau)
+    langevin_model = partial(Langevin, model=true_model, tau=tau)
     return metropolis_hastings(true_model, langevin_model, epochs, burn_in,
                                keep_every, init)
 
