@@ -1,0 +1,342 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{bayesnet}
+\usetikzlibrary{arrows}
+\usepackage{color}
+\usepackage{array}
+\usepackage{dsfont}
+\usepackage{multirow, graphicx}
+ \usepackage{float}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{caption}
+\usepackage{subfig}
+\usepackage{pifont}
+\usepackage{xcolor}
+\usepackage{algorithm,algorithmic}
+% \floatname{algorithm}{Procedure}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\cmark}{\textcolor{green!80!black}{\ding{51}}}
+\newcommand{\xmark}{\textcolor{red}{\ding{55}}}
+\DeclareMathOperator*{\argmin}{argmin}
+\urlstyle{same}
+\usepackage{listings}
+% \usetheme{Boadilla}
+
+\title{Introduction to Random Numbers, Sampling,\\and MCMC Methods}
+% \subtitle{Using Beamer}
+\author{Bill Watson}
+\institute{S\&P Global}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+\begin{frame}
+\frametitle{What is Sampling and why is it useful?}
+\begin{itemize}
+  \item Sampling is the practice of generating observations from a population
+  \item Monte Carlo methods are algorithms that rely on repeated random sampling
+    to obtain approximations where it is difficult or impossible to use deterministic approaches
+    \begin{itemize}
+      \item Optimization
+      \item Numerical Integration
+      \item Sampling distributions
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Application: Approximating $\pi$}
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE Batch Size $N$
+  \STATE Sample $u_1 \sim \text{Uniform}(0, 1)$ $N$ times
+  \STATE Sample $u_2 \sim \text{Uniform}(0, 1)$ $N$ times
+  \STATE $\tilde{\pi} = \frac{4}{N} \cdot \left\vert \left\{ (u_1, u_2) \; \Big \vert \; \sqrt{u_1^2 + u_2^2} < 1 \right\} \right\vert$
+  \ENSURE $\tilde{\pi}$
+\end{algorithmic}
+\caption{Approximating $\pi$}
+\end{algorithm}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Application: Approximating $\pi$}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{assets/approx_pi_circle}
+    \caption{The ratio of points inside the unit circle approximates $\frac{\pi}{4}$}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Application: Approximating $\pi$}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{assets/approx_pi_error}
+  \end{figure}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{What can we do with our samples?}
+\begin{itemize}
+  \item Integration: $\int p(x) \, f(x) \, dx = \frac{1}{n} \sum_{x_i \sim P} f(x_i) $
+  \item Expectation: $ \mu = \frac{1}{n} \sum_{x_i} x_i $
+  \item Variance: $ \sigma^2 = \frac{1}{n} \sum_{x_i} \left( x_i - \mu \right)^2$
+  \item Median: $\text{median} = \text{median} (x_1, x_2, \hdots x_n)$
+  \item Entropy: $\mathbb{H}(P) = - \frac{1}{n} \sum_{x_i \sim P} \log p (x_i)$
+  \item CDF: $p(c) = \frac{1}{n} \, \vert \{ x_i \, | \, x_i \leq c \} \vert$
+\end{itemize}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Pseudo-Random Number Generators}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Pseudo-Random Number Generators: LCG}
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE Modulus $m$, Multiplier $a$, Increment $c$, Seed $X_0$
+  \STATE $X_{i+1} = \left( a \cdot X_i + c \right) \mod m$
+  \ENSURE $X_{i+1}$
+\end{algorithmic}
+\caption{Linear Congruential Generator}
+\end{algorithm}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Pseudo-Random Number Generators: Mersenne Twister}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Generating a Normal from the CDF}
+\begin{itemize}
+  \item We can use the cumulative distribution function to sample any distribution
+  \item For instance, a normal's CDF is:
+\end{itemize}
+\begin{equation*}
+  \Phi(x) = \frac{1}{2} \left[ 1 + \text{erf}\left( \frac{x - \mu}{\sigma \sqrt{2}} \right) \right]
+\end{equation*}
+\begin{itemize}
+  \item With an Inverse CDF as:
+\end{itemize}
+\begin{equation*}
+  \Phi^{-1}(p) = \mu + \sigma \sqrt{2} \cdot \text{erf}^{-1}\left( 2p - 1 \right)
+\end{equation*}
+\begin{itemize}
+  \item $\text{erf}(x)$ is the error function, defined as:
+\end{itemize}
+\begin{equation*}
+  \text{erf}(x) = \frac{2}{\sqrt{\pi}} \int^{x}_{0} e^{-t^2} dt
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Inverse Transform Sampling}
+\begin{itemize}
+  \item It's easy to generalize this method to any distribution with a closed-form inverse CDF
+  \begin{algorithm}[H]
+  \begin{algorithmic}[1]
+    \REQUIRE Inverse CDF $F^{-1}$
+    \STATE Sample $u \sim \text{Uniform}(0, 1)$
+    \STATE $X = F^{-1} (u)$
+    \ENSURE $X$
+  \end{algorithmic}
+  \caption{Inverse Transform Sampling}
+  \end{algorithm}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Inverse Transform Sampling: Example}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Table of Inverse CDFs for Common Distributions}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Rejection Sampling}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Rejection Sampling: Algorithm}
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE Model $P$, Proposal $Q$, $M > 1$
+  \STATE Sample $x \sim P$
+  \STATE Sample $u \sim \text{Uniform}(0, 1)$
+  \IF {$u < \frac{p(x)}{M \cdot q(x)}$}
+    \STATE {Accept $x$}
+  \ELSE
+    \STATE {Reject $x$}
+  \ENDIF
+  \ENSURE Accepted Samples
+\end{algorithmic}
+\caption{Rejection Sampling}
+\end{algorithm}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Rejection Sampling: Example}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Rejection Sampling: Pros \& Cons}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{What is MCMC?}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Metropolis-Hastings}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Metropolis-Hastings: Algorithm}
+  \begin{algorithm}[H]
+  \algsetup{linenosize=\tiny}
+  \scriptsize
+  \begin{algorithmic}[1]
+    \REQUIRE Model $P$, Proposal $Q$
+    \STATE Initialize $x_0$
+    \FOR {$s = 0, 1, \hdots$}
+      \STATE Sample $x' \sim q(x'|x_s)$
+      \STATE Compute acceptance probability
+        \begin{flalign*}
+          r = \min\left( 1, \; \frac{p(x')}{p(x_s)} \frac{q(x_s|x')}{q(x'|x_s)} \right) &&
+        \end{flalign*}
+      \STATE Sample $u \sim \text{Uniform}(0, 1)$
+      \IF {$u < r$}
+        \STATE {Accept $x'$}
+        \STATE {Set $x_{s+1} = x'$}
+      \ELSE
+        \STATE{Reject $x'$}
+        \STATE {Set $x_{s+1} = x_s$}
+      \ENDIF
+    \ENDFOR
+    \ENSURE Accepted Samples
+  \end{algorithmic}
+  \caption{Metropolis-Hastings Algorithm}
+  \end{algorithm}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Metropolis-Hastings: Example}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Metropolis-Hastings: Conditions}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Variants of Metropolis-Hastings}
+\begin{itemize}
+  \item Metropolis Algorithm
+  \begin{itemize}
+    \item Uses a symmetric proposal distribution $Q$, such that: \\
+     $q(x_s|x') = q(x'|x_s)$
+  \end{itemize}
+  \item Metropolis-Adjusted Langevin Algorithm
+  \begin{itemize}
+    \item New states are proposed with Langevin dynamics: \\
+      $x' = x_s + \tau \nabla \log \pi(x_s) + \sqrt{2 \tau} \xi_k$
+    \item Proposal probabilties are normally distributed: \\
+      $q(x'| x_s) \sim \mathcal{N}(x_s + \tau \nabla \log \pi(x_s), \, 2 \tau  I_d)$
+  \end{itemize}
+  \item Hamiltonian Monte-Carlo
+  \begin{itemize}
+    \item
+  \end{itemize}
+  \item No-U-Turn Sampler (NUTS)
+  \begin{itemize}
+    \item
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{Gibbs Sampling}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Further Reading}
+  \begin{itemize}
+    \item Machine Learning: A Probabilistic Perspective by Kevin Murphy
+    \item Monte Carlo Methods in Financial Engineering by Paul Glasserman
+    \item Probabilistic Graphical Models: Principles and Techniques by Daphne Koller and Nir Friedman
+  \end{itemize}
+\end{frame}
+
+
+
+% Refs, ideas, etc
+
+
+\end{document}
