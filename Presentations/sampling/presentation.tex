@@ -150,13 +150,13 @@
   \item For instance, a normal's CDF is:
 \end{itemize}
 \begin{equation*}
-  \Phi(x) = \frac{1}{2} \left[ 1 + \text{erf}\left( \frac{x - \mu}{\sigma \sqrt{2}} \right) \right]
+  F(x) = \frac{1}{2} \left[ 1 + \text{erf}\left( \frac{x - \mu}{\sigma \sqrt{2}} \right) \right]
 \end{equation*}
 \begin{itemize}
   \item With an Inverse CDF as:
 \end{itemize}
 \begin{equation*}
-  \Phi^{-1}(p) = \mu + \sigma \sqrt{2} \cdot \text{erf}^{-1}\left( 2p - 1 \right)
+  F^{-1}(p) = \mu + \sigma \sqrt{2} \cdot \text{erf}^{-1}\left( 2p - 1 \right)
 \end{equation*}
 \begin{itemize}
   \item $\text{erf}(x)$ is the error function, defined as:
@@ -192,6 +192,20 @@
 
 \begin{frame}
 \frametitle{Table of Inverse CDFs for Common Distributions}
+\begin{center}
+\begin{tabular}{C{5cm}C{5cm}}
+\toprule
+{Distribution} & $F^{-1}(p)$ \\
+\midrule
+$\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \sqrt{2} \cdot \text{erf}^{-1}\left( 2p - 1 \right)$ \\
+\\
+$\text{Uniform}(a, b)$   &  $a + p \cdot \left( b - a \right)$ \\
+\\
+$\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
+\\
+\bottomrule
+\end{tabular}
+\end{center}
 \end{frame}
 
 
