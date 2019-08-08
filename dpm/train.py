@@ -20,9 +20,28 @@ def update_stats(stats, model):
     stats.update(model.get_parameters())
 
 
+def gradient_clipping(model, clip):
+    for p in model.parameters():
+        p.grad.data.clamp_(-clip, clip)
+
+
+def l2_regularize(model):
+    loss = 0.0
+    for p in model.parameters():
+        loss += p.pow(2).mean()
+    return loss
+
+
+def l1_regularize(model):
+    loss = 0.0
+    for p in model.parameters():
+        loss += p.abs().mean()
+    return loss
+
+
 def train(p_model, q_model, criterion, epochs=1000, batch_size=64,
           lr=0.01, optimizer='Adam', track_parameters=True, log_interval=None,
-          stats=None, clip_gradients=None):
+          stats=None, clip_gradients=None, l2_penalty=None, l1_penalty=None):
 
     optimizer = getattr(optim, optimizer)(q_model.parameters(), lr=lr)
 
@@ -35,10 +54,16 @@ def train(p_model, q_model, criterion, epochs=1000, batch_size=64,
             criterion.zero_grad()
 
         loss = criterion(p_model, q_model, batch_size)
+
+        if l2_penalty:
+            loss += l2_penalty * l2_regularize(q_model)
+        if l1_penalty:
+            loss += l1_penalty * l1_regularize(q_model)
+
         loss.backward()
-        if clip_gradients is not None:
-            for p in q_model.parameters():
-                p.grad.data.clamp_(-clip_gradients, clip_gradients)
+
+        if clip_gradients:
+            gradient_clipping(q_model, clip_gradients)
 
         optimizer.step()
         if 'step' in dir(criterion):
