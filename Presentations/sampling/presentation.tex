@@ -82,7 +82,7 @@
   \frametitle{Application: Approximating $\pi$}
   \begin{figure}
     \centering
-    \includegraphics[scale=0.5]{assets/approx_pi_circle}
+    \includegraphics[width=\textwidth]{assets/approx_pi_circle}
     \caption{The ratio of points inside the unit circle approximates $\frac{\pi}{4}$}
   \end{figure}
 \end{frame}
@@ -92,7 +92,7 @@
   \frametitle{Application: Approximating $\pi$}
   \begin{figure}
     \centering
-    \includegraphics[scale=0.8]{assets/approx_pi_error}
+    \includegraphics[width=\textwidth]{assets/approx_pi_error}
   \end{figure}
 \end{frame}
 
@@ -235,9 +235,67 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
 \end{algorithm}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Rejection Sampling: Intuition}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/rejection_sampling_explanation}
+  \end{figure}
+\end{frame}
+
 
 \begin{frame}
-\frametitle{Rejection Sampling: Example}
+  \frametitle{Rejection Sampling: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/rs_m_1_3}
+    \caption{Rejection Sampling with $M = 1.3$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rejection Sampling: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/rs_hist_1_3}
+    \caption{$M = 1.3$, $6,688$ Accepted Samples}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rejection Sampling: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/rs_m_2_5}
+    \caption{Rejection Sampling with $M = 2.5$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rejection Sampling: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/rs_hist_2_5}
+    \caption{$M = 2.5$, $4,085$ Accepted Samples}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rejection Sampling: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/rs_m_100}
+    \caption{Rejection Sampling with $M = 100$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rejection Sampling: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/rs_hist_100}
+    \caption{$M = 100$, $92$ Accepted Samples}
+  \end{figure}
 \end{frame}
 
 
@@ -319,7 +377,7 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
   \end{itemize}
   \item Hamiltonian Monte-Carlo
   \begin{itemize}
-    \item
+    \item Adds Hamiltonian Dynamics
   \end{itemize}
   \item No-U-Turn Sampler (NUTS)
   \begin{itemize}

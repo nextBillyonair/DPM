@@ -24,7 +24,7 @@ def inverse_sampling(function, batch_size=10000, n_dims=1):
 
 
 def rejection_sampling(model, test_model, M, batch_size=10000):
-    if M <= 1: raise ValueError(f'Error: M should be larger than 1; got {M}')
+    # if M <= 1: raise ValueError(f'Error: M should be larger than 1; got {M}')
     model_samples = test_model.sample(batch_size)
     uniform_samples = torch.rand(batch_size).log()
     acceptance_ratio = (model.log_prob(model_samples) \
