@@ -45,3 +45,65 @@ def metropolis_hastings(true_model, proposal_model, epochs=10000, burn_in=1000,
             samples.append(x_t)
 
     return torch.cat(samples, dim=0)
+
+
+def grad_U(q, model):
+    q.requires_grad = True
+    g = gradient(-model.log_prob(q), q).squeeze(0).detach()
+    q.requires_grad = False
+    return g
+
+
+def hamiltonian_monte_carlo(model, epsilon=0.2, leapfrog=20, epochs=1000,
+                            burn_in=1000, keep_every=1, init=None):
+    if init is None:
+        current_x = torch.rand((1, model.n_dims))
+    else:
+        current_x = init
+        if not isinstance(current_x, torch.Tensor):
+            current_x = torch.tensor(current_x).view(1, -1)
+
+    samples = []
+
+    for t in range(epochs):
+        x = current_x.clone()
+        v = torch.randn((x.size(1), 1))
+        current_v = v.clone()
+
+        v = v - epsilon * grad_U(x, model) / 2.
+
+        for l in range(leapfrog):
+            x = x + epsilon * v
+            if l + 1 != leapfrog:
+                v = v - epsilon * grad_U(x, model)
+
+        v = v - epsilon * grad_U(x, model) / 2.
+        v = -v
+
+        current_U = -model.log_prob(current_x)
+        current_K = current_v.pow(2).sum() / 2.
+        proposed_U = -model.log_prob(x)
+        proposed_K = v.pow(2).sum() / 2.
+
+        u = torch.rand(1).log()
+        A = current_U - proposed_U + current_K - proposed_K
+        if u < A:
+            current_x = x
+
+        if t >= burn_in and t % keep_every == 0:
+            samples.append(current_x)
+
+    return torch.cat(samples, dim=0)
+
+
+
+
+
+
+
+
+
+
+
+
+#EOF

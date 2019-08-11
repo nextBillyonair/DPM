@@ -23,7 +23,7 @@ def plot_stats(stats, goals=None):
         for i, goal in enumerate(goals):
             axes[0, i+1].axhline(goals[i], color="#ff6e54", linewidth=4)
     plt.tight_layout()
-    # plt.show()
+
 
 def plot_models(p_model, q_model, batch_size=10000, n_plot=500):
     if p_model.n_dims == 1:
@@ -39,7 +39,6 @@ def plot_models_1D(p_model, q_model, batch_size=10000):
     plt.ylabel("Density")
     plt.title("Distplot for Models")
     plt.legend()
-    # plt.show()
 
 
 def plot_models_2D(p_model, q_model, batch_size=10000, n_plot=500):
@@ -65,7 +64,6 @@ def plot_models_2D(p_model, q_model, batch_size=10000, n_plot=500):
     plt.ylabel("Y")
     plt.title("P Samples vs Q Contour")
     plt.xlim(x_min, x_max); plt.ylim(y_min, y_max)
-    # plt.show()
 
 
 
@@ -80,26 +78,24 @@ def plot_model_1D(model, batch_size=10000):
     plt.xlabel("Sample")
     plt.ylabel("Density")
     plt.title("Distplot for Model")
-    # plt.show()
 
 def plot_model_2D(model, batch_size=10000):
     plot_models_2D(model, model, batch_size)
 
 
 
-def plot_hists(samples_1, samples_2, labels=["Accepted Samples", "True Model"]):
+def plot_hists(samples_1, samples_2, labels=["Accepted Samples", "True Model"], bins=50):
     if samples_1.size(1) == 1:
-        return plot_hists_1D(samples_1, samples_2, labels)
+        return plot_hists_1D(samples_1, samples_2, labels, bins)
     return plot_hists_2D(samples_1, samples_2, labels)
 
-def plot_hists_1D(samples_1, samples_2, labels=["Accepted Samples", "True Model"]):
-    ax = sns.distplot(samples_1, color = '#003f5c', label=labels[0])
-    ax = sns.distplot(samples_2, color = '#ffa600', label=labels[1])
+def plot_hists_1D(samples_1, samples_2, labels=["Accepted Samples", "True Model"], bins=50):
+    ax = sns.distplot(samples_1, color = '#003f5c', label=labels[0], bins=bins)
+    ax = sns.distplot(samples_2, color = '#ffa600', label=labels[1], bins=bins)
     plt.xlabel("Sample")
     plt.ylabel("Density")
     plt.title("Distplot for Model")
     plt.legend()
-    # plt.show()
 
 def plot_hists_2D(samples_1, samples_2, labels=["Accepted Samples", "True Model"]):
     x_min, x_max, y_min, y_max = [-10.0, 10.0, -10.0, 10.0]
@@ -124,7 +120,6 @@ def plot_hists_2D(samples_1, samples_2, labels=["Accepted Samples", "True Model"
     plt.ylabel("Y")
     plt.title("MCMC Samples vs Model Contour")
     plt.xlim(x_min, x_max); plt.ylim(y_min, y_max)
-    # plt.show()
 
 
 
@@ -138,13 +133,11 @@ def plot_hist_1D(samples):
     plt.xlabel("Sample")
     plt.ylabel("Density")
     plt.title("Distplot for Model")
-    # plt.show()
 
 def plot_hist_2D(samples):
     g = sns.jointplot(x=samples[:, 0], y=samples[:, 1], label="Samples",
                       s=4, color="#dd5182")
     g.set_axis_labels('X', 'Y')
-    # plt.show()
 
 
 def plot_mcmc(samples):
@@ -157,9 +150,8 @@ def plot_mcmc_1D(samples):
     y = samples.squeeze(1)
     sns.lineplot(x, y)
     plt.xlabel("Sample #")
-    plt.ylabel("X_t Value")
+    plt.ylabel(r"$X_t$ Value")
     plt.title("MCMC Accepted Samples")
-    # plt.plot()
 
 def plot_mcmc_2D(samples):
     fig, (ax1, ax2) = plt.subplots(2, 1)
@@ -172,7 +164,6 @@ def plot_mcmc_2D(samples):
     ax = sns.lineplot(x, y_1, ax=ax2)
     ax.set_ylabel("Y")
     ax.set_xlabel("Sample #")
-    # plt.plot()
 
 
 # def plot_loss_function_mu(loss, q_ref=Normal, p_model=Normal(), iterations=10):

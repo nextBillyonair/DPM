@@ -1,5 +1,6 @@
 from .mcmc import (
-    metropolis, metropolis_langevin, metropolis_hastings
+    metropolis, metropolis_langevin, metropolis_hastings,
+    hamiltonian_monte_carlo
 )
 
 from .mc_approximations import (

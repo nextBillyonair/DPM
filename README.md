@@ -154,13 +154,14 @@ Differentiable Probabilistic Models
       1. Double Exponential Sampling
 
 # MCMC Methods <a name="mcmc-methods"></a>
+  1. [Metropolis](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm#Step-by-step_instructions)
+      * MCMC with a symmetric proposal (Multivariate Normal)
   1. [Metropolis–Hastings](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm)
       * MCMC sampling method to generate samples from a unknown distribution
         * Requires distribution to have a log_prob method implemented.
-  1. [Metropolis]()
-      * MCMC with a symmetric proposal (Multivariate Normal)
   1. [Metropolis-Langevin](https://en.wikipedia.org/wiki/Metropolis-adjusted_Langevin_algorithm)
       * MCMC with proposal update using Langevin Dynamics
+  1. [Hamiltonian Monte Carlo](http://www.mcmchandbook.net/HandbookChapter5.pdf)
 
 # Newton Methods <a name="newton"></a>
   1. Gradient (Infers whether Jacobian or regular grad is used)
