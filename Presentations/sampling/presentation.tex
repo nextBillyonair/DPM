@@ -41,6 +41,17 @@
 \institute{S\&P Global}
 \date{\today}
 
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
 \begin{document}
 
 \begin{frame}
@@ -82,7 +93,7 @@
   \frametitle{Application: Approximating $\pi$}
   \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{assets/approx_pi_circle}
+    \includegraphics[scale=0.4]{assets/approx_pi_circle}
     \caption{The ratio of points inside the unit circle approximates $\frac{\pi}{4}$}
   \end{figure}
 \end{frame}
@@ -103,12 +114,12 @@
 \begin{frame}
 \frametitle{What can we do with our samples?}
 \begin{itemize}
-  \item Integration: $\int p(x) \, f(x) \, dx = \frac{1}{n} \sum_{x_i \sim P} f(x_i) $
-  \item Expectation: $ \mu = \frac{1}{n} \sum_{x_i} x_i $
-  \item Variance: $ \sigma^2 = \frac{1}{n} \sum_{x_i} \left( x_i - \mu \right)^2$
-  \item Median: $\text{median} = \text{median} (x_1, x_2, \hdots x_n)$
-  \item Entropy: $\mathbb{H}(P) = - \frac{1}{n} \sum_{x_i \sim P} \log p (x_i)$
-  \item CDF: $p(c) = \frac{1}{n} \, \vert \{ x_i \, | \, x_i \leq c \} \vert$
+  \item Integration: $\int p(x) \, f(x) \, dx \approx \frac{1}{n} \sum_{x_i \sim P} f(x_i) $
+  \item Expectation: $ \mu \approx \frac{1}{n} \sum_{x_i} x_i $
+  \item Variance: $ \sigma^2 \approx \frac{1}{n} \sum_{x_i} \left( x_i - \mu \right)^2$
+  \item Median: $\text{median} \approx \text{median} (x_1, x_2, \hdots x_n)$
+  \item Entropy: $\mathbb{H}(P) \approx - \frac{1}{n} \sum_{x_i \sim P} \log p (x_i)$
+  \item CDF: $p(c) \approx \frac{1}{n} \, \vert \{ x_i \, | \, x_i \leq c \} \vert$
 \end{itemize}
 \end{frame}
 
@@ -116,9 +127,15 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\section{Pseudo-Random Number Generators}
 \begin{frame}
 \frametitle{Pseudo-Random Number Generators}
+\begin{itemize}
+  \item If we need random numbers, then how do we generate them?
+  \item One solution: Pseudo-Random Number Generators
+  \item Pesudo since they cannot simulate "true" randomness
+  \item But can be replicated via "seeds"
+\end{itemize}
 \end{frame}
 
 
@@ -136,13 +153,18 @@
 
 
 \begin{frame}
-\frametitle{Pseudo-Random Number Generators: Mersenne Twister}
+  \frametitle{Pseudo-Random Number Generators}
+  \begin{itemize}
+    \item LCGs are of low quality
+    \item Mersenne Twister (1998) is the first PRNG to avoid major problems and run quickly
+    \item Can also use Hardware (True) RNG, External Entropy PRNGs
+  \end{itemize}
 \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\section{Inverse Transform Sampling}
 \begin{frame}
 \frametitle{Generating a Normal from the CDF}
 \begin{itemize}
@@ -171,38 +193,42 @@
 \frametitle{Inverse Transform Sampling}
 \begin{itemize}
   \item It's easy to generalize this method to any distribution with a closed-form inverse CDF
-  \begin{algorithm}[H]
-  \begin{algorithmic}[1]
-    \REQUIRE Inverse CDF $F^{-1}$
-    \STATE Sample $u \sim \text{Uniform}(0, 1)$
-    \STATE $X = F^{-1} (u)$
-    \ENSURE $X$
-  \end{algorithmic}
-  \caption{Inverse Transform Sampling}
-  \end{algorithm}
 \end{itemize}
-
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+  \REQUIRE Inverse CDF $F^{-1}$
+  \STATE Sample $u \sim \text{Uniform}(0, 1)$
+  \STATE $X = F^{-1} (u)$
+  \ENSURE $X$
+\end{algorithmic}
+\caption{Inverse Transform Sampling}
+\end{algorithm}
 \end{frame}
 
-
+% delete?
 \begin{frame}
-\frametitle{Inverse Transform Sampling: Example}
+  \frametitle{Inverse Transform Sampling: Intuition}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/icdf_transform}
+  \end{figure}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Table of Inverse CDFs for Common Distributions}
 \begin{center}
-\begin{tabular}{C{5cm}C{5cm}}
+\begin{tabular}{L{2cm}C{3.2cm}C{4.2cm}}
 \toprule
-{Distribution} & $F^{-1}(p)$ \\
+{Distribution} & $F(x)$ & $F^{-1}(p)$ \\
 \midrule
-$\mathcal{N}(\mu, \sigma)$   &  $\mu + \sigma \sqrt{2} \cdot \text{erf}^{-1}\left( 2p - 1 \right)$ \\
+$\mathcal{N}(\mu, \sigma)$   & $\frac{1}{2} \left[ 1 + \text{erf} \left( \frac{x - \mu}{\sigma \sqrt{2}} \right) \right]$ & $\mu + \sigma \sqrt{2} \cdot \text{erf}^{-1}\left( 2p - 1 \right)$ \\
 \\
-$\text{Uniform}(a, b)$   &  $a + p \cdot \left( b - a \right)$ \\
+$\mathcal{U}(a, b)$       & $\frac{x - a}{b - a}$ & $a + p \cdot \left( b - a \right)$ \\
 \\
-$\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
+$\text{Exp}(\lambda)$        & $1 - e^{-\lambda x}$  & $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
 \\
+$\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln \left( \frac{p}{1-p} \right)$\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -211,9 +237,13 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\section{Rejection Sampling}
 \begin{frame}
-\frametitle{Rejection Sampling}
+  \frametitle{Rejection Sampling}
+  \begin{itemize}
+    \item What if we do not have a closed from CDF or ICDF?
+    \item We can instead use Rejection Sampling!
+  \end{itemize}
 \end{frame}
 
 
@@ -221,10 +251,10 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
 \frametitle{Rejection Sampling: Algorithm}
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE Model $P$, Proposal $Q$, $M > 1$
-  \STATE Sample $x \sim P$
+  \REQUIRE Model $F$, Proposal $G$, $M > 1$
+  \STATE Sample $x \sim G$
   \STATE Sample $u \sim \text{Uniform}(0, 1)$
-  \IF {$u < \frac{p(x)}{M \cdot q(x)}$}
+  \IF {$u < \frac{f(x)}{M \cdot g(x)}$}
     \STATE {Accept $x$}
   \ELSE
     \STATE {Reject $x$}
@@ -258,7 +288,7 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
   \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{assets/rs_hist_1_3}
-    \caption{$M = 1.3$, $6,688$ Accepted Samples}
+    \caption{$M = 1.3$, $6,660$ Accepted Samples}
   \end{figure}
 \end{frame}
 
@@ -276,7 +306,7 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
   \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{assets/rs_hist_2_5}
-    \caption{$M = 2.5$, $4,085$ Accepted Samples}
+    \caption{$M = 2.5$, $4,034$ Accepted Samples}
   \end{figure}
 \end{frame}
 
@@ -294,26 +324,49 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
   \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{assets/rs_hist_100}
-    \caption{$M = 100$, $92$ Accepted Samples}
+    \caption{$M = 100$, $79$ Accepted Samples}
   \end{figure}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Rejection Sampling: Pros \& Cons}
+  \frametitle{Rejection Sampling: Pros \& Cons}
+  \begin{itemize}
+    \item Pros:
+    \begin{itemize}
+      \item Can be more efficient if the CDF is intractable
+    \end{itemize}
+    \item Cons:
+    \begin{itemize}
+      \item Tuning $M$ can be difficult. Too high and we reject too many, too low and
+      we under approximate our target
+      \item Very inefficient in higher dimensions
+    \end{itemize}
+  \end{itemize}
 \end{frame}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\section{Markov Chain Monte Carlo (MCMC)}
 \begin{frame}
 \frametitle{What is MCMC?}
+\begin{itemize}
+  \item Idea: Construct a Markov chain whose stationary distribution is the
+  target density of interest, $f(x)$.
+  \item The more steps we take in the chain, the better the approximation.
+  \item This method works well with muti-dimensional continuous variables.
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Metropolis-Hastings}
+\begin{itemize}
+  \item Construct a Markov Chain where we propose a new state $x'$ from the
+  current state $x_s$ with probability $g(x'|x_s)$.
+  \item After drawing a proposal $x'$ we calculate an acceptance probability, and
+  if accepted, upadte the state to $x'$, else stay at state $x_s$.
+\end{itemize}
 \end{frame}
 
 
@@ -323,13 +376,13 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
   \algsetup{linenosize=\tiny}
   \scriptsize
   \begin{algorithmic}[1]
-    \REQUIRE Model $P$, Proposal $Q$
+    \REQUIRE Model $F$, Proposal $G$
     \STATE Initialize $x_0$
     \FOR {$s = 0, 1, \hdots$}
-      \STATE Sample $x' \sim q(x'|x_s)$
+      \STATE Sample $x' \sim g(x'|x_s)$
       \STATE Compute acceptance probability
         \begin{flalign*}
-          r = \min\left( 1, \; \frac{p(x')}{p(x_s)} \frac{q(x_s|x')}{q(x'|x_s)} \right) &&
+          r = \min\left( 1, \; \frac{f(x')}{f(x_s)} \frac{g(x_s|x')}{g(x'|x_s)} \right) &&
         \end{flalign*}
       \STATE Sample $u \sim \text{Uniform}(0, 1)$
       \IF {$u < r$}
@@ -348,42 +401,124 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
 
 
 \begin{frame}
-\frametitle{Metropolis-Hastings: Example}
+  \frametitle{Metropolis-Hastings: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.35]{assets/mcmc_0_1}
+    \caption{$\sigma^2 = 0.1$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Metropolis-Hastings: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.35]{assets/mcmc_3}
+    \caption{$\sigma^2 = 3$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Metropolis-Hastings: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.35]{assets/mcmc_10}
+    \caption{$\sigma^2 = 10$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Metropolis-Hastings: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.35]{assets/mcmc_100}
+    \caption{$\sigma^2 = 100$}
+  \end{figure}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Metropolis-Hastings: Conditions}
+\frametitle{Metropolis-Hastings: Key Terms to Know}
+\begin{itemize}
+  \item Acceptance Rates
+  \begin{itemize}
+    \item Fraction of draws that are accepted
+    \item High accpetance rate $\rightarrow$ bad mixing
+    \item Low Acceptance rate $\rightarrow$ inefficient
+    \item Theoretical rates: $44\%$ for one dimension, $23.4\%$ as the dimension goes to infinity
+  \end{itemize}
+  \item Chains
+  \item Burn In
+  \begin{itemize}
+    \item Allows the chain to "forget" its starting values and converge on areas of high probabilty
+  \end{itemize}
+  \item Mixing
+  \begin{itemize}
+    \item Allowing the chains to fully explore the state space, instead of collapsing
+    in one peak
+  \end{itemize}
+\end{itemize}
 \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{Variants of Metropolis-Hastings}
+\begin{frame}
+  \frametitle{(Random Walk) Metropolis Algorithm}
+  \begin{itemize}
+    \item Uses a symmetric proposal distribution $G$, such that \\
+    $g(x_s|x') = g(x'|x_s)$
+    \item Our acceptance probability $r$ is then
+  \end{itemize}
+  \begin{gather*}
+    r = \min \left(1 , \frac{f(x')}{f(x_s)} \right)
+  \end{gather*}
+\end{frame}
 
 \begin{frame}
-\frametitle{Variants of Metropolis-Hastings}
-\begin{itemize}
-  \item Metropolis Algorithm
+  \frametitle{Metropolis Adjusted Langevin Algorithm (MALA)}
   \begin{itemize}
-    \item Uses a symmetric proposal distribution $Q$, such that: \\
-     $q(x_s|x') = q(x'|x_s)$
+    \item New states are proposed with Langevin dynamics
   \end{itemize}
-  \item Metropolis-Adjusted Langevin Algorithm
+  \begin{gather*}
+      x' = x_s + \tau \nabla \log f(x_s) + \sqrt{2 \tau} \xi_k
+  \end{gather*}
   \begin{itemize}
-    \item New states are proposed with Langevin dynamics: \\
-      $x' = x_s + \tau \nabla \log \pi(x_s) + \sqrt{2 \tau} \xi_k$
-    \item Proposal probabilties are normally distributed: \\
-      $q(x'| x_s) \sim \mathcal{N}(x_s + \tau \nabla \log \pi(x_s), \, 2 \tau  I_d)$
+    \item Proposal probabilties are normally distributed as
   \end{itemize}
-  \item Hamiltonian Monte-Carlo
+  \begin{gather*}
+    g(x'| x_s) \sim \mathcal{N}(x_s + \tau \nabla \log f(x_s), \, 2 \tau  I_d) \\
+    g(x_s | x') \sim \mathcal{N}(x' + \tau \nabla \log f(x'), \, 2 \tau  I_d)
+  \end{gather*}
   \begin{itemize}
-    \item Adds Hamiltonian Dynamics
+    \item Optimal acceptance rate is $0.574$.
   \end{itemize}
-  \item No-U-Turn Sampler (NUTS)
+\end{frame}
+
+\begin{frame}
+  \frametitle{Metropolis Adjusted Langevin Algorithm: Example}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/mcmc_lang_visual}
+    \caption{MALA: $\tau=0.4$}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Hamiltonian Monte-Carlo}
+  \begin{itemize}
+    \item Adds Hamiltonian dynamics
+    \item Optimal acceptance rate is $0.65$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{No-U-Turn Sampler (NUTS)}
   \begin{itemize}
     \item
   \end{itemize}
-\end{itemize}
 \end{frame}
 
 
@@ -398,15 +533,56 @@ $\text{Exp}(\lambda)$   &  $\frac{- \ln \left( 1 - p \right)}{\lambda}$ \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Further Reading}
+  \frametitle{Metropolis-Hastings: Example}
   \begin{itemize}
-    \item Machine Learning: A Probabilistic Perspective by Kevin Murphy
-    \item Monte Carlo Methods in Financial Engineering by Paul Glasserman
-    \item Probabilistic Graphical Models: Principles and Techniques by Daphne Koller and Nir Friedman
+    \item \url{https://chi-feng.github.io/mcmc-demo/app.html}
   \end{itemize}
 \end{frame}
 
 
+
+\begin{frame}
+\frametitle{Refrences \& Further Reading}
+  \begin{itemize}
+    \item Machine Learning: A Probabilistic Perspective by Kevin Murphy
+    \item Monte Carlo Methods in Financial Engineering by Paul Glasserman
+    \item Probabilistic Graphical Models: Principles and Techniques by Daphne Koller and Nir Friedman
+    \item Sampling Lecture from my PGM Professor Daniel Malinsky
+  \end{itemize}
+\end{frame}
+
+
+\section{Appendix}
+\begin{frame}
+  \frametitle{Analysis of Error}
+  \begin{itemize}
+    \item How many samples $S$ does it take to approximate the target distribution "well"?
+    \item Answer: Use the Hoeffding bound
+  \end{itemize}
+  \begin{equation*}
+    Pr \left( \hat{p}(x) \not\in \left[p(x) - \epsilon, p(x) + \epsilon \right] \right) \leq 2 e^{-2S \epsilon^2}
+  \end{equation*}
+  \begin{itemize}
+    \item For the number of samples $S$, an error bound $\epsilon$ with probability $1 - \delta$,
+      we can solve:
+  \end{itemize}
+  \begin{gather*}
+    2e^{-2S \epsilon^2} \leq \delta \\
+    S \geq \frac{\log(2 / \delta)}{2 \epsilon^2}  \\
+  \end{gather*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Analysis of Error}
+  \begin{itemize}
+    \item We can also use the Chernoff Bound relative to the true value $p(x)$
+    \item However, this is dependedent on $p(x)$, which is not always known.
+  \end{itemize}
+  \begin{gather*}
+    Pr \left( \hat{p}(x) \not\in \left[p(x)(1 - \epsilon), p(x)(1 + \epsilon) \right] \right) \leq 2 e^{-S p(x) \epsilon^2 / 3} \\
+    S \geq 3 \frac{\log \left(2 / \delta \right)}{p(x) \epsilon^2} \\
+  \end{gather*}
+\end{frame}
 
 % Refs, ideas, etc
 
