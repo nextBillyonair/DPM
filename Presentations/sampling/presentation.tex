@@ -139,7 +139,7 @@
 \begin{itemize}
   \item If we need random numbers, then how do we generate them?
   \item One solution: Pseudo-Random Number Generators
-  \item Pesudo since they cannot simulate "true" randomness
+  \item Pseudo since they cannot simulate "true" randomness
   \item But can be replicated via "seeds"
 \end{itemize}
 \end{frame}
@@ -360,7 +360,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
   \item Idea: Construct a Markov chain whose stationary distribution is the
   target density of interest, $f(x)$.
   \item The more steps we take in the chain, the better the approximation.
-  \item This method works well with muti-dimensional continuous variables.
+  \item This method works well with multi-dimensional continuous variables.
 \end{itemize}
 \end{frame}
 
@@ -400,7 +400,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
       \item Construct a Markov Chain where we propose a new state $x'$ from the
       current state $x_s$ with probability $g(x'|x_s)$.
       \item After drawing a proposal $x'$ we calculate an acceptance probability, and
-      if accepted, upadte the state to $x'$, else stay at state $x_s$.
+      if accepted, update the state to $x'$, else stay at state $x_s$.
     \end{itemize}
   \end{column}
   \end{columns}
@@ -450,7 +450,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
   \item Acceptance Rates
   \begin{itemize}
     \item Fraction of draws that are accepted
-    \item High accpetance rate $\rightarrow$ bad mixing
+    \item High acceptance rate $\rightarrow$ bad mixing
     \item Low Acceptance rate $\rightarrow$ inefficient
     \item Theoretical rates: $44\%$ for one dimension, $23.4\%$ as the dimension goes to infinity
   \end{itemize}
@@ -492,7 +492,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
       x' = x_s + \tau \nabla \log f(x_s) + \sqrt{2 \tau} \xi_k
   \end{gather*}
   \begin{itemize}
-    \item Proposal probabilties are normally distributed as
+    \item Proposal probabilities are normally distributed as
   \end{itemize}
   \begin{gather*}
     g(x'| x_s) \sim \mathcal{N}(x_s + \tau \nabla \log f(x_s), \, 2 \tau  I_d) \\
@@ -553,23 +553,23 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
   \scriptsize
   \begin{algorithmic}[1]
     \REQUIRE Model $F$, Stepsize $\epsilon$, Leapfrog Steps $L$, Current State $x_s$
-      \STATE Set $x = x_s$, $v \sim \mathcal{N}(0, 1)$, $v_s = v$
-      \STATE $v = v - \epsilon \frac{\partial U (x)}{\partial x} / 2$
+      \STATE Set $q = q_s$, $p \sim \mathcal{N}(0, 1)$, $p_s = p$
+      \STATE $p = p - \epsilon \frac{\partial U (q)}{\partial q} / 2$
       \FOR {$l = 0, 1, \hdots L$}
-        \STATE $x = x + \epsilon \cdot v$
-        \STATE $v = v - \epsilon \frac{\partial U (x)}{\partial x}$ except at end of trajectory
+        \STATE $q = q + \epsilon \cdot p$
+        \STATE $p = p - \epsilon \frac{\partial U (q)}{\partial q}$ except at end of trajectory
       \ENDFOR
-      \STATE $v = v -\epsilon \frac{\partial U (x)}{\partial x} / 2$
-      \STATE $v = -v$ to make proposal symmetric
+      \STATE $p = p -\epsilon \frac{\partial U (q)}{\partial q} / 2$
+      \STATE $p = -p$ to make proposal symmetric
       \STATE Compute acceptance probability
         \begin{nospaceflalign*}
-          r = \exp \left( U(x_s) - U(x) + K(v_s) - K(v)  \right) &&
+          r = \exp \left( U(q_s) - U(q) + K(p_s) - K(p)  \right) &&
         \end{nospaceflalign*}
       \STATE Sample $u \sim \text{Uniform}(0, 1)$
       \IF {$u < r$}
-        \RETURN {$x$}
+        \RETURN {$q$}
       \ELSE
-        \RETURN {$x_s$}
+        \RETURN {$q_s$}
       \ENDIF
   \end{algorithmic}
   \caption{HMC, Single Candidate Update}
@@ -586,7 +586,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
       \item Small $L \rightarrow$ random walk behavior
       \item Large $L \rightarrow$ wasted computation
     \end{itemize}
-    \item Has trouble sampling from distributions with isolated local minimums (lack of energy to corss the energy barrier)
+    \item Has trouble sampling from distributions with isolated local minimums (lack of energy to cross the energy barrier)
     \item Optimal acceptance rate is $65\%$
   \end{itemize}
 \end{frame}
@@ -662,7 +662,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
   \frametitle{Analysis of Error}
   \begin{itemize}
     \item We can also use the Chernoff Bound relative to the true value $p(x)$
-    \item However, this is dependedent on $p(x)$, which is not always known.
+    \item However, this is dependent on $p(x)$, which is not always known.
   \end{itemize}
   \begin{gather*}
     Pr \left( \hat{p}(x) \not\in \left[p(x)(1 - \epsilon), p(x)(1 + \epsilon) \right] \right) \leq 2 e^{-S p(x) \epsilon^2 / 3} \\
