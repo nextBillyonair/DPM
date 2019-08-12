@@ -516,16 +516,34 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
   \frametitle{Hamiltonian Monte-Carlo}
   \begin{itemize}
     \item Idea: Hit a puck, wait, stop, then hit it again
-    \item Uses velocity $v$ and position $x$:
+    \item Hamiltonian Dynamics for a system with state $q$, momentum $p$:
   \end{itemize}
   \begin{gather*}
-    H(x, v) = U(x) + K(v) \\
-    U(x) = - \log f(x) \\
-    K(v) = \sum_i \frac{v_i^2}{2} \\
-    \frac{d x_i}{d t} = \frac{\partial H}{\partial v_i} = v_i \\
-    \frac{d v_i}{d t} = -\frac{\partial H}{\partial x_i} = -\frac{\partial U(x_i)}{\partial x_i} \\
-    r = \exp \left( -H(x, v) + H(x_s, v_s) \right)
+    H(q, p) = U(q) + K(p) \\
+    U(q) = - \log f(q) \\
+    K(p) = \sum_i \frac{p_i^2}{2}
   \end{gather*}
+  \begin{itemize}
+    \item The time evolution of the system is defined by:
+  \end{itemize}
+  \begin{gather*}
+    \frac{d p}{d t} = - \frac{\partial H}{\partial q} = - \frac{\partial U(q)}{\partial q} \\
+    \frac{d q}{d t} = +\frac{\partial H}{\partial p} = +p
+  \end{gather*}
+  \begin{itemize}
+    \item We can update the system coordinates as follows (leapfrog):
+  \end{itemize}
+  \begin{gather*}
+    q_{i+1} = q_i + \epsilon p_i \\
+    p_{i+1} = p_i - \epsilon \frac{\partial U(q_{i+1})}{\partial q_{i+1}}
+  \end{gather*}
+  \begin{itemize}
+    \item Our acceptance probability for the starting position $(q_s. p_s)$ and candidate $(q, p)$ is
+  \end{itemize}
+  \begin{equation*}
+    r = \exp \left( H(q_s, p_s) - H(q, p) \right)
+  \end{equation*}
+
 \end{frame}
 
 \begin{frame}
