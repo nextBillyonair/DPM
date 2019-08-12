@@ -8,6 +8,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{bayesnet}
@@ -40,6 +41,11 @@
 \author{Bill Watson}
 \institute{S\&P Global}
 \date{\today}
+
+\newenvironment{nospaceflalign*}
+ {\setlength{\abovedisplayskip}{0pt}\setlength{\belowdisplayskip}{0pt}%
+  \csname flalign*\endcsname}
+ {\csname endflalign*\endcsname\ignorespacesafterend}
 
 \AtBeginSection[]{
   \begin{frame}
@@ -361,17 +367,8 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
 
 \begin{frame}
 \frametitle{Metropolis-Hastings}
-\begin{itemize}
-  \item Construct a Markov Chain where we propose a new state $x'$ from the
-  current state $x_s$ with probability $g(x'|x_s)$.
-  \item After drawing a proposal $x'$ we calculate an acceptance probability, and
-  if accepted, upadte the state to $x'$, else stay at state $x_s$.
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Metropolis-Hastings: Algorithm}
+  \begin{columns}
+  \begin{column}{0.5\textwidth}
   \begin{algorithm}[H]
   \algsetup{linenosize=\tiny}
   \scriptsize
@@ -381,9 +378,9 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
     \FOR {$s = 0, 1, \hdots$}
       \STATE Sample $x' \sim g(x'|x_s)$
       \STATE Compute acceptance probability
-        \begin{flalign*}
+        \begin{nospaceflalign*}
           r = \min\left( 1, \; \frac{f(x')}{f(x_s)} \frac{g(x_s|x')}{g(x'|x_s)} \right) &&
-        \end{flalign*}
+        \end{nospaceflalign*}
       \STATE Sample $u \sim \text{Uniform}(0, 1)$
       \IF {$u < r$}
         \STATE {Accept $x'$}
@@ -397,6 +394,16 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
   \end{algorithmic}
   \caption{Metropolis-Hastings Algorithm}
   \end{algorithm}
+  \end{column}
+  \begin{column}{0.5\textwidth}
+    \begin{itemize}
+      \item Construct a Markov Chain where we propose a new state $x'$ from the
+      current state $x_s$ with probability $g(x'|x_s)$.
+      \item After drawing a proposal $x'$ we calculate an acceptance probability, and
+      if accepted, upadte the state to $x'$, else stay at state $x_s$.
+    \end{itemize}
+  \end{column}
+  \end{columns}
 \end{frame}
 
 
@@ -492,7 +499,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
     g(x_s | x') \sim \mathcal{N}(x' + \tau \nabla \log f(x'), \, 2 \tau  I_d)
   \end{gather*}
   \begin{itemize}
-    \item Optimal acceptance rate is $0.574$
+    \item Optimal acceptance rate is $57.4\%$
   \end{itemize}
 \end{frame}
 
@@ -505,19 +512,73 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
   \end{figure}
 \end{frame}
 
-
 \begin{frame}
   \frametitle{Hamiltonian Monte-Carlo}
   \begin{itemize}
-    \item Adds Hamiltonian dynamics
-    \item Optimal acceptance rate is $0.65$
+    \item Idea: Hit a puck, wait, stop, then hit it again
+    \item Uses velocity $v$ and position $x$:
+  \end{itemize}
+  \begin{gather*}
+    H(x, v) = U(x) + K(v) \\
+    U(x) = - \log f(x) \\
+    K(v) = \sum_i \frac{v_i^2}{2} \\
+    \frac{d x_i}{d t} = \frac{\partial H}{\partial v_i} = v_i \\
+    \frac{d v_i}{d t} = -\frac{\partial H}{\partial x_i} = -\frac{\partial U(x_i)}{\partial x_i} \\
+    r = \exp \left( -H(x, v) + H(x_s, v_s) \right)
+  \end{gather*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Hamiltonian Monte-Carlo: Algorithm}
+  \begin{algorithm}[H]
+  \algsetup{linenosize=\tiny}
+  \scriptsize
+  \begin{algorithmic}[1]
+    \REQUIRE Model $F$, Stepsize $\epsilon$, Leapfrog Steps $L$, Current State $x_s$
+      \STATE Set $x = x_s$, $v \sim \mathcal{N}(0, 1)$, $v_s = v$
+      \STATE $v = v - \epsilon \frac{\partial U (x)}{\partial x} / 2$
+      \FOR {$l = 0, 1, \hdots L$}
+        \STATE $x = x + \epsilon \cdot v$
+        \STATE $v = v - \epsilon \frac{\partial U (x)}{\partial x}$ except at end of trajectory
+      \ENDFOR
+      \STATE $v = v -\epsilon \frac{\partial U (x)}{\partial x} / 2$
+      \STATE $v = -v$ to make proposal symmetric
+      \STATE Compute acceptance probability
+        \begin{nospaceflalign*}
+          r = \exp \left( U(x_s) - U(x) + K(v_s) - K(v)  \right) &&
+        \end{nospaceflalign*}
+      \STATE Sample $u \sim \text{Uniform}(0, 1)$
+      \IF {$u < r$}
+        \RETURN {$x$}
+      \ELSE
+        \RETURN {$x_s$}
+      \ENDIF
+  \end{algorithmic}
+  \caption{HMC, Single Candidate Update}
+  \end{algorithm}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Hamiltonian Monte Carlo: Considerations}
+  \begin{itemize}
+    \item Distances between points are large, thus requiring less iterations
+    \item Mostly accepts new states, more efficient even with the leapfrog "price"
+    \item Tuning leapfrog steps can be difficult:
+    \begin{itemize}
+      \item Small $L \rightarrow$ random walk behavior
+      \item Large $L \rightarrow$ wasted computation
+    \end{itemize}
+    \item Has trouble sampling from distributions with isolated local minimums (lack of energy to corss the energy barrier)
+    \item Optimal acceptance rate is $65\%$
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{No-U-Turn Sampler (NUTS)}
   \begin{itemize}
-    \item
+    \item Removes the need to step the leapfrog step $L$ in HMC
+    \item Uses a recursive algorithm to build a set of likely candidate points
+    \item As efficient as a well tuned HMC method
   \end{itemize}
 \end{frame}
 
@@ -533,6 +594,18 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
+  \frametitle{Libraries and Tools}
+  \begin{itemize}
+    \item \href{https://pymc-devs.github.io/pymc3/}{PyMC3}
+    \item \href{https://www.tensorflow.org/probability/}{TensorFlow Probability}
+    \item \href{http://mc-stan.org}{Stan}
+    \item \href{https://mc-stan.org/users/interfaces/rstan}{RStan}
+    \item \href{https://cran.r-project.org/web/packages/mcmc/index.html}{R mcmc}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Refrences \& Further Reading}
   \begin{itemize}
     \item \href{https://www.cs.ubc.ca/~murphyk/MLbook/}{Machine Learning: A Probabilistic Perspective by Kevin Murphy}
@@ -542,6 +615,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
     \item \href{http://www.mcmchandbook.net/HandbookChapter5.pdf}{MCMC Using Hamiltonian Dynamics by Radford M. Neal}
     \item \href{http://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html}{Hamiltonian Monte Carlo Explained by Alex Rogozhnikov}
     \item \href{https://chi-feng.github.io/mcmc-demo/app.html}{The Markov-chain Monte Carlo Interactive Gallery by Chi Feng}
+    \item \href{http://www.stat.columbia.edu/~gelman/research/published/nuts.pdf}{NUTS Paper by Hoffman and Gelman}
   \end{itemize}
 \end{frame}
 
