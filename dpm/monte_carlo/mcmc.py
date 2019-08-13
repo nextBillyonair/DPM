@@ -75,7 +75,7 @@ def hamiltonian_monte_carlo(model, epsilon=0.2, leapfrog=20, alpha=1.,
         for l in range(leapfrog):
             q = q + epsilon * p
             if l + 1 != leapfrog:
-                tampering = alpha if l < (leapfrog / 2) else (1. / alpha)
+                tampering = alpha if l < (leapfrog / 2.) else (1. / alpha)
                 p = tampering * (p - epsilon * grad_U(q, model))
 
         p = p - epsilon * grad_U(q, model) / 2.
