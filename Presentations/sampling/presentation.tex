@@ -577,6 +577,41 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
 \end{frame}
 
 \begin{frame}
+  \frametitle{Hamiltonian Monte Carlo: The Leapfrog Path}
+  % put leapfrog visual
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/hmc_leapfrog}
+    \caption{Leapfrog Paths: $\epsilon=0.4$, $L=20$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Hamiltonian Monte Carlo: Tampering to Overcome Energy Barriers}
+  % put leapfrog visual
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/hmc_tampering}
+    \caption{Leapfrog Paths: $\epsilon=0.4$, $L=20$, $\alpha=1.05$}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Hamiltonian Monte Carlo: Example}
+  % put mcmc result
+  % go to linked visual
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/hmc_hist}
+    \caption{HMC: $\epsilon=0.4$, $L=20$, $\alpha=1.05$}
+  \end{figure}
+  \begin{itemize}
+    \item \href{https://chi-feng.github.io/mcmc-demo/app.html}{The Markov-chain Monte Carlo Interactive Gallery by Chi Feng}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
   \frametitle{Hamiltonian Monte Carlo: Considerations}
   \begin{itemize}
     \item Distances between points are large, thus requiring less iterations
@@ -606,6 +641,9 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
 
 \begin{frame}
 \frametitle{Gibbs Sampling}
+\begin{itemize}
+  \item 
+\end{itemize}
 \end{frame}
 
 
