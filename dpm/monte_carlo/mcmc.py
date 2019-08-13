@@ -54,7 +54,7 @@ def grad_U(q, model):
     return g
 
 
-def hamiltonian_monte_carlo(model, epsilon=0.2, leapfrog=20, alpha=1.
+def hamiltonian_monte_carlo(model, epsilon=0.2, leapfrog=20, alpha=1.,
                             epochs=1000, burn_in=1000, keep_every=1, init=None):
     if init is None:
         current_q = torch.rand((1, model.n_dims))
@@ -75,10 +75,8 @@ def hamiltonian_monte_carlo(model, epsilon=0.2, leapfrog=20, alpha=1.
         for l in range(leapfrog):
             q = q + epsilon * p
             if l + 1 != leapfrog:
-                if l < leapfrog / 2:
-                    p = alpha * (p - epsilon * grad_U(q, model))
-                else:
-                    p = (1. / alpha) * (p - epsilon * grad_U(q, model))
+                tampering = alpha if l < (leapfrog / 2) else (1. / alpha)
+                p = tampering * (p - epsilon * grad_U(q, model))
 
         p = p - epsilon * grad_U(q, model) / 2.
         p = -p
