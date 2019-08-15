@@ -513,38 +513,39 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
 \end{frame}
 
 \begin{frame}
-  \frametitle{Hamiltonian Monte-Carlo}
+  \frametitle{Hamiltonian Monte Carlo}
   \begin{itemize}
-    \item Idea: Hit a puck, wait, stop, then hit it again
-    \item Hamiltonian Dynamics for a system with state $q$, momentum $p$:
+    \item Inspired by using a Hamiltonian dynamics evolution simulated using
+    a time-reversible and volume preserving leapfrog integrator.
+    \item Purpose was to reduce the correlation between successive sample states by proposing
+    moves to distant states with high probability of acceptance.
+    \item In simplier terms: flick a puck, wait, stop, then hit it again
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Hamiltonian Dynamics}
+  \begin{itemize}
+    \item For a system with state $q$, momentum $p$:
   \begin{gather*}
     H(q, p) = U(q) + K(p) \\
-    U(q) = - \log f(q) \\
-    K(p) = \sum_i \frac{p_i^2}{2}
+    U(q) = - \log f(q) \quad\quad\quad K(p) = \sum_i \frac{p_i^2}{2}
   \end{gather*}
-  \begin{itemize}
     \item The time evolution of the system is defined by:
-  \end{itemize}
   \begin{gather*}
-    \frac{d p}{d t} = - \frac{\partial H}{\partial q} = - \frac{\partial U(q)}{\partial q} \\
-    \frac{d q}{d t} = +\frac{\partial H}{\partial p} = +p
+    \frac{d p}{d t} = - \frac{\partial H}{\partial q} = - \frac{\partial U(q)}{\partial q} \quad\quad\quad \frac{d q}{d t} = \frac{\partial H}{\partial p} = p
   \end{gather*}
-  \begin{itemize}
     \item We can update the system coordinates as follows (leapfrog):
-  \end{itemize}
   \begin{gather*}
-    q_{i+1} = q_i + \epsilon p_i \\
-    p_{i+1} = p_i - \epsilon \frac{\partial U(q_{i+1})}{\partial q_{i+1}}
+    q_{i+1} = q_i + \epsilon p_i \quad\quad\quad p_{i+1} = p_i - \epsilon \frac{\partial U(q_{i+1})}{\partial q_{i+1}}
   \end{gather*}
-  \begin{itemize}
-    \item Our acceptance probability for the starting position $(q_s. p_s)$ and candidate $(q, p)$ is
-  \end{itemize}
+    \item Our acceptance probability for the current state $(q_s, p_s)$ and candidate $(q, p)$ is
   \begin{equation*}
     r = \exp \left( H(q_s, p_s) - H(q, p) \right)
   \end{equation*}
-
+  \end{itemize}
 \end{frame}
+
 
 \begin{frame}
   \frametitle{Hamiltonian Monte-Carlo: Algorithm}
@@ -700,6 +701,36 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
     S \geq 3 \frac{\log \left(2 / \delta \right)}{p(x) \epsilon^2} \\
   \end{gather*}
 \end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Libraries and Tools}
+  \begin{itemize}
+    \item \href{https://pymc-devs.github.io/pymc3/}{PyMC3}
+    \item \href{https://www.tensorflow.org/probability/}{TensorFlow Probability}
+    \item \href{http://mc-stan.org}{Stan}
+    \item \href{https://mc-stan.org/users/interfaces/rstan}{RStan}
+    \item \href{https://cran.r-project.org/web/packages/mcmc/index.html}{R mcmc}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Refrences \& Further Reading}
+  \begin{itemize}
+    \item \href{https://www.cs.ubc.ca/~murphyk/MLbook/}{Machine Learning: A Probabilistic Perspective by Kevin Murphy}
+    \item \href{https://www.springer.com/gp/book/9780387004518}{Monte Carlo Methods in Financial Engineering by Paul Glasserman}
+    \item \href{https://mitpress.mit.edu/books/probabilistic-graphical-models}{Probabilistic Graphical Models: Principles and Techniques by Daphne Koller and Nir Friedman}
+    \item Sampling Lecture from my PGM Professor Daniel Malinsky
+    \item \href{http://www.mcmchandbook.net/HandbookChapter5.pdf}{MCMC Using Hamiltonian Dynamics by Radford M. Neal}
+    \item \href{http://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html}{Hamiltonian Monte Carlo Explained by Alex Rogozhnikov}
+    \item \href{https://chi-feng.github.io/mcmc-demo/app.html}{The Markov-chain Monte Carlo Interactive Gallery by Chi Feng}
+    \item \href{http://www.stat.columbia.edu/~gelman/research/published/nuts.pdf}{NUTS Paper by Hoffman and Gelman}
+  \end{itemize}
+\end{frame}
+
 
 % Refs, ideas, etc
 
