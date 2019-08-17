@@ -121,8 +121,8 @@
 \frametitle{What can we do with our samples?}
 \begin{itemize}
   \item Integration: $\int p(x) \, f(x) \, dx \approx \frac{1}{n} \sum_{x_i \sim P} f(x_i) $
-  \item Expectation: $ \mu \approx \frac{1}{n} \sum_{x_i} x_i $
-  \item Variance: $ \sigma^2 \approx \frac{1}{n} \sum_{x_i} \left( x_i - \mu \right)^2$
+  \item Expectation: $ \mu \approx \frac{1}{n} \sum_{x_i \sim P} x_i $
+  \item Variance: $ \sigma^2 \approx \frac{1}{n} \sum_{x_i \sim P} \left( x_i - \mu \right)^2$
   \item Median: $\text{median} \approx \text{median} (x_1, x_2, \hdots x_n)$
   \item Entropy: $\mathbb{H}(P) \approx - \frac{1}{n} \sum_{x_i \sim P} \log p (x_i)$
   \item CDF: $p(c) \approx \frac{1}{n} \, \vert \{ x_i \, | \, x_i \leq c \} \vert$
