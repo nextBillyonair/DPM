@@ -163,8 +163,9 @@
   \frametitle{Pseudo-Random Number Generators}
   \begin{itemize}
     \item LCGs are of low quality
-    \item Mersenne Twister (1998) is the first PRNG to avoid major problems and run quickly
-    \item Can also use Hardware (True) RNG, External Entropy PRNGs
+    \item Not cryptographically secure
+    \item Mersenne Twister (1998) improves upon many of the flaws of LCGs, and is the
+      default for many modern-day languages
   \end{itemize}
 \end{frame}
 
@@ -480,7 +481,7 @@ $\text{Logistic}(\mu, s)$    & $\frac{1}{1+e^{-\frac{x-\mu}{s}}}$ & $\mu + s \ln
   \item Chains
   \item Burn In
   \begin{itemize}
-    \item Allows the chain to "forget" its starting values and converge on areas of high probabilty
+    \item Allows the chain to "forget" its starting values and converge on areas of high probability
   \end{itemize}
   \item Mixing
   \begin{itemize}
