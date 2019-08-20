@@ -26,6 +26,12 @@ class MixtureModel(Distribution):
                                for sub_model in self.models])
         return samples[indices, np.arange(batch_size)]
 
+    def cdf(self, value):
+        cdfs = torch.stack([sub_model.cdf(value)
+                                 for sub_model in self.models])
+        cat_cdfs = self.categorical.probs.view(-1, 1).unsqueeze(2)
+        return torch.sum(cdfs * cat_cdfs, dim=0)
+
     def get_parameters(self):
         return {'probs': self.categorical.probs.numpy(),
                 'models': [model.get_parameters() for model in self.models]}

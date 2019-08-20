@@ -23,6 +23,12 @@ class GumbelMixtureModel(Distribution):
                                for sub_model in self.models], dim=1)
         return (samples * one_hot.unsqueeze(2)).sum(dim=1)
 
+    def cdf(self, value):
+        cdfs = torch.stack([sub_model.cdf(value)
+                                 for sub_model in self.models])
+        cat_cdfs = self.categorical.probs.view(-1, 1).unsqueeze(2)
+        return torch.sum(cdfs * cat_cdfs, dim=0)
+
     def get_parameters(self):
         return {'probs': self.categorical.probs.detach().numpy(),
                 'models': [model.get_parameters() for model in self.models]}
