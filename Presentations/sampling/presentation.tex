@@ -150,12 +150,18 @@
 \frametitle{Pseudo-Random Number Generators: LCG}
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-  \REQUIRE Modulus $m$, Multiplier $a$, Increment $c$, Seed $X_0$
-  \STATE $X_{i+1} = \left( a \cdot X_i + c \right) \mod m$
-  \ENSURE $X_{i+1}$
+  \REQUIRE Modulus $m$, Multiplier $a$, Increment $c$, State $x_i$
+  \STATE $x_{i+1} = \left( a \cdot x_i + c \right) \mod m$
+  \STATE $u_{i+1} = x_{i+1} \; / \; m$
+  \ENSURE $u_{i+1}$
 \end{algorithmic}
-\caption{Linear Congruential Generator}
+\caption{General Linear Congruential Generator}
 \end{algorithm}
+\begin{itemize}
+  \item $m$ should be a large prime
+  \item $2^{31} - 1$ is the largest 32-bit integer and a Mersenne prime
+  \item Care should be taken to choose $a$ and $c$ such that the generator has full period
+\end{itemize}
 \end{frame}
 
 
@@ -166,6 +172,12 @@
     \item Not cryptographically secure
     \item Mersenne Twister (1998) improves upon many of the flaws of LCGs, and is the
       default for many modern-day languages
+    \item Other PRNGs:
+      \begin{itemize}
+        \item Multiple Recursive Generator
+        \item Lagged Fibonacci Generator
+        \item Inversive Congruential Generator
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
