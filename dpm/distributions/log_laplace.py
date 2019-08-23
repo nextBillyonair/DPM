@@ -21,8 +21,8 @@ class LogLaplace(Distribution):
         self.n_dims = len(loc)
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(-1)
-        self.loc = loc
-        self._scale = utils.softplus_inverse(scale)
+        self.loc = loc.float()
+        self._scale = utils.softplus_inverse(scale.float())
         if learnable:
             self.loc = Parameter(self.loc)
             self._scale = Parameter(self._scale)

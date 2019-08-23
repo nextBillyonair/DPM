@@ -15,7 +15,7 @@ class ChiSquare(Distribution):
         super().__init__()
         if not isinstance(df, torch.Tensor):
             df = torch.tensor(df).view(-1)
-        self._df = utils.softplus_inverse(df)
+        self._df = utils.softplus_inverse(df.float())
         self.n_dims = len(df)
         if learnable:
             self._df = Parameter(self._df)

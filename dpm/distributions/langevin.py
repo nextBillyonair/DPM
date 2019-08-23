@@ -14,7 +14,7 @@ class Langevin(Distribution):
         self.model = model
         self.n_dims = self.model.n_dims
         self.tau = tau
-        self.x_t = x_t
+        self.x_t = x_t.float()
         self.noise = Normal(torch.zeros(self.n_dims),
                      (2. * self.tau) * torch.ones(self.n_dims))
 

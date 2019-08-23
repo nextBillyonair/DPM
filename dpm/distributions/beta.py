@@ -18,8 +18,8 @@ class Beta(Distribution):
         self.n_dims = len(alpha)
         if not isinstance(beta, torch.Tensor):
             beta = torch.tensor(beta).view(-1)
-        self._alpha = utils.softplus_inverse(alpha)
-        self._beta = utils.softplus_inverse(beta)
+        self._alpha = utils.softplus_inverse(alpha.float())
+        self._beta = utils.softplus_inverse(beta.float())
         if learnable:
             self._alpha = Parameter(self._alpha)
             self._beta = Parameter(self._beta)

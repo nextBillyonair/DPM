@@ -11,7 +11,7 @@ class Rayleigh(Distribution):
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(-1)
         self.n_dims = len(scale)
-        self._scale = utils.softplus_inverse(scale)
+        self._scale = utils.softplus_inverse(scale.float())
         if learnable:
             self._scale = Parameter(self._scale)
 

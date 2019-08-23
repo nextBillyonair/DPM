@@ -18,7 +18,7 @@ class GumbelSoftmax(Distribution):
         self.hard = hard
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs)
-        self.logits = probs.log()
+        self.logits = probs.float().log()
         if learnable:
             self.logits = Parameter(self.logits)
 

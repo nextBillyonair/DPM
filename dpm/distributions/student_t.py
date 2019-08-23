@@ -19,9 +19,9 @@ class StudentT(Distribution):
             scale = torch.tensor(scale).view(-1)
         if not isinstance(df, torch.Tensor):
             df = torch.tensor(df).view(-1)
-        self.loc = loc
-        self._scale = utils.softplus_inverse(scale)
-        self._df = utils.softplus_inverse(df)
+        self.loc = loc.float()
+        self._scale = utils.softplus_inverse(scale.float())
+        self._df = utils.softplus_inverse(df.float())
         if learnable:
             self.loc = Parameter(self.loc)
             self._scale = Parameter(self._scale)

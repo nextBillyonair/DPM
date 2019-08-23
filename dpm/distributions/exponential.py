@@ -11,7 +11,7 @@ class Exponential(Distribution):
         if not isinstance(rate, torch.Tensor):
             rate = torch.tensor(rate).view(-1)
         self.n_dims = len(rate)
-        self._rate = utils.softplus_inverse(rate)
+        self._rate = utils.softplus_inverse(rate.float())
         if learnable:
             self._rate = Parameter(self._rate)
 

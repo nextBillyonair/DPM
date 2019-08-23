@@ -17,8 +17,8 @@ class FisherSnedecor(Distribution):
         self.n_dims = len(df_1)
         if not isinstance(df_2, torch.Tensor):
             df_2 = torch.tensor(df_2).view(-1)
-        self._df_1 = utils.softplus_inverse(df_1)
-        self._df_2 = utils.softplus_inverse(df_2)
+        self._df_1 = utils.softplus_inverse(df_1.float())
+        self._df_2 = utils.softplus_inverse(df_2.float())
         if learnable:
             self._df_1 = Parameter(self._df_1)
             self._df_2 = Parameter(self._df_2)

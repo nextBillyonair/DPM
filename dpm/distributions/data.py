@@ -13,7 +13,7 @@ class Data(Distribution):
         torch_data = []
         for i, d in enumerate(data):
             if not isinstance(d, torch.Tensor):
-                d = torch.tensor(d)
+                d = torch.tensor(d).float()
             torch_data.append(d)
 
         assert (np.array([d.shape for d in torch_data]) == torch_data[0].shape).all()

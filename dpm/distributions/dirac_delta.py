@@ -11,7 +11,7 @@ class DiracDelta(Distribution):
             if len(loc.shape) == 0:
                 loc = loc.view(-1)
         self.n_dims = loc.shape
-        self.loc = loc
+        self.loc = loc.float()
 
     def log_prob(self, value):
         raise NotImplementedError("Dirac Delta log_prob not implemented")

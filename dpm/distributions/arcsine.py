@@ -17,8 +17,8 @@ class Arcsine(Distribution):
         self.n_dims = len(low)
         if not isinstance(high, torch.Tensor):
             high = torch.tensor(high).view(-1)
-        self.alpha = low
-        self.beta = high
+        self.alpha = low.float()
+        self.beta = high.float()
         if learnable:
             self.alpha = Parameter(self.alpha)
             self.beta = Parameter(self.beta)
