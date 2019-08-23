@@ -14,8 +14,7 @@ class Statistics:
 
 
 def update_stats(stats, model):
-    if isinstance(model, MixtureModel) or isinstance(model, GumbelMixtureModel):
-        # figure out later
+    if 'get_parameters' not in dir(model):
         return
     stats.update(model.get_parameters())
 
