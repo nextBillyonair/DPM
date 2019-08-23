@@ -12,6 +12,7 @@ Differentiable Probabilistic Models
 ---
 
 ## Table of Contents
+1. [Models](#models)
 1. [Distributions](#distributions)
 1. [Transforms](#transforms)
 1. [Mixture Models](#mixture-models)
@@ -27,6 +28,12 @@ Differentiable Probabilistic Models
 1. [Notes](#notes)
 
 ---
+
+# Models <a name="models"></a>
+  1. Linear Regression (Normal)
+  1. L1 Regression (Laplace)
+  1. Ridge Regression (Normal + Normal Prior on weights)
+  1. Lasso Regression (Normal + Laplace Prior on weights)
 
 # Distributions <a name="distributions"></a>
   1. Arcsine
