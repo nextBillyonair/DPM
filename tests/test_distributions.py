@@ -59,13 +59,16 @@ test_normal_dists = [
 def test_normal_dist_params(normal_dist, n_dims):
 
     if n_dims == 1:
-        assert normal_dist.get_parameters() == {'loc': 0, 'scale': 1}
-        assert (normal_dist.scale == torch.Tensor([1.])).all()
+        assert normal_dist.loc == 0.
+        assert (normal_dist.scale - torch.Tensor([1.]) <= 0.01).all()
+        params = normal_dist.get_parameters()
+        assert params["loc"] == 0.
+        assert (params["scale"] - torch.Tensor([1.]) <= 0.01).all()
     elif n_dims == 2:
         params = normal_dist.get_parameters()
         assert (params['loc'] == np.array([0., 0.])).all()
-        assert (params['scale'] == np.array([[1., 0.], [0., 1.]])).all()
-        assert (normal_dist.scale == torch.Tensor([[1., 0.], [0., 1.]])).all()
+        assert (params['scale'] - np.array([[1., 0.], [0., 1.]]) <= 0.01).all()
+        assert (normal_dist.scale - torch.Tensor([[1., 0.], [0., 1.]]) <= 0.01).all()
     else:
         raise ValueError()
 
