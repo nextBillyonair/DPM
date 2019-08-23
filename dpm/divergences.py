@@ -4,7 +4,10 @@ from abc import abstractmethod, ABC
 from dpm.mixture_models import MixtureModel
 
 def cross_entropy(p_model, q_model, batch_size=64):
-    return -q_model.log_prob(p_model.sample(batch_size)).mean()
+    samples = p_model.sample(batch_size)
+    if isinstance(samples, tuple):
+        return -q_model.log_prob(*samples).mean()
+    return -q_model.log_prob(samples).mean()
 
 
 def perplexity(p_model, q_model, batch_size=64):
