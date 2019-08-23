@@ -14,7 +14,7 @@ class LinearModel(Model):
         self.prior = prior
 
     def prior_penalty(self):
-        return self.prior.log_prob(torch.cat([p.view(-1) for p in self.model.parameters()])).sum()
+        return self.prior.log_prob(torch.stack([p.view(-1) for p in self.model.parameters()])).sum()
 
     def log_prob(self, x, y):
         if self.prior:
