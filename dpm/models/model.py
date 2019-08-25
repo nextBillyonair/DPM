@@ -1,7 +1,19 @@
 from abc import abstractmethod, ABC
-from dpm.distributions import Distribution
-from .fit import fit as model_fit
-from .fit import predict as model_predict
+import torch
+from dpm.distributions import Distribution, Data
+from dpm.train import train
+from dpm.divergences import cross_entropy
+
+def fit(x, y, model, **kwargs):
+    data = Data(x, y)
+    stats = train(data, model, cross_entropy, **kwargs)
+    return stats
+
+def predict(x, model, compute_logprob=False):
+    if not isinstance(x, torch.Tensor):
+        x = torch.tensor(x)
+    return model.sample(x.float(), compute_logprob)
+
 
 class Model(Distribution):
 
@@ -9,7 +21,7 @@ class Model(Distribution):
         super().__init__()
 
     def fit(self, x, y, **kwargs):
-        return model_fit(x, y, self, **kwargs)
+        return fit(x, y, self, **kwargs)
 
     def predict(self, x):
-        return model_predict(x, self)
+        return predict(x, self)
