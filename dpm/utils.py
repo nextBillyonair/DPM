@@ -78,6 +78,30 @@ def corr(X, Y=None):
 
 # Layers
 
+# Converts function to torch nn Module (for sequential)
+class Function(Module):
+
+    def __init__(self, function):
+        super().__init__()
+        self.function = function
+
+    def forward(self, x):
+        return self.function(x)
+
+# Avoids torch deprecation warning
+class Sigmoid(Function):
+
+    def __init__(self):
+        super().__init__(torch.sigmoid)
+
+
+class Logit(Function):
+
+    def __init__(self):
+        super().__init__(logit)
+
+
+
 class Flatten(Module):
 
     def __init__(self):
