@@ -1,6 +1,7 @@
 from .distribution import Distribution
 
 from .arcsine import Arcsine
+from .bernoulli import Bernoulli
 from .beta import Beta
 from .cauchy import Cauchy
 from .chi_square import ChiSquare

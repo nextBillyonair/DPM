@@ -1,15 +1,20 @@
 import torch
 from functools import partial
-from dpm.distributions import Distribution, Normal, ConditionalModel, Laplace
+from dpm.distributions import (
+    Distribution, Normal, ConditionalModel, Laplace,
+    Bernoulli
+)
+from dpm.utils import Sigmoid
 from .model import Model
 
 class LinearModel(Model):
 
-    def __init__(self, input_dim=1, output_shape=1, distribution=None, prior=None):
+    def __init__(self, input_dim=1, output_shape=1, output_activation=None,
+                 distribution=None, prior=None):
         super().__init__()
         self.model = ConditionalModel(input_dim, hidden_sizes=[], activation="",
                             output_shapes=[output_shape],
-                            output_activations=[None],
+                            output_activations=[output_activation],
                             distribution=distribution)
         self.prior = prior
 
@@ -53,6 +58,13 @@ class LassoRegression(LinearModel):
         super().__init__(input_dim, output_shape,
             distribution=partial(Normal, scale=torch.ones(1, output_shape)),
             prior=Laplace(0., tau))
+
+
+class LogisticRegression(LinearModel):
+
+    def __init__(self, input_dim=1, output_shape=1):
+        super().__init__(input_dim, output_shape, output_activation=Sigmoid(),
+            distribution=Bernoulli)
 
 
 

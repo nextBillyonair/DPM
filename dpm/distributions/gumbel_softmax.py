@@ -6,6 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
+from dpm.utils import eps
 
 
 class GumbelSoftmax(Distribution):
@@ -28,7 +29,7 @@ class GumbelSoftmax(Distribution):
 
     def sample(self, batch_size):
         U = torch.rand((batch_size, self.n_dims))
-        gumbel_samples = -torch.log(-torch.log(U + 1e-20) + 1e-20)
+        gumbel_samples = -torch.log(-torch.log(U + eps) + eps)
         y = self.logits + gumbel_samples
         y = (y / self.temperature).softmax(dim=1)
         if self.hard:

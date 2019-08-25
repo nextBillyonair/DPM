@@ -5,6 +5,7 @@ import numpy as np
 # constants
 
 euler_mascheroni = 0.57721566490153286060651209008240243104215933593992
+eps = 1e-10
 
 
 #functions
@@ -37,6 +38,9 @@ def softplus_inverse(value, threshold=20):
 
 def logit(x):
     return x.log() - (-x).log1p()
+
+def log(x):
+    return (x + eps).log()
 
 
 # generic inverse

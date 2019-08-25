@@ -32,9 +32,12 @@ class ConditionalModel(Distribution):
 
         self.distribution = distribution
 
-    def _create_dist(self, x):
+    def forward(self, x):
         h = self.model(x)
-        dist_params = [output_layer(h) for output_layer in self.output_layers]
+        return [output_layer(h) for output_layer in self.output_layers]
+
+    def _create_dist(self, x):
+        dist_params = self(x)
         return self.distribution(*dist_params, learnable=False)
 
     def sample(self, x, compute_logprob=False):

@@ -34,9 +34,11 @@ Differentiable Probabilistic Models
   1. L1 Regression (Laplace)
   1. Ridge Regression (Normal + Normal Prior on weights)
   1. Lasso Regression (Normal + Laplace Prior on weights)
+  1. Logistic Regression (Bernoulli)
 
 # Distributions <a name="distributions"></a>
   1. Arcsine
+  1. Bernoulli (Not-learnable)
   1. [Beta](https://en.wikipedia.org/wiki/Beta_distribution)
   1. [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution)
   1. [ChiSquare](https://en.wikipedia.org/wiki/Chi-squared_distribution)
