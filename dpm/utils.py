@@ -1,4 +1,5 @@
 import torch
+from torch.nn import Module
 import numpy as np
 
 # constants
@@ -73,6 +74,28 @@ def corr(X, Y=None):
     C = C / std_x.expand_as(C)
     C = C / std_y.expand_as(C).t()
     return C
+
+
+# Layers
+
+class Flatten(Module):
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        return x.view(x.size(0), -1)
+
+
+class Reshape(Module):
+
+    def __init__(self, *shape):
+        super().__init__()
+        self.shape = shape
+
+    def forward(self, x):
+        return x.view(-1, *self.shape)
+
 
 
 # EOF
