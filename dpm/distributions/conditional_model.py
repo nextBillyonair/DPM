@@ -18,7 +18,7 @@ class ConditionalModel(Distribution):
         layers = []
         for h in hidden_sizes:
             layers.append(nn.Linear(prev_size, h))
-            layers.append(getattr(nn, activation)())
+            layers.append(getattr(nn, activation)() if isinstance(activation, str) else activation)
             layers.append(nn.BatchNorm1d(h))
             prev_size = h
 
@@ -27,7 +27,7 @@ class ConditionalModel(Distribution):
         for output_shape, output_activation in zip(output_shapes, output_activations):
             layers = [nn.Linear(prev_size, output_shape)]
             if output_activation is not None:
-                layers.append(getattr(nn, output_activation)())
+                layers.append(getattr(nn, output_activation)() if isinstance(output_activation, str) else output_activation)
             self.output_layers.append(nn.Sequential(*layers))
 
         self.distribution = distribution
