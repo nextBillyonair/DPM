@@ -16,7 +16,7 @@ class Data(Distribution):
                 d = torch.tensor(d).float()
             torch_data.append(d)
 
-        assert (np.array([d.shape for d in torch_data]) == torch_data[0].shape).all()
+        assert (np.array([d.shape[0] for d in torch_data]) == torch_data[0].shape[0]).all()
         self.n_dims = torch_data[0].size(-1)
         self.n_samples = len(torch_data[0])
         self.n_pairs = len(data)
