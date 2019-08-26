@@ -3,14 +3,6 @@ Differentiable Probabilistic Models
 
 ---
 
-## TODO:
-  * Finish VAE example in Notebook
-  * GAN Example using Distribution Components
-  * GLM Models from TensorFlow
-  * Add more Transforms from TensorFlow
-
----
-
 ## Table of Contents
 1. [Models](#models)
 1. [Distributions](#distributions)
