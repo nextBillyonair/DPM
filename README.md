@@ -38,7 +38,7 @@ Differentiable Probabilistic Models
 
 # Distributions <a name="distributions"></a>
   1. Arcsine
-  1. Bernoulli (Not-learnable)
+  1. [Bernoulli (Not-learnable)](https://en.wikipedia.org/wiki/Bernoulli_distribution)
   1. [Beta](https://en.wikipedia.org/wiki/Beta_distribution)
   1. [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution)
   1. [ChiSquare](https://en.wikipedia.org/wiki/Chi-squared_distribution)
@@ -58,6 +58,7 @@ Differentiable Probabilistic Models
       * Uses a latent distribution to sample inputs to a neural network to
       generate a distribution. Train with the adversarial losses.
   1. [Gumbel Softmax (Relaxed Categorical)](https://arxiv.org/abs/1611.01144)
+  1. [Gumbel](https://en.wikipedia.org/wiki/Gumbel_distribution)
   1. Half Cauchy
   1. Half Normal
   1. [Langevin](https://en.wikipedia.org/wiki/Metropolis-adjusted_Langevin_algorithm)
