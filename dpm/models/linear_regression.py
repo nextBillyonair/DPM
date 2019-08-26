@@ -1,8 +1,9 @@
 import torch
+from torch.nn import Softmax
 from functools import partial
 from dpm.distributions import (
     Distribution, Normal, ConditionalModel, Laplace,
-    Bernoulli
+    Bernoulli, Categorical
 )
 from dpm.utils import Sigmoid
 from .model import Model
@@ -65,6 +66,15 @@ class LogisticRegression(LinearModel):
     def __init__(self, input_dim=1, output_shape=1):
         super().__init__(input_dim, output_shape, output_activation=Sigmoid(),
             distribution=Bernoulli)
+
+
+# multiclass, max ent
+class SoftmaxRegression(LinearModel):
+
+    def __init__(self, input_dim=1, output_shape=2):
+        super().__init__(input_dim, output_shape, output_activation=Softmax(dim=1),
+            distribution=Categorical)
+
 
 
 
