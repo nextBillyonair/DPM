@@ -3,6 +3,7 @@ from .distribution import Distribution
 from .arcsine import Arcsine
 from .bernoulli import Bernoulli
 from .beta import Beta
+from .categorical import Categorical
 from .cauchy import Cauchy
 from .chi_square import ChiSquare
 from .conditional_model import ConditionalModel
