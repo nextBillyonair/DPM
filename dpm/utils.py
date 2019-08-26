@@ -5,10 +5,47 @@ import numpy as np
 # constants
 
 euler_mascheroni = 0.57721566490153286060651209008240243104215933593992
+catalan = 0.915965594177219015054603514932384110774
 eps = 1e-10
 
 
 #functions
+
+def sin(x):
+    return torch.sin(x)
+
+def cos(x):
+    return torch.cos(x)
+
+def tan(x):
+    return torch.tan(x)
+
+def cot(x):
+    return 1. / torch.tan(x)
+
+def sec(x):
+    return 1. / torch.cos(x)
+
+def csc(x):
+    return 1. / torch.sin(x)
+
+def sinh(x):
+    return torch.sinh(x)
+
+def cosh(x):
+    return torch.cosh(x)
+
+def tanh(x):
+    return torch.tanh(x)
+
+def coth(x):
+    return torch.cosh(x) / torch.sinh(x)
+
+def sech(x):
+    return 1. / torch.cosh(x)
+
+def csch(x):
+    return 1. / torch.sinh(x)
 
 def arcsinh(x):
     return torch.log(x + (x.pow(2) + 1).sqrt())

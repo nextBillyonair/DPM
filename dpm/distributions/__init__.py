@@ -19,6 +19,7 @@ from .gumbel_softmax import GumbelSoftmax
 from .gumbel import Gumbel
 from .half_cauchy import HalfCauchy
 from .half_normal import HalfNormal
+from .hyperbolic_secant import HyperbolicSecant
 from .langevin import Langevin
 from .laplace import Laplace
 from .log_cauchy import LogCauchy
