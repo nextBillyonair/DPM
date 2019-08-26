@@ -14,6 +14,11 @@ def predict(x, model, compute_logprob=False):
         x = torch.tensor(x)
     return model.sample(x.float(), compute_logprob)
 
+def parameterize(x, model):
+    if not isinstance(x, torch.Tensor):
+        x = torch.tensor(x)
+    return model.model(x.float())
+
 
 class Model(Distribution):
 
@@ -25,3 +30,6 @@ class Model(Distribution):
 
     def predict(self, x):
         return predict(x, self)
+
+    def forward(self, x):
+        return parameterize(x, self)
