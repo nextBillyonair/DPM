@@ -15,6 +15,7 @@ from .fisher_snedecor import FisherSnedecor
 from .gamma import Gamma
 from .generator import Generator
 from .gumbel_softmax import GumbelSoftmax
+from .gumbel import Gumbel
 from .half_cauchy import HalfCauchy
 from .half_normal import HalfNormal
 from .langevin import Langevin
