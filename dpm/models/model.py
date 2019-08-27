@@ -74,33 +74,4 @@ class LinearModel(NeuralModel):
 
 
 
-# class LinearModel(Model):
-#
-#     def __init__(self, input_dim=1, output_shape=1, output_activation=None,
-#                  distribution=None, prior=None):
-#         super().__init__()
-#         self.model = ConditionalModel(input_dim, hidden_sizes=[], activation="",
-#                             output_shapes=[output_shape],
-#                             output_activations=[output_activation],
-#                             distribution=distribution)
-#         self.prior = prior
-#
-#     def prior_penalty(self):
-#         return self.prior.log_prob(torch.cat([p.view(-1) for p in self.model.parameters()]).view(-1, 1)).sum()
-#
-#     def log_prob(self, x, y):
-#         if self.prior:
-#             return self.model.log_prob(y, x) + self.prior_penalty()
-#         return self.model.log_prob(y, x)
-#
-#     def sample(self, x, compute_logprob=False):
-#         return self.model.sample(x, compute_logprob)
-
-
-
-
-
-
-
-
 # EOF
