@@ -1,0 +1,210 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2018
+
+% ready for submission
+% \usepackage{neurips_2018}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2018}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+     \usepackage[final]{neurips_2018}
+
+% to avoid loading the natbib package, add option nonatbib:
+%     \usepackage[nonatbib]{neurips_2018}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{bayesnet}
+\usetikzlibrary{arrows}
+\usepackage{color}
+\usepackage{array}
+\usepackage{dsfont}
+\usepackage{multirow, graphicx}
+ \usepackage{float}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{caption}
+\usepackage{subcaption}
+\urlstyle{same}
+
+\title{Differentiable Probabilistic Models}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+  William Watson \\
+  \texttt{nextbillyonair@gmail.com} \\
+}
+
+\begin{document}
+% \nipsfinalcopy is no longer used
+
+\maketitle
+
+\begin{abstract}
+  d
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Minimum length: 4 pages. Maximum length: 8 pages !!!!!                   %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\tableofcontents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Introduction}
+\subsection{Philosophy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Preliminary}
+\subsection{Gradients}
+\subsection{Jacobian}
+\subsection{Hessian}
+\subsection{Newton Optimization}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Distributions}
+\subsection{Distribution}
+\subsection{Arcsine}
+\subsection{Bernoulli}
+\subsection{Beta}
+\subsection{Categorical}
+\subsection{Cauchy}
+\subsection{Chi Square}
+\subsection{Conditional Model}
+\subsection{Convolution}
+\subsection{Data}
+\subsection{Dirac Delta}
+\subsection{Dirichlet}
+\subsection{Exponential}
+\subsection{Fisher-Snedcor (F-Distribution)}
+\subsection{Gamma}
+\subsection{Generator}
+\subsection{Gumbel Softmax}
+\subsection{Gumbel}
+\subsection{Half Cauchy}
+\subsection{Half Normal}
+\subsection{Hyperbolic Secant}
+\subsection{Langevin}
+\subsection{Laplace}
+\subsection{Log Cauchy}
+\subsection{Log Laplace}
+\subsection{Log Normal}
+\subsection{Logistic}
+\subsection{Normal (Multivariate)}
+\subsection{Rayleigh}
+\subsection{Relaxed Bernoulli}
+\subsection{Student T}
+\subsection{Transformed Distribution}
+\subsection{Uniform}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mixture Models}
+\subsection{Mixture Model}
+\subsection{Gumbel Mixture Model}
+\subsection{Infinite Mixture Model}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Transforms}
+\subsection{Transform}
+\subsection{Inverse Transform}
+\subsection{Affine}
+\subsection{Exp}
+\subsection{Expm1}
+\subsection{Gumbel}
+\subsection{Log}
+\subsection{Logit}
+\subsection{Power}
+\subsection{Reciprocal}
+\subsection{Sigmoid}
+\subsection{SinhArcsinh}
+\subsection{Softplus}
+\subsection{Softsign}
+\subsection{Square}
+\subsection{Tanh}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Divergences}
+\subsection{Cross-Entropy}
+\subsection{Perplexity}
+\subsection{Forward KL Divergence}
+\subsection{Reverse KL Divergence}
+\subsection{Jensen-Shannon Divergence}
+\subsection{Earth Mover's Distance}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ELBO}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Models}
+\subsection{Linear Model}
+\subsection{Linear Regression (Normal)}
+\subsection{L1 Regression (Laplace)}
+\subsection{Ridge Regression (Normal + Normal Prior on Weights)}
+\subsection{Lasso Regression (Normal + Laplace Prior on Weights)}
+\subsection{Logistic Regression (Bernoulli)}
+\subsection{Softmax Regression (Categorical)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Adversarial Loss}
+\subsection{Adversarial Loss}
+\subsection{GAN Loss}
+\subsection{MMGAN Loss}
+\subsection{WGAN Loss}
+\subsection{LSGAN Loss}
+\subsection{Gradient Penalty}
+\subsection{Spectral Norm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Monte Carlo}
+\subsection{Monte Carlo Approximation}
+\subsection{Linear Congruential Generator}
+\subsection{Inverse Transform Sampling}
+\subsection{Box-Muller}
+\subsection{Marsaglia-Bray}
+\subsection{Rejection Sampling}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Markov Chain Monte Carlo (MCMC)}
+\subsection{Metropolis}
+\subsection{Metropolis-Hastings}
+\subsection{Metropolis-Adjusted Langevin Algorithm (MALA)}
+\subsection{Hamiltonian Monte Carlo}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% ------------------------------
+
+
+
+% \bibliographystyle{abbrv}
+% \bibliography{report}
+
+
+\end{document}
