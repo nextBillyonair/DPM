@@ -22,12 +22,20 @@ Differentiable Probabilistic Models
 ---
 
 # Models <a name="models"></a>
-  1. Linear Regression (Normal)
-  1. L1 Regression (Laplace)
-  1. Ridge Regression (Normal + Normal Prior on weights)
-  1. Lasso Regression (Normal + Laplace Prior on weights)
-  1. Logistic Regression (Bernoulli)
-  1. Softmax Regression (Categorical)
+  1. Regression
+    1. Linear Regression (Normal)
+    1. L1 Regression (Laplace)
+    1. Ridge Regression (Normal + Normal Prior on weights) (Bayesian Linear Regression)
+    1. Lasso Regression (Normal + Laplace Prior on weights)
+  1. Classification
+    1. Logistic Regression (Bernoulli)
+    1. Bayesian Logistic Regression (Bernoulli + Normal Prior on weights)
+    1. Softmax Regression (Categorical)
+  1. Generative Adversarial Networks
+    1. GAN
+    1. MMGAN
+    1. WGAN
+    1. LSGAN
 
 # Distributions <a name="distributions"></a>
   1. Arcsine

@@ -7,7 +7,7 @@ import dpm.newton as newton
 
 class AdversarialLoss(ABC, Module):
 
-    def __init__(self, input_dim, hidden_sizes=[24, 24],
+    def __init__(self, input_dim=1, hidden_sizes=[24, 24],
                  activation='LeakyReLU',
                  lr=1e-3, grad_penalty=None, use_spectral_norm=False):
         super().__init__()
@@ -69,3 +69,9 @@ class AdversarialLoss(ABC, Module):
         q_samples = q_model.sample(batch_size)
         q_values = self.discriminator_model(q_samples)
         return self.generator_loss(q_values)
+
+    def classify(self, values):
+        return self.discriminator_model(values)
+
+
+# EOF
