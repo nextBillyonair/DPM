@@ -79,6 +79,11 @@ def logit(x):
 def log(x):
     return (x + eps).log()
 
+# Kronecker
+def kron(A, B):
+    return torch.einsum('ij,kl->ikjl', [A, B]).view(A.size(0) * B.size(0),
+                                                    A.size(1) * B.size(1))
+
 
 # generic inverse
 def inverse(X):
