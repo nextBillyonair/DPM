@@ -132,17 +132,183 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Transforms}
+Transforms are invertible functions that can be applied to a
+random variable to change the distribution.
 \subsection{Transform}
 \subsection{Inverse Transform}
 \subsection{Affine}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item Location $\mu \in \mathbb{R}^n$
+    \item Scale $\sigma > 0$
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = \mu + \sigma \cdot x
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = \frac{y - \mu}{\sigma}
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = \log \vert \sigma \vert
+  \end{equation}
+\end{itemize}
 \subsection{Exp}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item None
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = e^x
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = \log y
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = x
+  \end{equation}
+\end{itemize}
 \subsection{Expm1}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item None
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = e^x - 1
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = \log ( 1 + y )
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = x
+  \end{equation}
+\end{itemize}
 \subsection{Gumbel}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item Location $\mu \in \mathbb{R}^n$
+    \item Scale $\sigma > 0$
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = \exp \left( - \exp \left( - \frac{x - \mu}{\sigma} \right) \right)
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = \mu - \sigma \cdot \log \left( - \log \left( y \right) \right)
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = - \log \left( \frac{\sigma}{-\log(y) \cdot y} \right)
+  \end{equation}
+\end{itemize}
 \subsection{Log}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item None
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = \log x
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = \exp y
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = - y
+  \end{equation}
+\end{itemize}
 \subsection{Logit}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item None
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = \log \left( \frac{x}{1 - x} \right)
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = \frac{1}{1 + e^{-y}}
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = \log\left( 1 + e^{-y} \right) + \log\left( 1 + e^{y} \right)
+  \end{equation}
+\end{itemize}
 \subsection{Power}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item Power $p$
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = \begin{cases} e^x & p = 0 \\ \left( 1 + x \cdot p \right) ^ {1 / p} & \text{otherwise} \end{cases}
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = \begin{cases} \log y & p = 0 \\ y^{p - 1} / p & \text{otherwise} \end{cases}
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = \begin{cases} x & p = 0 \\ \left(\frac{1}{p} - 1 \right) \cdot \log \left(x \cdot p + 1 \right) & \text{otherwise} \end{cases}
+  \end{equation}
+\end{itemize}
 \subsection{Reciprocal}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item None
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = 1 / x
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = 1 / y
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = -2 \cdot \log \vert x \vert
+  \end{equation}
+\end{itemize}
 \subsection{Sigmoid}
+\begin{itemize}
+  \item \textbf{Parameters}
+  \begin{itemize}
+    \item None
+  \end{itemize}
+  \item \textbf{Forward}
+  \begin{equation}
+    f(x) = \frac{1}{1 + e^{-x}}
+  \end{equation}
+  \item \textbf{Inverse}
+  \begin{equation}
+    f^{-1}(y) = \log \left( \frac{y}{1 - y} \right)
+  \end{equation}
+  \item \textbf{Log Absolute Determinant Jacobian}
+  \begin{equation}
+    \log \vert \text{det} \, \mathbf{J} \vert (x, y) = -\log\left( 1 + e^{-x} \right) - \log\left( 1 + e^{x} \right)
+  \end{equation}
+\end{itemize}
 \subsection{SinhArcsinh}
 \subsection{Softplus}
 \subsection{Softsign}
@@ -150,11 +316,41 @@
 \subsection{Tanh}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Divergences}
+\section{Criterion and Divergences}
+The criterion and divergences listed here can be used to quantify the "distance"
+between two distributions. Hence, in conjunction with torch optimizers,
+one can minimize said difference to learn the paramters of a distribution. For
+sake of notation clarity, $p$ is the true distribution and $q$ is the learned
+distribution. Hence we "fit" $q$ to match $p$. In addition, we provide the
+Monte Carlo approximation.
 \subsection{Cross-Entropy}
+\begin{equation}
+  \begin{aligned}
+    H(p, q) =& - \int p(x) \log q(x) dx \\
+    =& - \frac{1}{n} \sum_{x \sim p} \log q(x)
+  \end{aligned}
+\end{equation}
 \subsection{Perplexity}
+\begin{equation}
+  \begin{aligned}
+    H(p, q) =& \exp \left( - \int p(x) \log q(x) dx \right) \\
+    =& \exp \left(- \frac{1}{n} \sum_{x \sim p} \log q(x) \right)
+  \end{aligned}
+\end{equation}
 \subsection{Forward KL Divergence}
+\begin{equation}
+  \begin{aligned}
+    H(p, q) =& \int p(x) \log \frac{p(x)}{q(x)} dx  \\
+    =&  \frac{1}{n} \sum_{x \sim p} \log \frac{p(x)}{q(x)}
+  \end{aligned}
+\end{equation}
 \subsection{Reverse KL Divergence}
+\begin{equation}
+  \begin{aligned}
+    H(p, q) =& \int q(x) \log \frac{q(x)}{p(x)} dx  \\
+    =&  \frac{1}{n} \sum_{x \sim q} \log \frac{q(x)}{p(x)}
+  \end{aligned}
+\end{equation}
 \subsection{Jensen-Shannon Divergence}
 \subsection{Earth Mover's Distance}
 
