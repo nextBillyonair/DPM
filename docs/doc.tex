@@ -126,6 +126,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mixture Models}
+Mixture Models are probabilistic models that use other distributions as sub-components.
+These sub-components are weighted in order to form a mixture of the components.
 \subsection{Mixture Model}
 \subsection{Gumbel Mixture Model}
 \subsection{Infinite Mixture Model}
@@ -360,6 +362,10 @@ Monte Carlo approximation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Adversarial Loss}
+Adversarial Losses are criterion functions that allow for sample-sample based
+training between models $p$ and $q$. More formally, it hides a Discriminator
+model that attempts to discriminate between the real data from $p$ and fake data
+generated from $q$.
 \subsection{Adversarial Loss}
 \subsection{GAN Loss}
 \subsection{MMGAN Loss}
@@ -384,6 +390,9 @@ Monte Carlo approximation.
 \subsubsection{Logistic Regression (Bernoulli)}
 \subsubsection{Bayesian Logistic Regression (Bernoulli)}
 \subsubsection{Softmax Regression (Categorical)}
+
+\subsection{Clustering}
+\subsubsection{Gaussian Mixture}
 
 \subsection{Generative Adversarial Networks}
 \subsubsection{Generative Adversarial Networks}
