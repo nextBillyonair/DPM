@@ -10,6 +10,9 @@ from .classification import (
 from .clustering import (
     GaussianMixture
 )
+from .factorization import (
+    PMF
+)
 from .regression import (
     LinearRegression, L1Regression,
     RidgeRegression, LassoRegression

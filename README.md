@@ -33,6 +33,7 @@ Differentiable Probabilistic Models
       1. Softmax Regression (Categorical)
   1. Clustering
       1. Gaussian Mixture
+  1. Probabilistic Matrix Factorization
   1. Generative Adversarial Networks
       1. GAN
       1. MMGAN
