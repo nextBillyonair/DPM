@@ -43,8 +43,8 @@ class PMF(Distribution):
         mean = self.reconstruct().view(-1)
         return Normal(mean, torch.ones_like(mean), learnable=False).log_prob(R) + self.prior_penalty()
 
-    def sample(self, batch_size):
-        return self.reconstruct().expand((batch_size, self.N, self.M)) + torch.randn((batch_size, self.N, self.M))
+    def sample(self, batch_size, noise_std=1.0):
+        return self.reconstruct().expand((batch_size, self.N, self.M)) + noise_std * torch.randn((batch_size, self.N, self.M))
 
     def fit(self, R, **kwargs):
         data = Data(R.view(-1, self.N * self.M))
