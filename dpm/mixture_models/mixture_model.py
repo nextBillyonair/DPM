@@ -33,5 +33,5 @@ class MixtureModel(Distribution):
         return torch.sum(cdfs * cat_cdfs, dim=0)
 
     def get_parameters(self):
-        return {'probs': self.categorical.probs.numpy(),
+        return {'probs': self.categorical.probs.detach().numpy(),
                 'models': [model.get_parameters() for model in self.models]}

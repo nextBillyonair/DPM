@@ -1,17 +1,20 @@
 import torch
 from .distribution import Distribution
 from dpm.utils import eps
+from torch.nn import Parameter
 
 
 class Bernoulli(Distribution):
 
-    def __init__(self, probs=[0.5], learnable=False):
+    def __init__(self, probs=[0.5], learnable=True):
         super().__init__()
         self.n_dims = len(probs)
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs)
         self.probs = probs.float()
-        self.logits = (self.probs + eps).log()
+        if learnable:
+            self.probs = Parameter(self.probs)
+
 
     def log_prob(self, value):
         q = 1.-self.probs
@@ -32,7 +35,11 @@ class Bernoulli(Distribution):
     def variance(self):
         return self.probs * (1 - self.probs)
 
+    @property
+    def logits(self):
+        return (self.probs + eps).log()
+
     def get_parameters(self):
         if self.n_dims == 1:
-            return {'probs': self.probs.item()}
-        return {'probs': self.probs.numpy()}
+            return {'probs': self.probs.detach().item()}
+        return {'probs': self.probs.detach().numpy()}

@@ -5,6 +5,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
+from .categorical import Categorical
 from dpm.utils import eps
 
 
@@ -24,8 +25,8 @@ class GumbelSoftmax(Distribution):
 
     def log_prob(self, value):
         if self.hard or True:
-            model = dists.Categorical(probs=self.probs)
-            return model.log_prob(value)
+            model = Categorical(self.probs, learnable=False)
+            return model.log_prob(value.max(dim=1)[1].view(-1, 1))
         # put non hard pdf here
 
     def sample(self, batch_size):

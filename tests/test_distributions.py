@@ -142,13 +142,13 @@ gumbels = [
 @pytest.mark.parametrize("dist,n_dims", gumbels)
 def test_gumbel_softmax(dist, n_dims):
     assert dist.sample(1).shape == (1, n_dims)
-    assert dist.log_prob(dist.sample(1)).shape == (1, n_dims)
+    assert dist.log_prob(dist.sample(1)).shape == (1, )
 
     samples = dist.sample(64)
     assert samples.shape == (64, n_dims)
 
     log_probs = dist.log_prob(samples)
-    assert log_probs.shape == (64, n_dims)
+    assert log_probs.shape == (64, )
 
     dist.get_parameters()
     try:
