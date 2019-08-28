@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-from torch import distributions as dists
 from torch.nn import Module, Parameter, ModuleList
 from torch.nn.functional import softplus
 import numpy as np
@@ -24,8 +23,10 @@ class GumbelSoftmax(Distribution):
             self.logits = Parameter(self.logits)
 
     def log_prob(self, value):
-        model = dists.Categorical(probs=self.probs)
-        return model.log_prob(value)
+        if self.hard or True:
+            model = dists.Categorical(probs=self.probs)
+            return model.log_prob(value)
+        # put non hard pdf here
 
     def sample(self, batch_size):
         U = torch.rand((batch_size, self.n_dims))

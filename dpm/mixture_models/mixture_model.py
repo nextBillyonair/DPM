@@ -1,9 +1,9 @@
 import torch
-from torch.distributions import Categorical
 from torch.nn import ModuleList
 import numpy as np
 
-from dpm.distributions import Distribution
+from dpm.distributions import Distribution, Categorical
+
 
 
 # Non-differentiable Categorical weights (not learnable)
@@ -11,7 +11,7 @@ class MixtureModel(Distribution):
     def __init__(self, models, probs):
         super().__init__()
         self.n_dims = models[0].n_dims
-        self.categorical = Categorical(probs=torch.tensor(probs))
+        self.categorical = Categorical(probs)
         self.models = ModuleList(models)
 
     def log_prob(self, value):
@@ -21,7 +21,7 @@ class MixtureModel(Distribution):
         return torch.logsumexp(log_probs + cat_log_probs, dim=0)
 
     def sample(self, batch_size):
-        indices = self.categorical.sample((batch_size,))
+        indices = self.categorical.sample(batch_size).view(-1)
         samples = torch.stack([sub_model.sample(batch_size)
                                for sub_model in self.models])
         return samples[indices, np.arange(batch_size)]

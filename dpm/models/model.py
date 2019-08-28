@@ -43,6 +43,7 @@ class NeuralModel(Model):
                  output_activation=None,
                  distribution=None, prior=None):
         super().__init__()
+        self.n_dims = output_shape
         self.model = ConditionalModel(input_dim, hidden_sizes=hidden_sizes,
                             activation=activation,
                             output_shapes=[output_shape],

@@ -31,6 +31,8 @@ Differentiable Probabilistic Models
     1. Logistic Regression (Bernoulli)
     1. Bayesian Logistic Regression (Bernoulli + Normal Prior on weights)
     1. Softmax Regression (Categorical)
+  1. Clustering
+    1. Gaussian Mixture
   1. Generative Adversarial Networks
     1. GAN
     1. MMGAN

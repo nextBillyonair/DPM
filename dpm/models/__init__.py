@@ -7,6 +7,9 @@ from .classification import (
     LogisticRegression, BayesianLogisticRegression,
     SoftmaxRegression
 )
+from .clustering import (
+    GaussianMixture
+)
 from .regression import (
     LinearRegression, L1Regression,
     RidgeRegression, LassoRegression
