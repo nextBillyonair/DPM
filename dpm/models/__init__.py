@@ -10,6 +10,9 @@ from .classification import (
 from .clustering import (
     GaussianMixture
 )
+from .decomposition import (
+    pca, PCA, #ProbabilisticPCA
+)
 from .factorization import (
     PMF
 )
