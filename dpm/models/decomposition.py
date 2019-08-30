@@ -31,7 +31,7 @@ class PCA():
     def transform(self, X):
         if not isinstance(X, torch.Tensor):
             X = torch.tensor(X).float()
-        return torch.mm(X, self.V[:self.k])
+        return torch.mm(X, self.V[:self.k].t())
 
     def fit_transform(self, X):
         self.fit(X)
