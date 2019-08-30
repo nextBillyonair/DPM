@@ -14,7 +14,7 @@ class GaussianMixture(Distribution):
         super().__init__()
         self.n_components = n_components
         self.n_dims = n_dims
-        self.model = MixtureModel([Normal(torch.randn(n_dims), torch.ones(n_dims))
+        self.model = MixtureModel([Normal(torch.randn(n_dims), torch.eyes(n_dims))
                                    for _ in range(n_components)],
                                   [1.0 / n_components for _ in range(n_components)])
 
