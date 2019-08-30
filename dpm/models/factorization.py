@@ -34,7 +34,7 @@ class PMF(Distribution):
         return self.prior.log_prob(torch.cat([p.view(-1) for p in self.parameters()]).view(-1, 1)).sum()
 
     def reconstruct(self):
-        return self.U.transpose(0, 1).mm(self.V)
+        return self.U.t().mm(self.V)
 
     def log_prob(self, R):
         if not isinstance(R, torch.Tensor):
