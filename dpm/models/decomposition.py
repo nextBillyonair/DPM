@@ -9,7 +9,7 @@ def pca(X, k=2):
     if not isinstance(X, torch.Tensor):
         X = torch.tensor(X).float()
     X = X - X.mean(dim=0, keepdim=True)
-    U, S, V = torch.svd(X.t())
+    U, S, V = torch.svd(X)
     return torch.mm(X, V[:k].t())
 
 
@@ -22,7 +22,7 @@ class PCA():
         if not isinstance(X, torch.Tensor):
             X = torch.tensor(X).float()
         X = X - X.mean(dim=0, keepdim=True)
-        self.U, self.S, self.V = torch.svd(X.t())
+        self.U, self.S, self.V = torch.svd(X)
         self.eigen_values_ = self.S.pow(2)
         self.explained_variance_ = self.eigen_values_ / (X.shape[0] - 1)
         self.total_var = self.explained_variance_.sum()
@@ -56,6 +56,8 @@ class PCA():
     @property
     def explained_variance_ratio(self):
         return self.explained_variance_ratio_[:self.k]
+
+
 
 # EXPERIMENTAL NOT DONE
 class ProbabilisticPCA(Distribution):
