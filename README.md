@@ -16,7 +16,6 @@ Differentiable Probabilistic Models
 1. [Monte Carlo Sampling](#monte_carlo_sampling)
 1. [MCMC Methods](#mcmc-methods)
 1. [Newton](#newton)
-1. [PCA](#pca)
 1. [Notes](#notes)
 
 ---
@@ -33,12 +32,17 @@ Differentiable Probabilistic Models
       1. Softmax Regression (Categorical)
   1. Clustering
       1. Gaussian Mixture
+  1. Decomposition
+      1. Functional PCA
+      1. Dynamic SVD Based (can update projection size)
+      1. TBD Probabalistic PCA
   1. Probabilistic Matrix Factorization
   1. Generative Adversarial Networks
       1. GAN
       1. MMGAN
       1. WGAN
       1. LSGAN
+  1. TBD Variational AutoEncoders
 
 # Distributions <a name="distributions"></a>
   1. Arcsine
@@ -99,6 +103,7 @@ Differentiable Probabilistic Models
   1. Softsign
   1. Square
   1. Tanh
+  1. TBD: Radial and Planar Flows, Batch Nornalization
 
 # Mixture Models <a name="mixture-models"></a>
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)
@@ -184,10 +189,6 @@ Differentiable Probabilistic Models
   1. Jacobian (First Order on vector output)
   1. Hessian (Second Order)
   1. Newton Step (Computes the newton update w.r.t. to output y, input x)
-
-# PCA <a name="pca"></a>
-  1. Functional PCA
-  1. Class-based PCA allowing for dynamic components
 
 # Notes <a name="notes"></a>
   * Sampling must be done through a reparameterized version of the
