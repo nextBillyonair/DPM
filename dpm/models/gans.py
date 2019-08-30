@@ -9,7 +9,7 @@ from dpm.train import train
 class GenerativeAdversarialNetwork(Distribution):
 
     # define them here please
-    def __init__(self, criterion, generator_args, criterion_args):
+    def __init__(self, criterion, generator_args={}, criterion_args={}):
         super().__init__()
         self.model = Generator(**generator_args)
         self.criterion = criterion(**criterion_args)
@@ -37,20 +37,20 @@ class GenerativeAdversarialNetwork(Distribution):
 
 class GAN(GenerativeAdversarialNetwork):
 
-    def __init__(self, generator_args, criterion_args):
+    def __init__(self, generator_args={}, criterion_args={}):
         super().__init__(GANLoss, generator_args, criterion_args)
 
 class MMGAN(GenerativeAdversarialNetwork):
 
-    def __init__(self, generator_args, criterion_args):
+    def __init__(self, generator_args={}, criterion_args={}):
         super().__init__(MMGANLoss, generator_args, criterion_args)
 
 class WGAN(GenerativeAdversarialNetwork):
 
-    def __init__(self, generator_args, criterion_args):
+    def __init__(self, generator_args={}, criterion_args={}):
         super().__init__(WGANLoss, generator_args, criterion_args)
 
 class LSGAN(GenerativeAdversarialNetwork):
 
-    def __init__(self, generator_args, criterion_args):
+    def __init__(self, generator_args={}, criterion_args={}):
         super().__init__(LSGANLoss, generator_args, criterion_args)
