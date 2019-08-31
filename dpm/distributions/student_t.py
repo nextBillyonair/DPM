@@ -35,7 +35,7 @@ class StudentT(Distribution):
         model = dists.StudentT(self.df, self.loc, self.scale)
         return model.rsample((batch_size,))
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return dists.StudentT(self.df, self.loc, self.scale).entropy()
 
     @property

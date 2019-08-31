@@ -23,7 +23,7 @@ class Rayleigh(Distribution):
         u = torch.rand((batch_size, self.n_dims))
         return self.scale * (-2 * u.log()).sqrt()
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return 1. + (self.scale / math.sqrt(2.)).log() + utils.euler_mascheroni / 2.
 
     def cdf(self, value):
@@ -38,12 +38,26 @@ class Rayleigh(Distribution):
         return self.scale * math.sqrt(math.pi / 2.)
 
     @property
+    def mode(self):
+        return self.scale
+
+    @property
     def variance(self):
         return ((4. - math.pi) / 2.) * self.scale.pow(2)
 
     @property
     def median(self):
         return self.scale * math.sqrt((2. * math.log(2.)))
+
+    @property
+    def skewness(self):
+        pi = torch.tensor(math.pi).float()
+        return (2. * pi.sqrt() * (pi - 3.)) / (4. - pi).pow(3./2.)
+
+    @property
+    def kurtosis(self):
+        pi = torch.tensor(math.pi).float()
+        return -(6*pi.pow(2) - 24.*pi + 16.) / (4. - pi).pow(2)
 
     @property
     def scale(self):

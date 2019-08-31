@@ -22,7 +22,7 @@ class Exponential(Distribution):
         u = torch.rand((batch_size, self.n_dims))
         return -(-u).log1p() / self.rate
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return 1 - self.rate.log()
 
     def cdf(self, value):
@@ -36,12 +36,24 @@ class Exponential(Distribution):
         return self.rate.pow(-1)
 
     @property
+    def mode(self):
+        return torch.tensor(0.).float()
+
+    @property
     def variance(self):
         return self.rate.pow(-2)
 
     @property
     def median(self):
         return self.rate.pow(-1) * np.log(2.)
+
+    @property
+    def skewness(self):
+        return torch.tensor(2.).float()
+
+    @property
+    def kurtosis(self):
+        return torch.tensor(6.).float()
 
     @property
     def rate(self):

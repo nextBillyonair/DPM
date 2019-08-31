@@ -25,7 +25,7 @@ class HalfCauchy(Distribution):
     def sample(self, batch_size):
         return dists.HalfCauchy(self.scale).rsample((batch_size,))
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return dists.HalfCauchy(self.scale).entropy()
 
     @property

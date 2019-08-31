@@ -1,6 +1,6 @@
 import dpm.monte_carlo as monte_carlo
 from dpm.distributions import (
-    Normal, Beta, Exponential, Gamma, Uniform
+    Normal, Beta, Exponential, Gamma, Uniform, Laplace
 )
 import pytest
 from scipy.stats import ks_2samp
@@ -62,7 +62,7 @@ test_entropy = [
 
 @pytest.mark.parametrize("dist", test_entropy)
 def test_monte_carlo_entropy(dist):
-    assert dist.entropy(15000) - monte_carlo.entropy(dist, 15000) < 0.2
+    assert dist.entropy() - monte_carlo.entropy(dist, 15000) < 0.2
 
 
 def test_max_min():
@@ -109,5 +109,22 @@ def test_rand_generator():
     stat, p_value = ks_2samp(samples.numpy(), normal_samples.numpy())
     assert stat <= 0.1
     assert p_value >= 0.1
+
+
+def test_monet_carlo_no_errors():
+    model = Laplace()
+    mean = model.loc .detach()
+    scale = model.scale.detach()
+    monte_carlo.expectation(model)
+    monte_carlo.variance(model)
+    monte_carlo.standard_deviation(model)
+    monte_carlo.median(model)
+    monte_carlo.skewness(model)
+    monte_carlo.kurtosis(model)
+    monte_carlo.entropy(model)
+    monte_carlo.cdf(model, 0.)
+
+
+
 
 # EOF

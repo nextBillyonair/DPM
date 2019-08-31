@@ -25,7 +25,7 @@ class HalfNormal(Distribution):
     def sample(self, batch_size):
         return dists.HalfNormal(self.scale).rsample((batch_size,))
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return 0.5 * (0.5 * math.pi * self.scale.pow(2)).log() + 0.5
 
     @property

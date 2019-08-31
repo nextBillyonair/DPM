@@ -36,6 +36,15 @@ class Bernoulli(Distribution):
         return self.probs * (1 - self.probs)
 
     @property
+    def skewness(self):
+        return (1 - 2 * self.probs) / (self.probs * (1 - self.probs)).sqrt()
+
+    @property
+    def kurtosis(self):
+        q = (1 - self.probs)
+        return (1 - 6. * self.probs * q) / (self.probs * q)
+
+    @property
     def logits(self):
         return (self.probs + eps).log()
 

@@ -29,7 +29,7 @@ class Uniform(Distribution):
         u = torch.rand((batch_size, self.n_dims))
         return self.low + (self.high - self.low) * u
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return (self.high - self.low).log()
 
     def cdf(self, value):
@@ -44,11 +44,19 @@ class Uniform(Distribution):
 
     @property
     def variance(self):
-        return (self.high - self.low).pow(2) / 12
+        return (self.high - self.low).pow(2) / 12.
 
     @property
     def median(self):
         return self.expectation
+
+    @property
+    def skewness(self):
+        return torch.tensor(0.).float()
+
+    @property
+    def kurtosis(self):
+        return torch.tensor(-6./5.).float()
 
     @property
     def low(self):

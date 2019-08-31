@@ -157,6 +157,9 @@ Differentiable Probabilistic Models
       * x_i sampled from Model, then averages F(x_i), see below for specific examples
   1. Expectation -> average of samples
   1. Variance -> average of squared difference between samples and mean
+  1. Standard Deviation -> Square root of Variance
+  1. Skewness
+  1. Kurtosis
   1. Median -> median of samples
   1. CDF -> proportion of samples <= c
   1. Entropy -> average negative log_prob of samples

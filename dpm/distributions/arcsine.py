@@ -50,6 +50,14 @@ class Arcsine(Distribution):
         return self.expectation
 
     @property
+    def skewness(self):
+        return torch.tensor(0.).float()
+
+    @property
+    def kurtosis(self):
+        return torch.tensor(-3./2.).float()
+
+    @property
     def low(self):
         return torch.min(self.alpha, self.beta)
 

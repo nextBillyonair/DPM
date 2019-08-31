@@ -46,11 +46,15 @@ class Logistic(Distribution):
     def scale(self):
         return softplus(self._scale)
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return self.scale.log() + 2.
 
     @property
     def expectation(self):
+        return self.loc
+
+    @property
+    def mode(self):
         return self.loc
 
     @property
@@ -60,6 +64,14 @@ class Logistic(Distribution):
     @property
     def median(self):
         return self.loc
+
+    @property
+    def skewness(self):
+        return torch.tensor(0.).float()
+
+    @property
+    def kurtosis(self):
+        return torch.tensor(6./5.).float()
 
     def get_parameters(self):
         if self.n_dims == 1:

@@ -34,11 +34,15 @@ class Cauchy(Distribution):
     def icdf(self, value):
         return torch.tan(math.pi * (value - 0.5)) * self.scale + self.loc
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return (4 * math.pi * self.scale).log()
 
     @property
     def median(self):
+        return self.loc
+
+    @property
+    def mode(self):
         return self.loc
 
     @property

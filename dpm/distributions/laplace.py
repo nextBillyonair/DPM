@@ -1,9 +1,9 @@
 import torch
 from torch import nn
-from torch import distributions as dists
-from torch.nn import Module, Parameter, ModuleList
+from torch.nn import Parameter
 from torch.nn.functional import softplus
 import numpy as np
+from torch import distributions as dists
 import math
 from .distribution import Distribution
 import dpm.utils as utils
@@ -24,19 +24,20 @@ class Laplace(Distribution):
             self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
-        return dists.Laplace(self.loc, self.scale).log_prob(value).sum(-1)
+        return (-(2. * self.scale).log() - ((value - self.loc).abs() / self.scale)).sum(-1)
 
     def sample(self, batch_size):
         return dists.Laplace(self.loc, self.scale).rsample((batch_size,))
 
     def cdf(self, value):
-        return dists.Laplace(self.loc, self.scale).cdf(value)
+        return 0.5 - 0.5 * (value - self.loc).sign() * (-(value - self.loc).abs() / self.scale).expm1()
 
     def icdf(self, value):
-        return dists.Laplace(self.loc, self.scale).icdf(value)
+        term = value - 0.5
+        return self.loc - self.scale * term.sign() * (-2 * term.abs()).log1p()
 
-    def entropy(self, batch_size=None):
-        return (2 * self.scale * math.e).log()
+    def entropy(self):
+        return 1 + (2 * self.scale).log()
 
     @property
     def expectation(self):
@@ -49,6 +50,22 @@ class Laplace(Distribution):
     @property
     def median(self):
         return self.loc
+
+    @property
+    def stddev(self):
+        return (2 ** 0.5) * self.scale
+
+    @property
+    def mode(self):
+        return self.loc
+
+    @property
+    def skewness(self):
+        return torch.tensor(0.).float()
+
+    @property
+    def kurtosis(self):
+        return torch.tensor(3.).float()
 
     @property
     def scale(self):

@@ -42,7 +42,11 @@ class LogNormal(Distribution):
     def median(self):
         return self.loc.exp()
 
-    def entropy(self, batch_size=None):
+    @property
+    def mode(self):
+        return (self.loc - self.scale.pow(2)).exp()
+
+    def entropy(self):
         return dists.LogNormal(self.loc, self.scale).entropy()
 
     @property

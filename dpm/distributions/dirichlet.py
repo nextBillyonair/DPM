@@ -25,7 +25,7 @@ class Dirichlet(Distribution):
     def sample(self, batch_size):
         return dists.Dirichlet(self.alpha).rsample((batch_size,))
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return dists.Dirichlet(self.alpha).entropy()
 
     @property

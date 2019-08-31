@@ -29,7 +29,7 @@ class Gamma(Distribution):
     def sample(self, batch_size):
         return dists.Gamma(self.alpha, self.beta).rsample((batch_size,))
 
-    def entropy(self, batch_size=None):
+    def entropy(self):
         return dists.Gamma(self.alpha, self.beta).entropy()
 
     @property

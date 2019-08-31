@@ -42,12 +42,24 @@ class Gumbel(Distribution):
         return self.loc + self.scale * euler_mascheroni
 
     @property
+    def mode(self):
+        return self.loc
+
+    @property
     def variance(self):
         return ((math.pi**2) / 6.) * self.scale.pow(2)
 
     @property
     def median(self):
         return self.loc - self.scale * math.log(math.log(2))
+
+    @property
+    def skewness(self):
+        return torch.tensor(1.14).float() # expand this out
+
+    @property
+    def kurtosis(self):
+        return torch.tensor(12./5.).float()
 
     @property
     def scale(self):

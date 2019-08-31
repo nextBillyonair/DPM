@@ -4,12 +4,15 @@ from .mcmc import (
 )
 
 from .mc_approximations import (
-    monte_carlo, expectation, variance, median, cdf, entropy,
+    monte_carlo,
+    expectation, variance, standard_deviation,
+    skewness, kurtosis,
+    median, cdf, entropy,
     max, min
 )
 
 from .mc_samplers import (
     lcg, rand,
     inverse_sampling, rejection_sampling, box_muller,
-    marsaglia_bray, beta_sampling, double_exponential
+    marsaglia_bray, # beta_sampling, double_exponential
 )
