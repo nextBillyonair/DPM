@@ -13,7 +13,11 @@ from .trig import (
 )
 from .math import (
     sqrtx2p1, softplus_inverse,
-    logit, log, kron,
+    logit, log,
+    kron, vec,
+    transpose, sum, column_sum, row_sum,
+    matrix_vector, matrix_matrix,
+    dot, hadamard, outer_product, bmm,
     inverse, pinverse,
     cov, corr
 )

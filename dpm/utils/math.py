@@ -20,6 +20,41 @@ def kron(A, B):
     return torch.einsum('ij,kl->ikjl', [A, B]).view(A.size(0) * B.size(0),
                                                     A.size(1) * B.size(1))
 
+def vec(A):
+    return torch.einsum("ij->ji", [A]).contiguous().view(-1, 1)
+
+# https://rockt.github.io/2018/04/30/einsum#fn.10
+
+def transpose(A):
+    return torch.einsum('ij->ji', [A])
+
+def sum(A):
+    return torch.einsum('ij->', [A])
+
+def column_sum(A):
+    return torch.einsum('ij->j', [A])
+
+def row_sum(A):
+    return torch.einsum('ij->i', [A])
+
+def matrix_vector(A, v):
+    return torch.einsum('ik,k->i', [A, v])
+
+def matrix_matrix(A, B):
+    return torch.einsum('ik,kj->ij', [A, B])
+
+def dot(a, b):
+    return torch.einsum('ij,ij->', [a, b])
+
+def hadamard(A, B):
+    return torch.einsum('ij,ij->ij', [A, B])
+
+def outer_product(a, b):
+    return torch.einsum('i,j->ij', [a, b])
+
+def bmm(A, B):
+    return torch.einsum('ijk,ikl->ijl', [A, B])
+
 
 # generic inverse
 def inverse(X):
