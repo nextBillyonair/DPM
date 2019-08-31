@@ -23,15 +23,29 @@ def test_kron():
     assert (ret == true).all()
 
 
-def test_non_trig_functions():
+def test_log_logit_sigmoid():
     utils.log(torch.tensor(0.))
-    assert utils.log(torch.tensor(math.e)) - 1. < 1e-3
-    assert (utils.logit(torch.tensor(0.9)) - 2.197224577 < 1e-3)
-    assert (utils.logit(torch.tensor(0.2)) + 1.38629436112 < 1e-3)
+    assert utils.log(torch.tensor(math.e)) - 1. < 1e-2
+    assert (utils.logit(torch.tensor(0.9)) - 2.197224577 < 1e-2)
+    assert (utils.logit(torch.tensor(0.2)) + 1.38629436112 < 1e-2)
+
+    layer = utils.Logit()
+    assert (layer(torch.tensor(0.9)) - 2.197224577 < 1e-2)
+    assert (layer(torch.tensor(0.2)) + 1.38629436112 < 1e-2)
+
+    layer = utils.Sigmoid()
+    assert (layer(torch.tensor(0.5)) - 0.6224593312018545646389 < 1e-2)
+    assert (layer(torch.tensor(3.)) - 0.9525741268224332191212 < 1e-2)
+    assert (layer(torch.tensor(-3.)) - 0.04742587317756678087885 < 1e-2)
 
 
-
-
-
+def test_flatten_reshape():
+    x = torch.randn((3, 4, 5))
+    flat = utils.Flatten()
+    reshape = utils.Reshape(4, 5)
+    flat_x = flat(x)
+    assert flat_x.shape == (3, 20)
+    reshape_x = reshape(flat_x)
+    assert reshape_x.shape == (3, 4, 5)
 
 # EOF
