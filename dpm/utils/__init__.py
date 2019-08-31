@@ -6,6 +6,7 @@ from .trig import (
     sin, cos, tan,
     cot, sec, csc,
     arcsin, arccos, arctan,
+    arccot, arcsec, arccsc,
     sinh, cosh, tanh,
     coth, sech, csch,
     arcsinh, arccosh, arctanh,

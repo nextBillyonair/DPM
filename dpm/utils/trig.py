@@ -1,4 +1,5 @@
 import torch
+from .constants import pi
 
 # regular
 
@@ -30,6 +31,15 @@ def arccos(x):
 
 def arctan(x):
     return x.atan()
+
+def arccot(x):
+    return (pi / 2.) - arctan(x)
+
+def arcsec(x):
+    return arccos(1. / x)
+
+def arccsc(x):
+    return arcsin(1. / x)
 
 
 # Hyperbolic
