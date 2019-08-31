@@ -103,7 +103,7 @@ Differentiable Probabilistic Models
   1. Softsign
   1. Square
   1. Tanh
-  1. TBD: Radial and Planar Flows, Batch Nornalization
+  1. TBD: Radial and Planar Flows, Batch Normalization
 
 # Mixture Models <a name="mixture-models"></a>
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)
