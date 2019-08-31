@@ -6,7 +6,10 @@ from dpm.distributions import (
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
 )
-from dpm.monte_carlo import metropolis
+from dpm.monte_carlo import (
+    metropolis, metropolis_hastings,
+    metropolis_langevin, hamiltonian_monte_carlo
+)
 import pytest
 
 def test_mcmc_2d():
@@ -62,5 +65,7 @@ def test_mcmc_complete(dist, n_dims):
     samples = metropolis(dist, epochs=10, burn_in=1, keep_every=5)
     if dist.n_dims == 1:
         samples = metropolis(dist, epochs=3, burn_in=1, keep_every=1, init=4.)
+        samples = metropolis_langevin(dist, epochs=3, burn_in=1, keep_every=1, init=4.)
+        samples = hamiltonian_monte_carlo(dist, epochs=3, burn_in=1, keep_every=1, init=4.)
     else:
         samples = metropolis(dist, epochs=3, burn_in=1, keep_every=1, init=[4., 4.])

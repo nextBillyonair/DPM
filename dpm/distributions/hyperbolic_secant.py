@@ -11,14 +11,14 @@ class HyperbolicSecant(Distribution):
         self.n_dims = n_dims
 
     def log_prob(self, value):
-        return -math.log(2.) + utils.sech((math.pi / 2.) * value).log()
+        return (-math.log(2.) + utils.sech((math.pi / 2.) * value).log()).sum(-1)
 
     def sample(self, batch_size):
         U = torch.rand((batch_size, self.n_dims))
         return self.icdf(U)
 
     def cdf(self, value):
-        return (2. / math.pi) * utils.arctan(((math.pi / 2.) * value).exp())
+        return (2. / math.pi) * torch.atan(((math.pi / 2.) * value).exp())
 
     def icdf(self, value):
         return (2. / math.pi) * (((math.pi / 2.) * value).tan()).log()
@@ -37,3 +37,6 @@ class HyperbolicSecant(Distribution):
     @property
     def median(self):
         return torch.tensor(0.)
+
+    def get_parameters(self):
+        return None

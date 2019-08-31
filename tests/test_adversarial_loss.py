@@ -10,6 +10,16 @@ gans_list = [
     WGANLoss(1),
     LSGANLoss(1),
     MMGANLoss(1),
+    GANLoss(1, grad_penalty=10.),
+    GANLoss(2, [32, 32, 32, 32], activation='ReLU', grad_penalty=10.),
+    WGANLoss(1, grad_penalty=10.),
+    LSGANLoss(1, grad_penalty=10.),
+    MMGANLoss(1, grad_penalty=10.),
+    GANLoss(1, use_spectral_norm=True),
+    GANLoss(2, [32, 32, 32, 32], activation='ReLU', use_spectral_norm=True),
+    WGANLoss(1, use_spectral_norm=True),
+    LSGANLoss(1, use_spectral_norm=True),
+    MMGANLoss(1, use_spectral_norm=True),
 ]
 
 @pytest.mark.parametrize("gan", gans_list)
@@ -34,5 +44,7 @@ def test_gan_train(gan):
         p_model = MixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75])
 
     train(p_model, q_model, gan, optimizer="RMSprop", epochs=3, lr=1e-3, batch_size=512)
+    X = p_model.sample(100)
+    gan.classify(X)
 
 # EOF

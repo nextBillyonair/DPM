@@ -1,8 +1,9 @@
 from dpm.distributions import (
-    Normal, Exponential, GumbelSoftmax, Cauchy,
-    Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
-    Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
-    DiracDelta, Data, Convolution, ChiSquare, Logistic, Generator
+    Arcsine, Bernoulli, Beta, Categorical, Cauchy, ChiSquare, Convolution, Data,
+    DiracDelta, Dirichlet, Exponential, FisherSnedecor, Gamma, Generator,
+    GumbelSoftmax, Gumbel, HalfCauchy, HalfNormal, HyperbolicSecant, Langevin,
+    Laplace, LogLaplace, LogCauchy, LogNormal, Logistic, Normal, Rayleigh,
+    RelaxedBernoulli, StudentT, Uniform
 )
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
@@ -94,6 +95,14 @@ test_dists = [
     (GumbelMixtureModel([Normal(0., 1.), Normal(1., 3.)], [0.25, 0.75], hard=False), 1),
     (ChiSquare(4.), 1),
     (Logistic(0., 1.), 1),
+    (Rayleigh(), 1),
+    (LogLaplace(), 1),
+    (LogCauchy(), 1),
+    (Categorical(), 1),
+    (HyperbolicSecant(), 1),
+    (Arcsine(), 1),
+    (Bernoulli(), 1),
+    (Gumbel(), 1),
 
     (Normal([0., 0.], [1., 0., 0., 1.0]), 2),
     (Exponential([0.5, 1.0]), 2),
@@ -238,22 +247,11 @@ def test_convolution(dist, n_dims):
     dist.get_parameters()
 
 dists_init = [
-        Normal,
-        Exponential,
-        Cauchy,
-        Beta,
-        LogNormal,
-        Gamma,
-        RelaxedBernoulli,
-        Uniform,
-        StudentT,
-        Dirichlet,
-        FisherSnedecor,
-        HalfCauchy,
-        HalfNormal,
-        Laplace,
-        ChiSquare,
-        Logistic,
+    Arcsine, Bernoulli, Beta, Categorical, Cauchy, ChiSquare,
+    Dirichlet, Exponential, FisherSnedecor, Gamma,
+    GumbelSoftmax, Gumbel, HalfCauchy, HalfNormal, HyperbolicSecant,
+    Laplace, LogLaplace, LogCauchy, LogNormal, Logistic, Normal, Rayleigh,
+    RelaxedBernoulli, StudentT, Uniform
 ]
 @pytest.mark.parametrize("dist", dists_init)
 def test_init(dist):

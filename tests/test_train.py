@@ -69,6 +69,7 @@ def test_train(p_model, q_model):
     train(p_model, q_model, forward_kl, epochs=3)
     train(p_model, q_model, reverse_kl, epochs=3)
     train(p_model, q_model, js_divergence, epochs=3)
+    
 
 @pytest.mark.parametrize("p_model,q_model", test_dists)
 def test_train_with_gradient_clipping(p_model, q_model):

@@ -1,7 +1,7 @@
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel, InfiniteMixtureModel
 )
-from dpm.distributions import Normal
+from dpm.distributions import Normal, Exponential
 import numpy as np
 import pytest
 
@@ -25,6 +25,14 @@ def test_mixture_model(model, n_dims):
     assert model.log_prob(model.sample(64)).shape == (64, )
 
     assert (model.get_parameters()['probs'] == np.array([0.5, 0.5])).all()
+
+
+def test_mixture_cdf():
+    model = MixtureModel([Exponential(0.5), Exponential(2.0)], [0.5, 0.5])
+    model.cdf(model.sample(100))
+    model = GumbelMixtureModel([Exponential(0.5), Exponential(2.0)], [0.5, 0.5])
+    model.cdf(model.sample(100))
+
 
 
 imm_models = [

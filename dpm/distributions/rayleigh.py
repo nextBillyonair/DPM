@@ -16,8 +16,8 @@ class Rayleigh(Distribution):
             self._scale = Parameter(self._scale)
 
     def log_prob(self, value):
-        log_exponent = -x.pow(2) / (2 * self.scale.pow(2))
-        return (value.log() - 2 * self.scale.log() + log_exponent).sum(dim=-1)
+        log_exponent = -value.pow(2) / (2 * self.scale.pow(2))
+        return (value.log() - 2 * self.scale.log() + log_exponent).sum(-1)
 
     def sample(self, batch_size):
         u = torch.rand((batch_size, self.n_dims))

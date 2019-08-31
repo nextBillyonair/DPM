@@ -18,7 +18,7 @@ class Bernoulli(Distribution):
 
     def log_prob(self, value):
         q = 1.-self.probs
-        return value * (self.probs + eps).log() + (1. - value) * (q + eps).log()
+        return (value * (self.probs + eps).log() + (1. - value) * (q + eps).log()).sum(-1)
 
     def sample(self, batch_size):
         return torch.bernoulli(self.probs.unsqueeze(0).expand((batch_size, *self.probs.shape)))
