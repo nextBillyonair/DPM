@@ -31,6 +31,18 @@ class TransformDistribution(Distribution):
             samples = transform(samples)
         return samples
 
+    # might need monotonize?
+    def cdf(self, value):
+        for transform in self.transforms[::-1]:
+            value = transform.inverse(value)
+        return self.distribution.cdf(value)
+
+    def icdf(self, value):
+        value = self.distribution.icdf(value)
+        for transform in self.transforms:
+            value = transform(value)
+        return value
+
     def get_parameters(self):
         return {'distribution':self.distribution.get_parameters(),
                 'transforms': [transform.get_parameters()
