@@ -3,7 +3,7 @@ from dpm.distributions import (
     DiracDelta, Dirichlet, Exponential, FisherSnedecor, Gamma, Generator,
     GumbelSoftmax, Gumbel, HalfCauchy, HalfNormal, HyperbolicSecant, Langevin,
     Laplace, LogLaplace, LogCauchy, LogNormal, Logistic, Normal, Rayleigh,
-    RelaxedBernoulli, StudentT, Uniform
+    RelaxedBernoulli, StudentT, Uniform, Distribution
 )
 from dpm.mixture_models import (
     MixtureModel, GumbelMixtureModel
@@ -270,6 +270,40 @@ def test_generator():
     except NotImplementedError:
         pass
     model.get_parameters()
+
+
+def test_distribution_errors():
+
+    class Test(Distribution):
+
+        def log_prob(self, value):
+            pass
+
+        def sample(self, batch_size):
+            pass
+
+    model = Test()
+
+    methods = ['entropy', 'perplexity']
+    methods_with_args = ['cdf', 'icdf', 'cross_entropy']
+    properties = ['expectation', 'variance', 'median']
+
+    for item in methods:
+        try:
+            getattr(model, item)()
+        except NotImplementedError:
+            pass
+    for item in methods_with_args:
+        try:
+            getattr(model, item)(None)
+        except NotImplementedError:
+            pass
+    for item in properties:
+        try:
+            getattr(model, item)()
+        except NotImplementedError:
+            pass
+
 
 
 # EOF

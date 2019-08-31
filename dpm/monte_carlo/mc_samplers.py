@@ -12,7 +12,7 @@ def lcg(modulus=2147483563, a=40014, c=0, seed=42):
 
 def rand(batch_size=10000, generator=None):
     if generator is None:
-        generator = lcd()
+        generator = lcg()
     samples = torch.tensor([[next(generator)] for _ in range(batch_size)]).float()
     return samples / 2147483563.
 

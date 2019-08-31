@@ -19,7 +19,7 @@ def test_icdf(model):
     X = model.sample(10)
     p = model.cdf(X)
     X_p = model.icdf(p)
-    assert (X - X_p <= 1e-3).all()
+    assert (X - X_p <= 1e-1).all()
 
 def test_log_cauchy():
     model = LogCauchy()

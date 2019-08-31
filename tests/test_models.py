@@ -2,8 +2,11 @@ from dpm.models import (
     LinearRegression, L1Regression,
     RidgeRegression, LassoRegression,
     LogisticRegression, BayesianLogisticRegression,
-    SoftmaxRegression, PMF
+    SoftmaxRegression, PMF,
+    GaussianMixture
 )
+from dpm.distributions import Normal, Categorical
+from dpm.mixture_models import MixtureModel
 from sklearn import datasets
 import numpy as np
 import torch
@@ -77,13 +80,26 @@ def test_factorization(model):
     assert model.sample(1).shape == (1, 60, 50)
     assert model.reconstruct().shape == (60, 50)
     assert model.log_prob(R_true).shape == (10, )
-    assert model.mse(R_true) < 0.01
+    assert model.mse(R_true) < 0.1
     assert model.mae(R_true) < 0.1
 
     # not pytorch
     assert model.log_prob(R_true.numpy()).shape == (10, )
-    assert model.mse(R_true.numpy()) < 0.01
+    assert model.mse(R_true.numpy()) < 0.1
     assert model.mae(R_true.numpy()) < 0.15
+
+
+def test_gmm_clustering():
+    model = MixtureModel([Normal([3.3, 3.3], [2.3, 0.1, 0.1, 7.]),
+                      Normal([-5.3, -6.3], [7, 4.2, 3.1, 3])], [0.75, 0.25])
+
+    X = model.sample(100).detach()
+    m = GaussianMixture(n_dims=2)
+    m.fit(X, epochs=100, track_parameters=False)
+    assert m.sample(5).shape == (5, 2)
+    assert m.log_prob(m.sample(5)).shape == (5, )
+    assert m.predict(X).shape == (100, )
+
 
 
 

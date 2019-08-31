@@ -20,6 +20,4 @@ class DiracDelta(Distribution):
         return self.loc.expand(batch_size, *self.n_dims)
 
     def get_parameters(self):
-        if self.n_dims == 1:
-            return {'loc':self.loc.item()}
         return {'loc':self.loc.detach().numpy()}
