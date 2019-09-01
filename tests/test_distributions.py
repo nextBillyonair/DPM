@@ -129,7 +129,8 @@ test_dists = [
     (GumbelMixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75], hard=False), 2),
     (ChiSquare([4., 9.]), 2),
     (Rayleigh([1., 1.]), 2),
-    (Arcsine([0., 0.], [1., 1.]), 2)
+    (Arcsine([0., 0.], [1., 1.]), 2),
+    (Bernoulli([0.3, 0.7]), 2),
 ]
 
 @pytest.mark.parametrize("dist,n_dims", test_dists)

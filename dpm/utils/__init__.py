@@ -16,9 +16,10 @@ from .math import (
     sqrtx2p1, softplus_inverse,
     logit, log,
     kron, vec,
-    transpose, sum, column_sum, row_sum,
-    matrix_vector, matrix_matrix,
+    transpose, sum, col_sum, row_sum,
+    mv, mm,
     dot, hadamard, outer_product, bmm,
+    diag, batch_diag, bilinear,
     inverse, pinverse,
     cov, corr
 )

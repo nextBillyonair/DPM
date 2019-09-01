@@ -1,6 +1,7 @@
 import pytest
 import dpm.utils as utils
 import torch
+import torch.nn.functional as F
 import math
 
 def test_kron():
@@ -63,14 +64,46 @@ def test_sum():
 
 def test_col_row_sum():
     A = torch.tensor([[1, -4, 7], [-2, 3, 3]])
-    assert (utils.column_sum(A) == torch.tensor([-1, -1, 10])).all()
-    assert (utils.row_sum(A) == torch.tensor([4, 4])).all()
+    assert (utils.col_sum(A) == torch.tensor([-1, -1, 10])).all()
+    assert (utils.row_sum(A) == torch.tensor([[4], [4]])).all()
 
 def test_matrix():
     A = torch.tensor([[1, 2], [3, 4]])
     B = torch.tensor([[0, 5], [6, 7]])
-    assert (utils.matrix_matrix(A, B) == A.mm(B)).all()
+    assert (utils.mm(A, B) == A.mm(B)).all()
     assert (utils.hadamard(A, B) == A * B).all()
 
+def test_vectors():
+    A = torch.tensor([1, 2, 3, 4])
+    B = torch.tensor([5, 6, 7, 8])
+    assert utils.sum(A) == A.sum()
+    assert utils.sum(B) == B.sum()
+    assert utils.dot(A, B) == A.dot(B)
+    assert (utils.outer_product(A, B) == A.view(-1, 1) * B.view(1, -1)).all()
+
+def test_mv():
+    mat = torch.randn(2, 3)
+    vec = torch.randn(3)
+    assert (utils.mv(mat, vec) == torch.mv(mat, vec)).all()
+
+def test_diag():
+    A = torch.tensor([[1, -4], [-2, 3]])
+    assert (torch.diag(A) == utils.diag(A)).all()
+    X = torch.randn(4, 5, 5)
+    assert (utils.batch_diag(X) == torch.stack([torch.diag(x) for x in X])).all()
+
+def test_bmm():
+    X = torch.randn(4, 5, 5)
+    Y = torch.randn(4, 5, 5)
+    assert (utils.bmm(X, Y) == torch.bmm(X, Y)).all()
+    X = torch.randn(4, 7, 5)
+    Y = torch.randn(4, 5, 7)
+    assert (utils.bmm(X, Y) == torch.bmm(X, Y)).all()
+
+def test_bilinear():
+    A = torch.randn(3,5,4)
+    l = torch.randn(2,5)
+    r = torch.randn(2,4)
+    assert (utils.bilinear(l, A, r) == F.bilinear(l, r, A)).all()
 
 # EOF

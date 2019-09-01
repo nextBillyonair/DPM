@@ -29,22 +29,22 @@ def transpose(A):
     return torch.einsum('ij->ji', [A])
 
 def sum(A):
-    return torch.einsum('ij->', [A])
+    return torch.einsum('ij->', [A.view(1, -1)])
 
-def column_sum(A):
+def col_sum(A):
     return torch.einsum('ij->j', [A])
 
 def row_sum(A):
-    return torch.einsum('ij->i', [A])
+    return torch.einsum('ij->i', [A]).view(-1, 1)
 
-def matrix_vector(A, v):
-    return torch.einsum('ik,k->i', [A, v])
+def mv(mat, vec):
+    return torch.einsum('ik,k->i', [mat, vec])
 
-def matrix_matrix(A, B):
+def mm(A, B):
     return torch.einsum('ik,kj->ij', [A, B])
 
 def dot(a, b):
-    return torch.einsum('ij,ij->', [a, b])
+    return torch.einsum('ij,ij->', [a.view(-1, 1), b.view(-1, 1)])
 
 def hadamard(A, B):
     return torch.einsum('ij,ij->ij', [A, B])
@@ -55,6 +55,15 @@ def outer_product(a, b):
 def bmm(A, B):
     return torch.einsum('ijk,ikl->ijl', [A, B])
 
+# only square
+def diag(A):
+    return torch.einsum('ii->i', A)
+
+def batch_diag(A):
+    return torch.einsum('...ii->...i', A)
+
+def bilinear(l, A, r):
+    return torch.einsum('bn,anm,bm->ba', l, A, r)
 
 # generic inverse
 def inverse(X):
