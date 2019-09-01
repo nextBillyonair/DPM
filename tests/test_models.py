@@ -3,7 +3,8 @@ from dpm.models import (
     RidgeRegression, LassoRegression,
     LogisticRegression, BayesianLogisticRegression,
     SoftmaxRegression, PMF,
-    GaussianMixture
+    GaussianMixture,
+    GAN, WGAN, LSGAN, MMGAN
 )
 from dpm.distributions import Normal, Categorical
 from dpm.mixture_models import MixtureModel
@@ -100,7 +101,25 @@ def test_gmm_clustering():
     assert m.log_prob(m.sample(5)).shape == (5, )
     assert m.predict(X).shape == (100, )
 
-
+gans = [
+    GAN(),
+    WGAN(),
+    LSGAN(),
+    MMGAN(),
+    GAN(criterion_args={'grad_penalty':10.}),
+    GAN(criterion_args={'use_spectral_norm':True})
+]
+@pytest.mark.parametrize("model", gans)
+def test_gans(model):
+    X = MixtureModel([Normal(-4., 2.3, learnable=False), Normal(4., 2.3, learnable=False)], [0.5, 0.5]).sample(10000)
+    X = X.numpy()
+    stats = model.fit(X, epochs=5, lr=1e-4)
+    preds = model.sample(10000)
+    model.predict(model.sample(100))
+    try:
+        model.log_prob(model.sample(100))
+    except NotImplementedError:
+        pass
 
 
 # EOF
