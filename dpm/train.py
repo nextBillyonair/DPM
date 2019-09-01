@@ -1,6 +1,7 @@
 from torch import optim
 from dpm.mixture_models import MixtureModel, GumbelMixtureModel
 from dpm.elbo import ELBO
+import torch
 
 class Statistics:
     def __init__(self):
@@ -25,17 +26,13 @@ def gradient_clipping(model, clip):
 
 
 def l2_regularize(model):
-    loss = 0.0
-    for p in model.parameters():
-        loss += p.pow(2).mean()
-    return loss
-
+    params = torch.cat([p.view(-1) for p in model.parameters()])
+    return params.pow(2).mean()
 
 def l1_regularize(model):
-    loss = 0.0
-    for p in model.parameters():
-        loss += p.abs().mean()
-    return loss
+    params = torch.cat([p.view(-1) for p in model.parameters()])
+    return params.abs().mean()
+
 
 
 def train(p_model, q_model, criterion, epochs=1000, batch_size=64,

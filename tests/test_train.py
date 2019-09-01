@@ -69,7 +69,7 @@ def test_train(p_model, q_model):
     train(p_model, q_model, forward_kl, epochs=3)
     train(p_model, q_model, reverse_kl, epochs=3)
     train(p_model, q_model, js_divergence, epochs=3)
-    
+
 
 @pytest.mark.parametrize("p_model,q_model", test_dists)
 def test_train_with_gradient_clipping(p_model, q_model):
@@ -79,3 +79,13 @@ def test_train_with_gradient_clipping(p_model, q_model):
     train(p_model, q_model, forward_kl, epochs=3, clip_gradients=1.)
     train(p_model, q_model, reverse_kl, epochs=3, clip_gradients=1.)
     train(p_model, q_model, js_divergence, epochs=3, clip_gradients=1.)
+
+@pytest.mark.parametrize("p_model,q_model", test_dists)
+def test_train_with_penalty(p_model, q_model):
+
+    train(p_model, q_model, cross_entropy, epochs=3, l1_penalty=0.)
+    train(p_model, q_model, cross_entropy, epochs=3, l2_penalty=0.)
+    train(p_model, q_model, forward_kl, epochs=3, l1_penalty=0.)
+    train(p_model, q_model, forward_kl, epochs=3, l2_penalty=0.)
+    train(p_model, q_model, cross_entropy, epochs=3, l1_penalty=2., l2_penalty=2.)
+    train(p_model, q_model, forward_kl, epochs=3, l1_penalty=2., l2_penalty=2.)
