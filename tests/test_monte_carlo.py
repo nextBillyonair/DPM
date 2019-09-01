@@ -108,7 +108,7 @@ def test_rand_generator():
     samples = monte_carlo.rand(batch_size=10000).view(-1)
     stat, p_value = ks_2samp(samples.numpy(), normal_samples.numpy())
     assert stat <= 0.1
-    assert p_value >= 0.1
+    assert p_value >= 0.03
 
 
 def test_monet_carlo_no_errors():

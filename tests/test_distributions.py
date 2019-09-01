@@ -103,6 +103,8 @@ test_dists = [
     (Arcsine(), 1),
     (Bernoulli(), 1),
     (Gumbel(), 1),
+    (Rayleigh(), 1),
+    (Arcsine(), 1),
 
     (Normal([0., 0.], [1., 0., 0., 1.0]), 2),
     (Exponential([0.5, 1.0]), 2),
@@ -110,6 +112,7 @@ test_dists = [
     (Beta([0.5, 0.5], [1., 1.]), 2),
     (LogNormal([0., 0.], [1., 1.]), 2),
     (Gamma([0.5, 0.5], [1., 1.]), 2),
+    (Gumbel([0., 0.], [1., 1.]), 2),
     (RelaxedBernoulli([0.5, 0.5]), 2),
     (Uniform([-1., -2.], [3., 4.]), 2),
     (StudentT([30., 10.], [1., 2.], [3., 4.]), 2),
@@ -117,11 +120,16 @@ test_dists = [
     (FisherSnedecor([10., 11.], [10., 11.]), 2),
     (HalfCauchy([1., 2.]), 2),
     (HalfNormal([1., 2.]), 2),
+    (LogLaplace([0., 0.], [1., 1.]), 2),
+    (LogCauchy([0., 0.], [1., 1.]), 2),
+    (LogNormal([0., 0.], [1., 1.]), 2),
     (Laplace([0., 0.], [1., 1.]), 2),
     (MixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75]), 2),
     (GumbelMixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75]), 2),
     (GumbelMixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75], hard=False), 2),
     (ChiSquare([4., 9.]), 2),
+    (Rayleigh([1., 1.]), 2),
+    (Arcsine([0., 0.], [1., 1.]), 2)
 ]
 
 @pytest.mark.parametrize("dist,n_dims", test_dists)

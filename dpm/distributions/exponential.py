@@ -3,6 +3,7 @@ from torch.nn import Parameter
 from torch.nn.functional import softplus
 from .distribution import Distribution
 import dpm.utils as utils
+import numpy as np
 
 class Exponential(Distribution):
 

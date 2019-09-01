@@ -131,7 +131,9 @@ def test_transforms(t_form):
         else:
             assert torch.all(div - ladj < 1e-5)
 
-
+def test_inverse_init():
+    test = InverseTransform(Logit())
+    assert test.get_parameters()['type'] == 'inverse'
 
 
 

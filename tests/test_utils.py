@@ -48,4 +48,29 @@ def test_flatten_reshape():
     reshape_x = reshape(flat_x)
     assert reshape_x.shape == (3, 4, 5)
 
+
+def test_vec():
+    A = torch.tensor([[1, -4, 7], [-2, 3, 3]])
+    assert (utils.vec(A) == torch.tensor([[1], [-2], [-4], [3], [7], [3]])).all()
+
+def test_transpose():
+    A = torch.tensor([[1, -4, 7], [-2, 3, 3]])
+    assert (utils.transpose(A) == torch.tensor([[1, -2], [-4, 3], [7, 3]])).all()
+
+def test_sum():
+    A = torch.tensor([[1, -4, 7], [-2, 3, 3]])
+    assert utils.sum(A) == 8
+
+def test_col_row_sum():
+    A = torch.tensor([[1, -4, 7], [-2, 3, 3]])
+    assert (utils.column_sum(A) == torch.tensor([-1, -1, 10])).all()
+    assert (utils.row_sum(A) == torch.tensor([4, 4])).all()
+
+def test_matrix():
+    A = torch.tensor([[1, 2], [3, 4]])
+    B = torch.tensor([[0, 5], [6, 7]])
+    assert (utils.matrix_matrix(A, B) == A.mm(B)).all()
+    assert (utils.hadamard(A, B) == A * B).all()
+
+
 # EOF

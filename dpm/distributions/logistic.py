@@ -26,21 +26,29 @@ class Logistic(Distribution):
             self.loc = Parameter(self.loc)
             self._scale = Parameter(self._scale)
 
-    def log_prob(self, value):
+    def create_dist(self):
         zero = torch.zeros_like(self.loc)
         one = torch.ones_like(self.loc)
         model = TransformDistribution(Uniform(zero, one, learnable=False),
                                       [Logit(),
                                        Affine(self.loc, self.scale, learnable=False)])
+        return model
+
+    def log_prob(self, value):
+        model = self.create_dist()
         return model.log_prob(value)
 
     def sample(self, batch_size):
-        zero = torch.zeros_like(self.loc)
-        one = torch.ones_like(self.loc)
-        model = TransformDistribution(Uniform(zero, one, learnable=False),
-                                      [Logit(),
-                                       Affine(self.loc, self.scale, learnable=False)])
+        model = self.create_dist()
         return model.sample(batch_size)
+
+    def cdf(self, value):
+        model = self.create_dist()
+        return model.cdf(value)
+
+    def icdf(self, value):
+        model = self.create_dist()
+        return model.icdf(value)
 
     @property
     def scale(self):
