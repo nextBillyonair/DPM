@@ -65,7 +65,10 @@ def test_mcmc_complete(dist, n_dims):
     samples = metropolis(dist, epochs=10, burn_in=1, keep_every=5)
     if dist.n_dims == 1:
         samples = metropolis(dist, epochs=3, burn_in=1, keep_every=1, init=4.)
+        samples = metropolis(dist, epochs=3, burn_in=1, keep_every=1, init=None)
         samples = metropolis_langevin(dist, epochs=3, burn_in=1, keep_every=1, init=4.)
+        samples = metropolis_langevin(dist, epochs=3, burn_in=1, keep_every=1, init=None)
         samples = hamiltonian_monte_carlo(dist, epochs=3, burn_in=1, keep_every=1, init=4.)
+        samples = hamiltonian_monte_carlo(dist, epochs=3, burn_in=1, keep_every=1, init=None)
     else:
         samples = metropolis(dist, epochs=3, burn_in=1, keep_every=1, init=[4., 4.])
