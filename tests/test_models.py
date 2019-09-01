@@ -36,6 +36,8 @@ def test_regression(model):
     model.fit(x, y, epochs=150, lr=0.1, batch_size=1024)
     y_pred = model.predict(x)
     assert y_pred.shape == y.shape
+    parameters = model(x)[0]
+    assert parameters.shape == y.shape
 
 
 logistic_models = [
@@ -49,6 +51,8 @@ def test_logistic(model):
     model = model(input_dim=3)
     model.fit(x, y, epochs=200)
     assert (y == model.predict(x)).float().mean() >= 0.85
+    parameters = model(x)[0]
+    assert parameters.shape == y.shape
 
 
 def test_classification():
