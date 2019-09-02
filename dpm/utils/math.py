@@ -1,5 +1,6 @@
 import torch
 from .constants import eps
+import numpy
 
 def sqrtx2p1(x):
     return x.abs() * (1 + x.pow(-2)).sqrt()
@@ -100,3 +101,12 @@ def corr(X, Y=None):
     C = C / std_x.expand_as(C)
     C = C / std_y.expand_as(C).t()
     return C
+
+# Testing Difference
+def to_hist(X, bins=50, min=0, max=0.):
+    return torch.histc(X, bins=bins, min=min, max=max)
+
+def kl(h1, h2):
+    h1 = h1 / h1.sum()
+    h2 = h2 / h2.sum()
+    return (h1 * log(h1) - h1 * log(h2)).sum()

@@ -21,7 +21,8 @@ from .math import (
     dot, hadamard, outer_product, bmm,
     diag, batch_diag, bilinear,
     inverse, pinverse,
-    cov, corr
+    cov, corr,
+    to_hist, kl
 )
 from .layers import (
     Function,

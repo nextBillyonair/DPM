@@ -1,9 +1,10 @@
 import dpm.monte_carlo as monte_carlo
 from dpm.distributions import (
-    Normal, Beta, Exponential, Gamma, Uniform, Laplace
+    Normal, Beta, Exponential, Gamma, Uniform, Laplace, Gumbel
 )
 import pytest
-from scipy.stats import ks_2samp
+# from scipy.stats import ks_2samp
+from dpm.utils import to_hist, kl
 
 test_means = [
     (Normal(0., 1.), 0),
@@ -106,9 +107,7 @@ def test_lcg():
 def test_rand_generator():
     normal_samples = Uniform().sample(10000).detach().view(-1)
     samples = monte_carlo.rand(batch_size=10000).view(-1)
-    stat, p_value = ks_2samp(samples.numpy(), normal_samples.numpy())
-    assert stat <= 0.1
-    assert p_value >= 0.03
+    assert kl(to_hist(normal_samples, min=00, max=1), to_hist(samples, min=00, max=1)) < 1e-2
 
 
 def test_monet_carlo_no_errors():
@@ -124,7 +123,13 @@ def test_monet_carlo_no_errors():
     monte_carlo.entropy(model)
     monte_carlo.cdf(model, 0.)
 
-
-
+def test_mode_sampling():
+    model = Beta(4.3, 5.3)
+    samples = monte_carlo.mode_sampling(model, rng=(0, 1))
+    assert kl(to_hist(samples, max=1), to_hist(model.sample(samples.size(0)), max=1)) < 0.1
+    assert kl(to_hist(monte_carlo.beta_sampling(1.2, 1.2), max=1), to_hist(Beta(1.2, 1.2).sample(samples.size(0)).detach(), max=1)) < 0.1
+    model = Gumbel(loc=5.)
+    samples = monte_carlo.mode_sampling(model, rng=(2, 14))
+    assert kl(to_hist(samples, min=2, max=14), to_hist(model.sample(samples.size(0)), min=2, max=14)) < 0.1
 
 # EOF

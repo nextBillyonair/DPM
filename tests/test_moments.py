@@ -30,6 +30,12 @@ def test_beta():
     model = Beta()
     assert model.expectation == 0.5
     assert model.variance == 0.125
+    m = Beta(0.5, 0.5).mode.item()
+    assert m == 0. or 1.
+    assert Beta(4.5, 3.5).mode.item() - 0.5833333333 < 1e-2
+    assert Beta(1.5, 0.5).mode.item() == 1.
+    assert Beta(0.5, 1.5).mode.item() == 0.
+    # assert Beta(1.00000, 1.00000).mode.item() > 0. and Beta(1.00000, 1.00000).mode.item() < 1.
 
 def test_cauchy():
     model = Cauchy(loc=1.)
