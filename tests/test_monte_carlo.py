@@ -132,4 +132,9 @@ def test_mode_sampling():
     samples = monte_carlo.mode_sampling(model, rng=(2, 14))
     assert kl(to_hist(samples, min=2, max=14), to_hist(model.sample(samples.size(0)), min=2, max=14)) < 0.1
 
+def test_double_exponential():
+    samples = monte_carlo.double_exponential(10000)
+    lap_sam = Laplace().sample(10000)
+    assert kl(to_hist(samples, min=-5, max=5), to_hist(lap_sam, min=-5, max=5)) < 0.1
+
 # EOF

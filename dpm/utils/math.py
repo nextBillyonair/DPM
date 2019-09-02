@@ -1,6 +1,6 @@
 import torch
 from .constants import eps
-import numpy
+import numpy as np
 
 def sqrtx2p1(x):
     return x.abs() * (1 + x.pow(-2)).sqrt()

@@ -67,11 +67,13 @@ def beta_sampling(alpha, beta, batch_size=10000):
     f = Beta(alpha, beta, learnable=False)
     return mode_sampling(f, rng=(0, 1), batch_size=batch_size)
 
-# possible broken for values, dowsn't work for n_dims > 2
-def double_exponential(batch_size=10000, n_dims=1):
-    X = -torch.rand((batch_size, n_dims)).log()
-    U2 = torch.rand((batch_size, n_dims))
-    U3 = torch.rand((batch_size, n_dims))
-    X[U3 <= 0.5] = -X[U3 <= 0.5]
-    threshold = (-0.5 * ((X - 1).pow(2))).exp()
-    return X[U2 > threshold].reshape(-1, n_dims)
+def double_exponential(batch_size=10000):
+    model = Uniform(learnable=False)
+    U1, U2, U3 = model.sample(batch_size), model.sample(batch_size), model.sample(batch_size)
+    X = - U1.log()
+    threshold = torch.exp(-0.5 * (X-1).pow(2))
+    idx = (U2 <= threshold).view(-1)
+    X, U3 = X[idx], U3[idx]
+    idx = (U3 <= 0.5).view(-1)
+    X[idx] = -X[idx]
+    return X
