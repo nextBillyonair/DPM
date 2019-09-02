@@ -43,6 +43,19 @@ class Beta(Distribution):
         return (self.alpha * self.beta) / ((total).pow(2) * (total + 1))
 
     @property
+    def mode(self):
+        if self.alpha > 1. and self.beta > 1.:
+            return (self.alpha - 1) / (self.alpha + self.beta - 2)
+        if self.alpha == 1. and self.beta == 1.:
+            return torch.rand(1).float()
+        if self.alpha < 1. and self.beta < 1.:
+            return torch.tensor(0.).float() if torch.rand(1) < 0.5 else torch.tensor(1.).float()
+        if self.alpha <= 1. and self.beta > 1.:
+            return torch.tensor(0.).float()
+        if self.alpha > 1. and self.beta <= 1.:
+            return torch.tensor(1.).float()
+
+    @property
     def alpha(self):
         return softplus(self._alpha)
 

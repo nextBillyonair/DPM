@@ -1,5 +1,5 @@
 import torch
-from torch.distributions import Beta
+from dpm.distributions import Beta, Uniform
 import numpy as np
 import math
 
@@ -33,7 +33,6 @@ def rejection_sampling(model, test_model, M, batch_size=10000):
     accepted = uniform_samples < acceptance_ratio
     return model_samples[accepted]
 
-# Works!
 def box_muller(batch_size=10000):
     U1 = torch.rand((batch_size, 1))
     U2 = torch.rand((batch_size, 1))
@@ -42,7 +41,6 @@ def box_muller(batch_size=10000):
     Z2 = R.sqrt() * torch.sin(V)
     return Z1, Z2
 
-# Works!
 def marsaglia_bray(batch_size=10000):
     U1 = torch.rand((batch_size, 1))
     U2 = torch.rand((batch_size, 1))
@@ -54,15 +52,20 @@ def marsaglia_bray(batch_size=10000):
     Z2 = Z2[X <= 1].reshape(-1, 1)
     return Z1, Z2
 
-
-# possible broken for values, dowsn't work for n_dims > 2
-def beta_sampling(alpha, beta, batch_size=10000, n_dims=1):
-    f = Beta(alpha, beta)
-    c = (alpha - 1) / (alpha + beta - 2)
-    U1 = torch.rand((batch_size, n_dims))
+# automate
+def mode_sampling(model, rng=(-10, 10), batch_size=10000):
+    c = model.log_prob(model.mode.view(-1, 1))
+    if torch.isnan(c).item() or torch.isinf(c).item():
+        c = torch.tensor([0.])
+    U1 = Uniform(rng[0], rng[1], learnable=False).sample(batch_size)
     U2 = torch.rand((batch_size, 1))
-    accepted = c + U2.log() <= f.log_prob(U1)
-    return U1[accepted].reshape(-1, n_dims)
+    accepted = c + U2.log() <= model.log_prob(U1).view(-1, 1)
+    return U1[accepted].reshape(-1, model.n_dims)
+
+# Only for a, b > 1 for now.
+def beta_sampling(alpha, beta, batch_size=10000):
+    f = Beta(alpha, beta, learnable=False)
+    return mode_sampling(f, rng=(0, 1), batch_size=batch_size)
 
 # possible broken for values, dowsn't work for n_dims > 2
 def double_exponential(batch_size=10000, n_dims=1):

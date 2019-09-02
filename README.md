@@ -173,9 +173,9 @@ Differentiable Probabilistic Models
   1. [Rejection Sampling](https://en.wikipedia.org/wiki/Rejection_sampling) -> given a model, proposal model, and M, attempt to create samples similar to model via sampling the proposal model.
   1. [Box Muller](https://en.wikipedia.org/wiki/Box–Muller_transform) -> Generates a Standard Normal
   1. [Marsaglia-Bray](https://en.wikipedia.org/wiki/Marsaglia_polar_method) -> Generates a Standard Normal
-  1. TESTING:
-      1. Beta Sampling
-      1. Double Exponential Sampling
+  1. Beta Sampling -> for params > 1.
+  1. Mode Sampling -> uses the mode of the distribution for Rejection sampling
+  1. TBD: Double Exponential Sampling
 
 # MCMC Methods <a name="mcmc-methods"></a>
   1. [Metropolis](https://en.wikipedia.org/wiki/Metropolis–Hastings_algorithm#Step-by-step_instructions)

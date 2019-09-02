@@ -14,5 +14,6 @@ from .mc_approximations import (
 from .mc_samplers import (
     lcg, rand,
     inverse_sampling, rejection_sampling, box_muller,
-    marsaglia_bray, # beta_sampling, double_exponential
+    marsaglia_bray, mode_sampling, beta_sampling,
+    # double_exponential
 )
