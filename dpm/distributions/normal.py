@@ -70,7 +70,24 @@ class Normal(Distribution):
             raise NotImplementedError("_diag_type can only be cholesky or diag")
 
     def entropy(self, batch_size=None):
-        return 0.5 * torch.det(2 * math.pi * math.e * self.scale).log()
+        if self._diag_type == "cholesky":
+            return 0.5 * torch.det(2 * math.pi * math.e * self.scale).log()
+        elif self._diag_type == 'diag':
+            return 0.5 + 0.5 * math.log(2 * math.pi) + torch.log(self.scale)
+        else:
+            raise NotImplementedError("_diag_type can only be cholesky or diag")
+
+    def cdf(self, value):
+        if self._diag_type == 'diag':
+            return dists.Normal(self.loc, self.std).cdf(value)
+        else:
+            raise NotImplementedError("CDF only implemented for _diag_type diag")
+
+    def icdf(self, value):
+        if self._diag_type == 'diag':
+            return dists.Normal(self.loc, self.std).icdf(value)
+        else:
+            raise NotImplementedError("CDF only implemented for _diag_type diag")
 
     @property
     def expectation(self):

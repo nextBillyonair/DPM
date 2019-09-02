@@ -313,6 +313,37 @@ def test_distribution_errors():
         except NotImplementedError:
             pass
 
+def test_normal_errors():
+    model = Normal()
+    assert model._diag_type == 'diag'
+    model._diag_type = 'FAKE'
+    try:
+        model.log_prob(None)
+    except NotImplementedError:
+        pass
+    try:
+        model.sample(4)
+    except NotImplementedError:
+        pass
+    try:
+        model.entropy()
+    except NotImplementedError:
+        pass
+    try:
+        model.scale
+    except NotImplementedError:
+        pass
+
+    model = Normal([0., 0.], [3., 1.0, 1., 3.])
+    assert model._diag_type == 'cholesky'
+    try:
+        model.cdf(5.)
+    except NotImplementedError:
+        pass
+    try:
+        model.icdf(5.)
+    except NotImplementedError:
+        pass
 
 
 # EOF

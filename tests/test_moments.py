@@ -1,6 +1,7 @@
 import pytest
 from dpm.distributions import *
 import dpm.utils as utils
+import torch
 
 
 def test_arcsine():
@@ -113,6 +114,15 @@ def test_logistic():
     assert model.median == 1.
     assert model.skewness == 0.
     assert model.kurtosis == 1.2
+
+def test_normal():
+    model = Normal(0., 3.)
+    assert model.variance.item() == 3.
+    assert model.expectation.item() == 0.
+    model = Normal([0., 0.], [3., 1., 1., 3.])
+    assert (model.variance - torch.tensor([[3., 1.], [1., 3.]]) < 1e-2).all()
+    assert (model.expectation == torch.tensor([0., 0.])).all()
+
 
 def test_rayleigh():
     model = Rayleigh(3.)
