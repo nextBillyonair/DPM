@@ -105,6 +105,7 @@ test_dists = [
     (Gumbel(), 1),
     (Rayleigh(), 1),
     (Arcsine(), 1),
+    (Categorical(), 1),
 
     (Normal([0., 0.], [1., 0., 0., 1.0]), 2),
     (Exponential([0.5, 1.0]), 2),
@@ -131,6 +132,7 @@ test_dists = [
     (Rayleigh([1., 1.]), 2),
     (Arcsine([0., 0.], [1., 1.]), 2),
     (Bernoulli([0.3, 0.7]), 2),
+    (Categorical(probs=[[0.5, 0.5], [0.5, 0.5]]), 2),
 ]
 
 @pytest.mark.parametrize("dist,n_dims", test_dists)

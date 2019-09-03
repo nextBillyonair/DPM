@@ -4,6 +4,7 @@ from dpm.models import (
     LogisticRegression, BayesianLogisticRegression,
     SoftmaxRegression, PMF,
     GaussianMixture,
+    GaussianNaiveBayes, BernoulliNaiveBayes, MultinomialNaiveBayes,
     GAN, WGAN, LSGAN, MMGAN
 )
 from dpm.distributions import Normal, Categorical
@@ -61,7 +62,7 @@ def test_classification():
     y = iris.target
     model = SoftmaxRegression(input_dim=4, output_shape=3)
     stats = model.fit(X, y, epochs=2000)
-    y_pred = model.predict(X)[0]
+    y_pred = model.predict(X)
     assert (y_pred.numpy() == y).mean() >= 0.85
 
 def build_toy_dataset(U, V, N, M, noise_std=0.1):
@@ -125,5 +126,41 @@ def test_gans(model):
     except NotImplementedError:
         pass
 
+def test_gnb():
+    y = torch.cat((torch.zeros(100), torch.ones(200))).view(-1, 1)
+    x = torch.cat((1 + 2.*torch.randn(100, 10), -1 + 2.*torch.randn(200, 10)), dim=0)
+    model = GaussianNaiveBayes()
+    model.fit(x, y, epochs=500)
+    assert (model.predict(x) == y.long()).float().mean() > 0.9
+    assert model.sample(5).shape == (5, x.size(1))
+    assert model.log_prob(x, y).shape == (x.size(0), )
+    assert model.predict(model.sample(5)).shape == (5, 1)
+
+
+def test_bnb():
+    y = torch.cat((torch.zeros(100), torch.ones(200))).view(-1, 1).float()
+    x = torch.cat((torch.tensor(np.random.binomial(size=(100, 10), n=1, p=0.7)),
+                   torch.tensor(np.random.binomial(size=(200, 10), n=1, p=0.2))), dim=0).float()
+    model = BernoulliNaiveBayes()
+    model.fit(x, y, epochs=500)
+    assert (model.predict(x) == y.long()).float().mean() > 0.9
+    assert model.sample(5).shape == (5, x.size(1))
+    assert model.log_prob(x, y).shape == (x.size(0), )
+    assert model.predict(model.sample(5)).shape == (5, 1)
+
+def test_mnb():
+    n_classes, n_features, n_states = (4, 3, 5)
+    model = MultinomialNaiveBayes(n_classes=n_classes, n_features=n_features, n_states=n_states)
+    assert model.y_dist.probs.shape == (4, )
+    assert model.x_dist[0].probs.shape == (3, 5)
+    y = torch.cat([i*torch.ones(100) for i in range(n_classes)]).view(-1, 1).float()
+    ps = [0.05, 0.27, 0.65, 0.85]
+    x = torch.cat([torch.tensor(np.random.binomial(size=(100, n_features), n=n_states-1, p=ps[i]))
+                   for i in range(n_classes)], dim=0).float()
+    model.fit(x, y, epochs=500)
+    assert (model.predict(x) == y.long()).float().mean() > 0.7
+    assert model.sample(5).shape == (5, n_features)
+    assert model.log_prob(x, y).shape == (x.size(0), )
+    assert model.predict(model.sample(5)).shape == (5, 1)
 
 # EOF

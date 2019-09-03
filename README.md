@@ -36,7 +36,11 @@ Differentiable Probabilistic Models
       1. Functional PCA
       1. Dynamic SVD Based (can update projection size)
       1. TBD Probabalistic PCA
-  1. Probabilistic Matrix Factorization
+  1. Unconstrained Matrix Factorization
+  1. Naive Bayes
+      1. Gaussian Naive Bayes
+      1. Bernoulli Naive Bayes
+      1. Multinomial Naive Bayes
   1. Generative Adversarial Networks
       1. GAN
       1. MMGAN

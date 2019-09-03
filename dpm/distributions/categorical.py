@@ -23,6 +23,8 @@ class Categorical(Distribution):
 
     def sample(self, batch_size):
         model = dists.Categorical(probs=self.probs)
+        if len(self.probs.shape) != 1:
+            return model.sample((batch_size, 1)).squeeze(1)
         return model.sample((batch_size, 1))
 
     def entropy(self):
