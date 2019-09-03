@@ -138,6 +138,7 @@ def test_studentt():
     model = StudentT()
     model.expectation
     model.variance
+    model.mode
 
 def test_uniform():
     model = Uniform()

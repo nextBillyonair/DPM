@@ -66,6 +66,11 @@ def batch_diag(A):
 def bilinear(l, A, r):
     return torch.einsum('bn,anm,bm->ba', l, A, r)
 
+
+def proj(v, u):
+    return (v.dot(u) / (u.dot(u))) * u
+
+
 # generic inverse
 def inverse(X):
     assert len(X.shape) % 2 == 0

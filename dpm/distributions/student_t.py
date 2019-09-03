@@ -43,6 +43,10 @@ class StudentT(Distribution):
         return dists.StudentT(self.df, self.loc, self.scale).mean
 
     @property
+    def mode(self):
+        return self.expectation
+
+    @property
     def variance(self):
         return dists.StudentT(self.df, self.loc, self.scale).variance
 

@@ -3,6 +3,7 @@ from torch.nn import Parameter, init
 from dpm.distributions import Distribution
 from dpm.train import train
 from dpm.divergences import cross_entropy
+import math
 
 # spin off into class
 def pca(X, k=2):
@@ -58,13 +59,37 @@ class PCA():
         return self.explained_variance_ratio_[:self.k]
 
 
+class EMPPCA():
+
+    def __init__(self, D=10, K=2):
+        self.D = D
+        self.K = K
+        self.W = torch.Tensor(D, K).float()
+        init.kaiming_uniform_(self.W, a=math.sqrt(5))
+        self.W, _ = torch.qr(self.W)
+
+    def fit(self, X, epochs=1000):
+        if not isinstance(X, torch.Tensor):
+            X = torch.tensor(X)
+        X_t = X.t()
+        for _ in range(epochs):
+            Z = torch.inverse(self.W.t().mm(self.W)).mm(self.W.t()).mm(X_t)
+            self.W = X_t.mm(Z.t()).mm(torch.inverse(Z.mm(Z.t())))
+            self.W, _ = torch.qr(self.W)
+
+    def transform(self, X):
+        return X.mm(self.W)
+
+    def reconstruct(self, Z):
+        return Z.mm(torch.pinverse(self.W))
+
 
 # EXPERIMENTAL NOT DONE
 class ProbabilisticPCA(Distribution):
 
     def __init__(self, D=10, K=2, tau=None):
         self.K = K
-        self.D
+        self.D = D
         self.W = Parameter(torch.Tensor(D, K).float())
         self.noise = Parameter(torch.tensor(1.))
         self.latent = Normal(torch.zeros(K), torch.ones(K), learnable=False)
@@ -95,7 +120,7 @@ class ProbabilisticPCA(Distribution):
         return dist.sample(batch_size)
 
     def fit(self, X):
-        data = Data(R.view(-1, self.N * self.M))
+        data = Data(X.view(-1, self.N * self.M))
         stats = train(data, self, cross_entropy, **kwargs)
         return stats
 
