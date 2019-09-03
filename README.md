@@ -15,7 +15,7 @@ Differentiable Probabilistic Models
 1. [Monte Carlo Approximations](#monte_carlo_approximation)
 1. [Monte Carlo Sampling](#monte_carlo_sampling)
 1. [MCMC Methods](#mcmc-methods)
-1. [Newton](#newton)
+1. [Gradient Methods](#gradient)
 1. [Notes](#notes)
 
 ---
@@ -187,7 +187,7 @@ Differentiable Probabilistic Models
       * MCMC with proposal update using Langevin Dynamics
   1. [Hamiltonian Monte Carlo](http://www.mcmchandbook.net/HandbookChapter5.pdf)
 
-# Newton Methods <a name="newton"></a>
+# Gradient Methods <a name="gradient"></a>
   1. Gradient (Infers whether Jacobian or regular grad is used)
   1. Jacobian (First Order on vector output)
   1. Hessian (Second Order)
