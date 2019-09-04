@@ -29,11 +29,13 @@ class LinearDiscriminantAnalysis(Distribution):
         y_probs = self.y_dist.log_prob(y).view(-1, 1)
         return (y_probs + log_probs.gather(1, ids.view(-1, 1))).sum(-1)
 
-    def sample(self, batch_size):
+    def sample(self, batch_size, return_y=False):
         indices = self.y_dist.sample(batch_size).view(-1).long()
         samples = torch.stack([self.create_dist(i).sample(batch_size)
                                for i in range(self.n_classes)])
         # if you want class, return indicies as well
+        if return_y:
+            return samples[indices, np.arange(batch_size)], indices.view(-1, 1)
         return samples[indices, np.arange(batch_size)]
 
     def fit(self, x, y, **kwargs):
@@ -70,11 +72,13 @@ class GenerativeClassifier(Distribution):
         y_probs = self.y_dist.log_prob(y).view(-1, 1)
         return (y_probs + log_probs.gather(1, ids.view(-1, 1))).sum(-1)
 
-    def sample(self, batch_size):
+    def sample(self, batch_size, return_y=False):
         indices = self.y_dist.sample(batch_size).view(-1).long()
         samples = torch.stack([sub_model.sample(batch_size)
                                for sub_model in self.x_dist])
         # if you want class, return indicies as well
+        if return_y:
+            return samples[indices, np.arange(batch_size)], indices.view(-1, 1)
         return samples[indices, np.arange(batch_size)]
 
     def fit(self, x, y, **kwargs):
