@@ -136,6 +136,10 @@ def test_gnb():
     assert model.sample(5).shape == (5, x.size(1))
     assert model.log_prob(x, y).shape == (x.size(0), )
     assert model.predict(model.sample(5)).shape == (5, 1)
+    x_s, y_s = model.sample(5, return_y=True)
+    assert x_s.shape == (5, 10)
+    assert y_s.shape == (5, 1)
+    model.predict(x_s)
 
 
 def test_lda():
@@ -147,6 +151,10 @@ def test_lda():
     assert model.sample(5).shape == (5, x.size(1))
     assert model.log_prob(x, y).shape == (x.size(0), )
     assert model.predict(model.sample(5)).shape == (5, 1)
+    x_s, y_s = model.sample(5, return_y=True)
+    assert x_s.shape == (5, 10)
+    assert y_s.shape == (5, 1)
+    model.predict(x_s)
 
 
 def test_qda():
@@ -158,6 +166,10 @@ def test_qda():
     assert model.sample(5).shape == (5, x.size(1))
     assert model.log_prob(x, y).shape == (x.size(0), )
     assert model.predict(model.sample(5)).shape == (5, 1)
+    x_s, y_s = model.sample(5, return_y=True)
+    assert x_s.shape == (5, 10)
+    assert y_s.shape == (5, 1)
+    model.predict(x_s)
 
 
 def test_bnb():
@@ -170,6 +182,10 @@ def test_bnb():
     assert model.sample(5).shape == (5, x.size(1))
     assert model.log_prob(x, y).shape == (x.size(0), )
     assert model.predict(model.sample(5)).shape == (5, 1)
+    x_s, y_s = model.sample(5, return_y=True)
+    assert x_s.shape == (5, 10)
+    assert y_s.shape == (5, 1)
+    model.predict(x_s)
 
 def test_mnb():
     n_classes, n_features, n_states = (4, 3, 5)
@@ -185,5 +201,10 @@ def test_mnb():
     assert model.sample(5).shape == (5, n_features)
     assert model.log_prob(x, y).shape == (x.size(0), )
     assert model.predict(model.sample(5)).shape == (5, 1)
+    x_s, y_s = model.sample(5, return_y=True)
+    assert x_s.shape == (5, 3)
+    assert y_s.shape == (5, 1)
+    model.predict(x_s)
+
 
 # EOF
