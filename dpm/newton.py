@@ -18,6 +18,33 @@ def grad(y, xs):
 def jacobian(ys, xs):
     return torch.stack([grad(yi, xs) for yi in ys])
 
+# generic nth derivitive for scalars
+def grad_n(y, x, n=1):
+    f_i = y
+    for _ in range(n):
+        f_i = grad(f_i, x)
+    return f_i
+
+# taylor series
+
+def taylor(f, x, a=torch.tensor(0.).float(), n=3):
+    if not isinstance(a, torch.Tensor):
+        a = torch.tensor(a).float()
+    a.requires_grad = True
+    if not isinstance(x, torch.Tensor):
+        x = torch.tensor(x).float()
+    ret = f(a)
+    f_i = ret
+    for i in range(1, n+1):
+        f_i = grad(f_i, a)
+        ret += f_i * (x - a).pow(i) / math.factorial(i)
+    return ret
+
+def maclaurin(f, x, n=3):
+    if not isinstance(x, torch.Tensor):
+        x = torch.tensor(x).float()
+    return taylor(f, x, n=n)
+
 
 # SECOND ORDER
 

@@ -66,6 +66,22 @@ def plot_models_2D(p_model, q_model, batch_size=10000, n_plot=500):
     plt.xlim(x_min, x_max); plt.ylim(y_min, y_max)
 
 
+def plot_contour(model, n_plot=500):
+    plot_x, plot_y = np.linspace(-4, 4, n_plot), np.linspace(-4, 4, n_plot)
+    plot_x, plot_y = np.meshgrid(plot_x, plot_y)
+
+    grid_data = torch.tensor(list(zip(plot_x.reshape(-1), plot_y.reshape(-1))))
+    log_probs = model.log_prob(grid_data).detach().numpy()
+    c2 = plt.contour(plot_x, plot_y,
+                     log_probs.reshape(n_plot, n_plot),
+                     levels=50, linestyles="solid", cmap="viridis")
+    plt.colorbar(c2)
+
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.title("Model Contour")
+    plt.xlim(-4, 4); plt.ylim(-4, 4)
+
 
 def plot_model(model, batch_size=10000):
     if model.n_dims == 1:
