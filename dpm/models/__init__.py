@@ -12,7 +12,7 @@ from .clustering import (
 )
 from .decomposition import (
     pca, PCA,
-    #EMPPCA,
+    EMPPCA,
     #ProbabilisticPCA
 )
 from .factorization import (
