@@ -18,11 +18,13 @@ from .decomposition import (
 from .factorization import (
     PMF
 )
-from .naive_bayes import (
-    NaiveBayes,
+from .generative_classification import (
+    GenerativeClassifier,
     GaussianNaiveBayes,
     BernoulliNaiveBayes,
-    MultinomialNaiveBayes
+    MultinomialNaiveBayes,
+    LinearDiscriminantAnalysis,
+    QuadraticDiscriminantAnalysis
 )
 from .regression import (
     LinearRegression, L1Regression,

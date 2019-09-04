@@ -5,6 +5,7 @@ from dpm.models import (
     SoftmaxRegression, PMF,
     GaussianMixture,
     GaussianNaiveBayes, BernoulliNaiveBayes, MultinomialNaiveBayes,
+    LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis,
     GAN, WGAN, LSGAN, MMGAN
 )
 from dpm.distributions import Normal, Categorical
@@ -130,6 +131,28 @@ def test_gnb():
     y = torch.cat((torch.zeros(100), torch.ones(200))).view(-1, 1)
     x = torch.cat((1 + 2.*torch.randn(100, 10), -1 + 2.*torch.randn(200, 10)), dim=0)
     model = GaussianNaiveBayes()
+    model.fit(x, y, epochs=500)
+    assert (model.predict(x) == y.long()).float().mean() > 0.9
+    assert model.sample(5).shape == (5, x.size(1))
+    assert model.log_prob(x, y).shape == (x.size(0), )
+    assert model.predict(model.sample(5)).shape == (5, 1)
+
+
+def test_lda():
+    y = torch.cat((torch.zeros(100), torch.ones(200))).view(-1, 1)
+    x = torch.cat((1 + 2.*torch.randn(100, 10), -1 + 2.*torch.randn(200, 10)), dim=0)
+    model = LinearDiscriminantAnalysis()
+    model.fit(x, y, epochs=500)
+    assert (model.predict(x) == y.long()).float().mean() > 0.9
+    assert model.sample(5).shape == (5, x.size(1))
+    assert model.log_prob(x, y).shape == (x.size(0), )
+    assert model.predict(model.sample(5)).shape == (5, 1)
+
+
+def test_qda():
+    y = torch.cat((torch.zeros(100), torch.ones(200))).view(-1, 1)
+    x = torch.cat((1 + 2.*torch.randn(100, 10), -1 + 2.*torch.randn(200, 10)), dim=0)
+    model = QuadraticDiscriminantAnalysis()
     model.fit(x, y, epochs=500)
     assert (model.predict(x) == y.long()).float().mean() > 0.9
     assert model.sample(5).shape == (5, x.size(1))
