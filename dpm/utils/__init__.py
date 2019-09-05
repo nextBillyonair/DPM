@@ -22,7 +22,7 @@ from .math import (
     diag, batch_diag, bilinear,
     inverse, pinverse,
     cov, corr,
-    to_hist, kl
+    to_hist, kl, integrate
 )
 from .layers import (
     Function,

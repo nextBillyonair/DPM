@@ -115,3 +115,8 @@ def kl(h1, h2):
     h1 = h1 / h1.sum()
     h2 = h2 / h2.sum()
     return (h1 * log(h1) - h1 * log(h2)).sum()
+
+def integrate(model, rng=(-10, 10), n_points=10000):
+    x = np.linspace(rng[0], rng[1], n_points)
+    probs = model.log_prob(torch.tensor(x).view(-1, 1).float()).exp().detach().numpy()
+    return np.trapz(probs, x)
