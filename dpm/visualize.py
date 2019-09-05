@@ -11,14 +11,18 @@ from torch.nn.functional import softplus
 import torch
 plt.style.use('seaborn-darkgrid')
 
-def plot_stats(stats, goals=None):
-    fig, axes = plt.subplots(1, len(stats.data.keys()), figsize=(12, 6), squeeze=False)
+colors = { 0:"#003f5c", 1:"#444e86", 2:"#955196", 3:"#dd5182", 4:"#ff6e54", 5:"#ffa600"}
+
+def plot_stats(stats, goals=None, axes=None, offset=0):
+    if axes is None:
+        fig, axes = plt.subplots(1, len(stats.data.keys()), figsize=(12, 6), squeeze=False)
+
     for index, value in enumerate(stats.data.keys()):
         axes[0, index].set_title(f"{value} curve")
         axes[0, index].set_xlabel('Epoch')
         axes[0, index].set_ylabel(value)
         axes[0, index].plot(np.arange(0.0, len(stats.data[value]), 1.0),
-                         stats.data[value], color="#955196")
+                         stats.data[value], color=colors[(offset + index) % len(colors)])
     if goals is not None:
         for i, goal in enumerate(goals):
             axes[0, i+1].axhline(goals[i], color="#ff6e54", linewidth=4)
@@ -65,8 +69,23 @@ def plot_models_2D(p_model, q_model, batch_size=10000, n_plot=500):
     plt.title("P Samples vs Q Contour")
     plt.xlim(x_min, x_max); plt.ylim(y_min, y_max)
 
-
 def plot_contour(model, n_plot=500):
+    if model.n_dims == 2:
+        return plot_contour_2d(model, n_plot)
+    return plot_contour_1d(model, n_plot)
+
+def plot_contour_1d(model, n_plot=500):
+    X = np.linspace(-4, 4, n_plot)
+    probs = model.log_prob(torch.tensor(X).view(-1, 1).float()).exp().detach().numpy()
+    plt.plot(X, probs, label="Model Prob", color="#dd5182")
+    plt.fill(X, probs, color="#dd5182", alpha=0.3)
+    plt.xlabel("X")
+    plt.ylabel("Prob")
+    plt.title("P Samples vs Q Contour")
+    plt.xlim(-4, 4); plt.ylim(0, max(0.5, probs.max()+.05))
+
+
+def plot_contour_2d(model, n_plot=500):
     plot_x, plot_y = np.linspace(-4, 4, n_plot), np.linspace(-4, 4, n_plot)
     plot_x, plot_y = np.meshgrid(plot_x, plot_y)
 

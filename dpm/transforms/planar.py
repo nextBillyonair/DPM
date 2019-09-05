@@ -1,8 +1,9 @@
 from .transform import Transform
 from torch.nn import Parameter, init
+from torch.nn.functional import softplus
 import torch.nn as nn
 import torch
-import dpm.newton as newton
+import math
 
 class Planar(Transform):
 
@@ -27,15 +28,21 @@ class Planar(Transform):
     def h_prime(self, x):
         return 1 - torch.tanh(x).pow(2)
 
+    @property
+    def u_hat(self):
+        w_u = self.w.t().mm(self.u)
+        u_hat = self.u + (softplus(w_u) - 1. - w_u) * self.w / (self.w.pow(2).sum())
+        return u_hat
+
     def forward(self, y):
-        return y + torch.mm((self.h(torch.mm(y, self.w) + self.bias)), self.u.t())
+        return y + torch.mm((self.h(torch.mm(y, self.w) + self.bias)), self.u_hat.t())
 
     def inverse(self, x):
-        raise NotImplementedError('Planar Flow does not have forward')
+        raise NotImplementedError('Planar Flow direction not implemented')
 
     def log_abs_det_jacobian(self, x, y):
         psi = torch.mm(y, self.w) + self.bias
-        return 1 + self.h_prime(psi).mul(self.w.t().mm(self.u))
+        return torch.log(1 + self.h_prime(psi).mul(self.w.t().mm(self.u_hat)))
 
 
 
