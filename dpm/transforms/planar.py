@@ -1,6 +1,6 @@
 from .transform import Transform
 from torch.nn import Parameter, init
-from torch.nn.functional import softplus
+from torch.nn.functional import softplus, elu
 import torch.nn as nn
 import torch
 import math
@@ -11,7 +11,7 @@ class Planar(Transform):
         super().__init__()
         self.in_shape=in_shape
         self.w = Parameter(torch.Tensor(in_shape, 1))
-        self.u = Parameter(torch.Tensor(in_shape, 1))
+        self.u = Parameter(torch.zeros(in_shape, 1))
         self.bias = Parameter(torch.zeros(1))
         self.reset_parameters()
 
@@ -28,7 +28,8 @@ class Planar(Transform):
     @property
     def u_hat(self):
         w_u = self.w.t().mm(self.u)
-        u_hat = self.u + (softplus(w_u) - 1. - w_u) * self.w / (self.w.pow(2).sum())
+        u_hat = self.u + (elu(w_u) - w_u) * self.w / (self.w.pow(2).sum())
+        # u_hat = self.u + (softplus(w_u) - 1. - w_u) * self.w / (self.w.pow(2).sum())
         return u_hat
 
     def forward(self, z):
