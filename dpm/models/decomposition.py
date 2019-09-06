@@ -142,10 +142,9 @@ class ProbabilisticPCA(Distribution):
         self.noise = torch.tensor(noise)
         self.latent = Normal(torch.zeros(K), torch.ones(K), learnable=False)
         self.tau = tau
+        self.prior = None
         if tau:
             self.prior = Normal(torch.zeros(K), torch.full((K,), tau), learnable=False)
-        else:
-            self.prior = None
 
         self.reset_parameters()
 
@@ -163,6 +162,8 @@ class ProbabilisticPCA(Distribution):
 
     def sample(self, z=None, batch_size=1):
         if z is None:
+            if self.prior is None:
+                raise ValueError('PPCA has no prior distribution to sample latents from, please set tau in init')
             z = self.prior.sample(batch_size)
         dist = Normal(F.linear(z, self.W), torch.full((z.size(0), self.D), self.noise), learnable=False)
         return dist.sample(1).squeeze(0)
