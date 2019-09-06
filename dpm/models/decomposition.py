@@ -141,8 +141,9 @@ class ProbabilisticPCA(Distribution):
         self.W = Parameter(torch.Tensor(D, K).float())
         self.noise = torch.tensor(noise)
         self.latent = Normal(torch.zeros(K), torch.ones(K), learnable=False)
+        self.tau = tau
         if tau:
-            self.prior = Normal(0., tau, learnable=False)
+            self.prior = Normal(torch.zeros(K), torch.full((K,), tau), learnable=False)
         else:
             self.prior = None
 
@@ -153,16 +154,18 @@ class ProbabilisticPCA(Distribution):
 
     def prior_probability(self, z):
         if self.prior is None:
-            return 0
+            return 0.
         return self.prior.log_prob(z)
 
     def log_prob(self, X, z):
         dist = Normal(F.linear(z, self.W), torch.full((z.size(0), self.D), self.noise), learnable=False)
         return dist.log_prob(X) + self.prior_probability(z)
 
-    def sample(self, z, batch_size=1):
+    def sample(self, z=None, batch_size=1):
+        if z is None:
+            z = self.prior.sample(batch_size)
         dist = Normal(F.linear(z, self.W), torch.full((z.size(0), self.D), self.noise), learnable=False)
-        return dist.sample(batch_size)
+        return dist.sample(1).squeeze(0)
 
     def fit(self, X, variational_dist=None, elbo_kwargs={}, **kwargs):
         if variational_dist is None:
