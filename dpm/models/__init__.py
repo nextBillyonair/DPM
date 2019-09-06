@@ -13,7 +13,7 @@ from .clustering import (
 from .decomposition import (
     pca, PCA,
     EMPPCA,
-    #ProbabilisticPCA
+    ProbabilisticPCA, PPCA_Variational, PPCA_Variational_V2
 )
 from .factorization import (
     PMF

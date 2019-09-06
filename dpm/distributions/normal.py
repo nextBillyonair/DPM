@@ -99,7 +99,7 @@ class Normal(Distribution):
 
     @property
     def std(self):
-        return torch.diagonal(self.scale).sqrt()
+        return torch.diagonal(self.scale, dim1=-2, dim2=-1).sqrt()
 
     @property
     def scale(self):

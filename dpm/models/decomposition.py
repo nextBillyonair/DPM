@@ -1,6 +1,8 @@
 import torch
 from torch.nn import Parameter, init
-from dpm.distributions import Distribution
+from torch.nn import functional as F
+from dpm.elbo import ELBO
+from dpm.distributions import Distribution, Normal, Data
 from dpm.train import train
 from dpm.divergences import cross_entropy
 import math
@@ -84,14 +86,60 @@ class EMPPCA():
         return Z.mm(torch.pinverse(self.W))
 
 
+class PPCA_Variational(Distribution):
+
+    def __init__(self, ppca):
+        super().__init__()
+        self.K = ppca.K
+        self.D = ppca.D
+        self.W = Parameter(torch.Tensor(ppca.K, ppca.D).float())
+        self.noise = ppca.noise
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        init.kaiming_uniform_(self.W, a=math.sqrt(5))
+
+    def sample(self, X, compute_logprob=False):
+        dist = Normal(F.linear(X, self.W), self.noise * torch.eye(self.K), learnable=False)
+        z = dist.sample(1).squeeze(0)
+        if compute_logprob:
+            return z, dist.log_prob(z)
+        return z
+
+    def log_prob(self, z, X):
+        dist = Normal(self.W.mm(X), self.noise * torch.eye(self.D), learnable=False)
+        return dist.log_prob(z)
+
+
+class PPCA_Variational_V2(Distribution):
+
+    def __init__(self, ppca):
+        super().__init__()
+        self.ppca = ppca
+
+    def sample(self, X, compute_logprob=False):
+        dist = Normal(F.linear(X, self.ppca.W.t()), self.ppca.noise * torch.eye(self.ppca.K), learnable=False)
+        z = dist.sample(1).squeeze(0)
+        if compute_logprob:
+            return z, dist.log_prob(z)
+        return z
+
+    def log_prob(self, z, X):
+        dist = Normal(self.ppca.W.t().mm(X), self.ppca.noise * torch.eye(self.ppca.D), learnable=False)
+        return dist.log_prob(z)
+
+
 # EXPERIMENTAL NOT DONE
 class ProbabilisticPCA(Distribution):
 
-    def __init__(self, D=10, K=2, tau=None):
-        self.K = K
+    has_latents = True
+
+    def __init__(self, D, K=2, noise=1., tau=None):
+        super().__init__()
         self.D = D
+        self.K = K
         self.W = Parameter(torch.Tensor(D, K).float())
-        self.noise = Parameter(torch.tensor(1.))
+        self.noise = torch.tensor(noise)
         self.latent = Normal(torch.zeros(K), torch.ones(K), learnable=False)
         if tau:
             self.prior = Normal(0., tau, learnable=False)
@@ -103,25 +151,25 @@ class ProbabilisticPCA(Distribution):
     def reset_parameters(self):
         init.kaiming_uniform_(self.W, a=math.sqrt(5))
 
-    def prior_penalty(self):
-        return self.prior.log_prob(torch.cat([p.view(-1) for p in self.parameters()]).view(-1, 1)).sum()
+    def prior_probability(self, z):
+        if self.prior is None:
+            return 0
+        return self.prior.log_prob(z)
 
-    def log_prob(self, value):
-        var = self.W.mm(self.W.t()) + self.noise * torch.eyes(value.size(1))
-        print(var.size())
-        dist = Normal(torch.zeros(value.size(1)), var, learnable=False)
-        if self.prior:
-            return dist.log_prob(value) + self.prior_penalty()
-        return dist.log_prob(value)
+    def log_prob(self, X, z):
+        dist = Normal(F.linear(z, self.W), torch.full((z.size(0), self.D), self.noise), learnable=False)
+        return dist.log_prob(X) + self.prior_probability(z)
 
-    def sample(self, batch_size):
-        z = self.latent.sample(batch_size.size(0))
-        dist = Normal(self.W.mv(z), self.noise * torch.eyes(self.D))
+    def sample(self, z, batch_size=1):
+        dist = Normal(F.linear(z, self.W), torch.full((z.size(0), self.D), self.noise), learnable=False)
         return dist.sample(batch_size)
 
-    def fit(self, X):
-        data = Data(X.view(-1, self.N * self.M))
-        stats = train(data, self, cross_entropy, **kwargs)
+    def fit(self, X, variational_dist=None, elbo_kwargs={}, **kwargs):
+        if variational_dist is None:
+            variational_dist = PPCA_Variational_V2(self)
+
+        data = Data(X)
+        stats = train(data, self, ELBO(variational_dist, **elbo_kwargs), **kwargs)
         return stats
 
     def transform(self, X):
