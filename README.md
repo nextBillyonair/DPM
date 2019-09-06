@@ -119,6 +119,8 @@ Differentiable Probabilistic Models
   1. Decomposition
       1. Functional PCA
       1. Dynamic SVD Based (can update projection size)
+      1. EM PPCA
+      1. Variational PPCA
   1. Unconstrained Matrix Factorization
   1. Generative Adversarial Networks
       1. GAN

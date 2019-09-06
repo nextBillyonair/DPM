@@ -74,4 +74,5 @@ class AdversarialLoss(ABC, Module):
         return self.discriminator_model(values)
 
 
+
 # EOF

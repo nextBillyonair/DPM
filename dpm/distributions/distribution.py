@@ -42,7 +42,3 @@ class Distribution(ABC, Module):
     @property
     def median(self):
         raise NotImplementedError('Median not implemented, use monte carlo approximation')
-
-    @property
-    def num_parameters(self):
-        return sum(np.prod(p.shape) for p in self.parameters())
