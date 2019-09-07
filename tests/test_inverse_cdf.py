@@ -2,7 +2,7 @@ from dpm.monte_carlo import inverse_sampling
 from dpm.distributions import (
     Arcsine, Cauchy, Exponential, Gumbel, HyperbolicSecant,
     Laplace, LogCauchy, Rayleigh, Uniform, Data, Normal,
-    Logistic
+    Logistic, LogitNormal
 )
 from dpm.divergences import forward_kl
 import pytest
@@ -12,7 +12,7 @@ test_models = [
     Arcsine(), Cauchy(), Exponential(),
     Gumbel(), HyperbolicSecant(),
     Laplace(), Rayleigh(), Uniform(), Logistic(),
-    Normal()
+    Normal(), LogitNormal()
 ]
 
 

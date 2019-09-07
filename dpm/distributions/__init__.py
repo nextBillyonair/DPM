@@ -1,6 +1,7 @@
 from .distribution import Distribution
 
 from .arcsine import Arcsine
+from .asymmetric_laplace import AsymmetricLaplace
 from .bernoulli import Bernoulli
 from .beta import Beta
 from .categorical import Categorical
@@ -26,6 +27,7 @@ from .log_cauchy import LogCauchy
 from .log_laplace import LogLaplace
 from .log_normal import LogNormal
 from .logistic import Logistic
+from .logit_normal import LogitNormal
 from .normal import Normal
 from .rayleigh import Rayleigh
 from .relaxed_bernoulli import RelaxedBernoulli

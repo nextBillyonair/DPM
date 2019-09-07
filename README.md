@@ -13,7 +13,8 @@ Differentiable Probabilistic Models
 ---
 
 # Distributions <a name="distributions"></a>
-  1. Arcsine
+  1. [Arcsine](https://en.wikipedia.org/wiki/Arcsine_distribution)
+  1. [Asymmetric Laplace](https://en.wikipedia.org/wiki/Asymmetric_Laplace_distribution)
   1. [Bernoulli (Not-learnable)](https://en.wikipedia.org/wiki/Bernoulli_distribution)
   1. [Beta](https://en.wikipedia.org/wiki/Beta_distribution)
   1. [Categorical](https://en.wikipedia.org/wiki/Categorical_distribution)
@@ -46,6 +47,7 @@ Differentiable Probabilistic Models
   1. [Log Laplace](https://en.wikipedia.org/wiki/Log-Laplace_distribution)
   1. [Log Normal](https://en.wikipedia.org/wiki/Log-normal_distribution)  
   1. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
+  1. [Logit Normal](https://en.wikipedia.org/wiki/Logit-normal_distribution)
   1. [Normal (Multivariate)](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)
   1. [Rayleigh](https://en.wikipedia.org/wiki/Rayleigh_distribution)
   1. [Relaxed Bernoulli](https://arxiv.org/abs/1611.00712)
@@ -70,6 +72,7 @@ Differentiable Probabilistic Models
   1. InverseTransform (Inverts a transform)
   1. Log
   1. Logit
+  1. Planar
   1. Power
   1. Reciprocal
   1. Sigmoid

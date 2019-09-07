@@ -126,15 +126,15 @@ def test_monet_carlo_no_errors():
 def test_mode_sampling():
     model = Beta(4.3, 5.3)
     samples = monte_carlo.mode_sampling(model, rng=(0, 1))
-    assert kl(to_hist(samples, max=1), to_hist(model.sample(samples.size(0)), max=1)) < 0.1
-    assert kl(to_hist(monte_carlo.beta_sampling(1.2, 1.2), max=1), to_hist(Beta(1.2, 1.2).sample(samples.size(0)).detach(), max=1)) < 0.1
+    assert kl(to_hist(samples, max=1), to_hist(model.sample(samples.size(0)), max=1)) < 0.15
+    assert kl(to_hist(monte_carlo.beta_sampling(1.2, 1.2), max=1), to_hist(Beta(1.2, 1.2).sample(samples.size(0)).detach(), max=1)) < 0.15
     model = Gumbel(loc=5.)
     samples = monte_carlo.mode_sampling(model, rng=(2, 14))
-    assert kl(to_hist(samples, min=2, max=14), to_hist(model.sample(samples.size(0)), min=2, max=14)) < 0.1
+    assert kl(to_hist(samples, min=2, max=14), to_hist(model.sample(samples.size(0)), min=2, max=14)) < 0.15
 
 def test_double_exponential():
     samples = monte_carlo.double_exponential(10000)
     lap_sam = Laplace().sample(10000)
-    assert kl(to_hist(samples, min=-5, max=5), to_hist(lap_sam, min=-5, max=5)) < 0.1
+    assert kl(to_hist(samples, min=-5, max=5), to_hist(lap_sam, min=-5, max=5)) < 0.15
 
 # EOF

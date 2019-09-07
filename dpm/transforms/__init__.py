@@ -9,7 +9,7 @@ from .log import Log
 from .logit import Logit
 from .planar import Planar
 from .power import Power
-from .radial import Radial
+# from .radial import Radial
 from .reciprocal import Reciprocal
 from .sigmoid import Sigmoid
 from .sinh_arcsinh import SinhArcsinh

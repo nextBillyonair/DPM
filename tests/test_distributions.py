@@ -1,8 +1,8 @@
 from dpm.distributions import (
-    Arcsine, Bernoulli, Beta, Categorical, Cauchy, ChiSquare, Convolution, Data,
+    Arcsine, AsymmetricLaplace, Bernoulli, Beta, Categorical, Cauchy, ChiSquare, Convolution, Data,
     DiracDelta, Dirichlet, Exponential, FisherSnedecor, Gamma, Generator,
     GumbelSoftmax, Gumbel, HalfCauchy, HalfNormal, HyperbolicSecant, Langevin,
-    Laplace, LogLaplace, LogCauchy, LogNormal, Logistic, Normal, Rayleigh,
+    Laplace, LogLaplace, LogCauchy, LogNormal, Logistic, LogitNormal, Normal, Rayleigh,
     RelaxedBernoulli, StudentT, Uniform, Distribution
 )
 from dpm.mixture_models import (
@@ -106,6 +106,9 @@ test_dists = [
     (Rayleigh(), 1),
     (Arcsine(), 1),
     (Categorical(), 1),
+    (LogitNormal(), 1),
+    (AsymmetricLaplace(), 1),
+    (AsymmetricLaplace(asymmetry=2.), 1),
 
     (Normal([0., 0.], [1., 0., 0., 1.0]), 2),
     (Exponential([0.5, 1.0]), 2),
@@ -125,6 +128,8 @@ test_dists = [
     (LogCauchy([0., 0.], [1., 1.]), 2),
     (LogNormal([0., 0.], [1., 1.]), 2),
     (Laplace([0., 0.], [1., 1.]), 2),
+    (LogitNormal([0., 0.], [1., 1.]), 2),
+    (LogitNormal([0., 0.], [1., 0., 0., 1.0]), 2),
     (MixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75]), 2),
     (GumbelMixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75]), 2),
     (GumbelMixtureModel([Normal([0., 0.], [1., 0., 0., 1.0]), Normal([0., 0.], [1., 0., 0., 1.0])], [0.25, 0.75], hard=False), 2),

@@ -148,7 +148,11 @@ def test_uniform():
     assert model.skewness == 0.
     assert model.kurtosis + 1.2 < 1e-2
 
-
+def test_logitnormal():
+    model = LogitNormal()
+    assert model.median - torch.sigmoid(torch.tensor(0.)) < 1e-2
+    model = LogitNormal(1.)
+    assert model.median - torch.sigmoid(torch.tensor(1.)) < 1e-2
 
 
 
