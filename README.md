@@ -15,7 +15,7 @@ Differentiable Probabilistic Models
 # Distributions <a name="distributions"></a>
   1. [Arcsine](https://en.wikipedia.org/wiki/Arcsine_distribution)
   1. [Asymmetric Laplace](https://en.wikipedia.org/wiki/Asymmetric_Laplace_distribution)
-  1. [Bernoulli (Not-learnable)](https://en.wikipedia.org/wiki/Bernoulli_distribution)
+  1. [Bernoulli](https://en.wikipedia.org/wiki/Bernoulli_distribution)
   1. [Beta](https://en.wikipedia.org/wiki/Beta_distribution)
   1. [Categorical](https://en.wikipedia.org/wiki/Categorical_distribution)
   1. [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution)
