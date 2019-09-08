@@ -1,4 +1,5 @@
 from dpm.distributions import LogNormal, Normal, TransformDistribution, Logistic
+import dpm.distributions as dpmdist
 from dpm.transforms import *
 import dpm
 import torch.autograd as autograd
@@ -6,6 +7,7 @@ import torch
 from torch.distributions import Uniform
 from torch.distributions.transforms import SigmoidTransform, AffineTransform
 from torch.distributions.transformed_distribution import TransformedDistribution
+from dpm.utils import integrate
 
 import pytest
 
@@ -134,6 +136,12 @@ def test_transforms(t_form):
 def test_inverse_init():
     test = InverseTransform(Logit())
     assert test.get_parameters()['type'] == 'inverse'
+
+@pytest.mark.parametrize("t_form", transforms_list)
+def test_integrate(t_form):
+    model = TransformDistribution(dpmdist.Uniform(), [t_form])
+    integral = integrate(model, rng=(-50, 50))
+    assert integral >= 0.95 and integral < 1.05
 
 
 

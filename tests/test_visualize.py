@@ -1,6 +1,7 @@
 from dpm.visualize import (
     plot_stats, plot_models,
     plot_model, plot_hists,
+    plot_contour,
     plot_hist, plot_mcmc,
     plot_loss_function, plot_emd_partition, plot_emd_gamma,
     plot_emd_hist, get_emd_colormap
@@ -72,6 +73,13 @@ def test_plot_models(p_model, q_model):
     plt.close()
     plot_model(p_model, batch_size=64)
     plt.close()
+
+
+@pytest.mark.parametrize("p_model,q_model", models)
+def test_plot_contour(p_model, q_model):
+    if q_model.n_dims == 1:
+        plot_contour(q_model)
+        plt.close()
 
 
 

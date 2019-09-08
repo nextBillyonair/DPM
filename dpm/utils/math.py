@@ -119,4 +119,5 @@ def kl(h1, h2):
 def integrate(model, rng=(-10, 10), n_points=10000):
     x = np.linspace(rng[0], rng[1], n_points)
     probs = model.log_prob(torch.tensor(x).view(-1, 1).float()).exp().detach().numpy()
+    probs = np.nan_to_num(probs)
     return np.trapz(probs, x)

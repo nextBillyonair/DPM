@@ -40,6 +40,7 @@ def test_regression(model):
     assert y_pred.shape == y.shape
     parameters = model(x)[0]
     assert parameters.shape == y.shape
+    model.num_parameters
 
 
 logistic_models = [
@@ -55,6 +56,7 @@ def test_logistic(model):
     assert (y == model.predict(x)).float().mean() >= 0.85
     parameters = model(x)[0]
     assert parameters.shape == y.shape
+    model.num_parameters
 
 
 def test_classification():
@@ -65,6 +67,7 @@ def test_classification():
     stats = model.fit(X, y, epochs=2000)
     y_pred = model.predict(X)
     assert (y_pred.numpy() == y).mean() >= 0.85
+    model.num_parameters
 
 def build_toy_dataset(U, V, N, M, noise_std=0.1):
     R = np.dot(np.transpose(U), V) + np.random.normal(0, noise_std, size=(N, M))
@@ -94,6 +97,7 @@ def test_factorization(model):
     assert model.log_prob(R_true.numpy()).shape == (10, )
     assert model.mse(R_true.numpy()) < 0.1
     assert model.mae(R_true.numpy()) < 0.15
+    model.num_parameters
 
 
 def test_gmm_clustering():
@@ -106,6 +110,7 @@ def test_gmm_clustering():
     assert m.sample(5).shape == (5, 2)
     assert m.log_prob(m.sample(5)).shape == (5, )
     assert m.predict(X).shape == (100, )
+    model.num_parameters
 
 gans = [
     GAN(),
@@ -122,6 +127,7 @@ def test_gans(model):
     stats = model.fit(X, epochs=5, lr=1e-4)
     preds = model.sample(10000)
     model.predict(model.sample(100))
+    model.num_parameters
     try:
         model.log_prob(model.sample(100))
     except NotImplementedError:
@@ -140,6 +146,7 @@ def test_gnb():
     assert x_s.shape == (5, 10)
     assert y_s.shape == (5, 1)
     model.predict(x_s)
+    model.num_parameters
 
 
 def test_lda():
@@ -155,6 +162,7 @@ def test_lda():
     assert x_s.shape == (5, 10)
     assert y_s.shape == (5, 1)
     model.predict(x_s)
+    model.num_parameters
 
 
 def test_qda():
@@ -170,6 +178,7 @@ def test_qda():
     assert x_s.shape == (5, 10)
     assert y_s.shape == (5, 1)
     model.predict(x_s)
+    model.num_parameters
 
 
 def test_bnb():
@@ -186,6 +195,7 @@ def test_bnb():
     assert x_s.shape == (5, 10)
     assert y_s.shape == (5, 1)
     model.predict(x_s)
+    model.num_parameters
 
 def test_mnb():
     n_classes, n_features, n_states = (4, 3, 5)
@@ -205,6 +215,7 @@ def test_mnb():
     assert x_s.shape == (5, 3)
     assert y_s.shape == (5, 1)
     model.predict(x_s)
+    model.num_parameters
 
 
 # EOF

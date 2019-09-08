@@ -36,6 +36,7 @@ def test_normal_dist(dist, n_dims):
     assert log_probs.shape == (64, )
 
     dist.get_parameters()
+    dist.num_parameters
     try:
         dist.entropy()
     except NotImplementedError:
@@ -150,6 +151,7 @@ def test_shapes(dist, n_dims):
 
     log_probs = dist.log_prob(samples)
     assert log_probs.shape == (64, )
+    dist.num_parameters
 
     dist.get_parameters()
     try:
