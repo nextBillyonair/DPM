@@ -26,22 +26,25 @@ class AsymmetricLaplace(Distribution):
             self._asymmetry = Parameter(self._asymmetry)
 
     def log_prob(self, value):
-        s = torch.sign(value - self.loc)
-        exponent = -(value - self.loc) * self.scale * s * self.asymmetry.pow(s)
+        s = (value - self.loc).sign()
+        exponent = -(value - self.loc).abs() * self.scale * self.asymmetry.pow(s)
         coeff = self.scale.log() - (self.asymmetry + (1 / self.asymmetry)).log()
         return (coeff + exponent).sum(-1)
 
     def sample(self, batch_size):
         U = Uniform(low=-self.asymmetry, high=(1./self.asymmetry), learnable=False).sample(batch_size)
-        s = torch.sign(U)
+        s = U.sign()
         log_term = (1. - U * s * self.asymmetry.pow(s)).log()
         return self.loc - (1. / (self.scale * s * self.asymmetry.pow(s))) * log_term
 
     def cdf(self, value):
-        raise NotImplementedError()
+        s = (value - self.loc).sign()
+        exponent = -(value - self.loc).abs() * self.scale * self.asymmetry.pow(s)
+        exponent = exponent.exp()
+        return (value > self.loc).float() - s * self.asymmetry.pow(1 - s) / (1 + self.asymmetry.pow(2)) * exponent
 
-    def icdf(self, value):
-        raise NotImplementedError()
+    # def icdf(self, value):
+    #     return
 
     def entropy(self):
         return (utils.e * (1 + self.asymmetry.pow(2)) / (self.asymmetry * self.scale)).log().sum()
@@ -53,6 +56,10 @@ class AsymmetricLaplace(Distribution):
     @property
     def variance(self):
         return (1 + self.asymmetry.pow(4)) / (self.scale.pow(2) * self.asymmetry.pow(2))
+
+    @property
+    def mode(self):
+        return self.loc
 
     @property
     def median(self):

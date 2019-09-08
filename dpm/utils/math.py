@@ -111,6 +111,9 @@ def corr(X, Y=None):
 def to_hist(X, bins=50, min=0, max=0.):
     return torch.histc(X, bins=bins, min=min, max=max)
 
+def percentile_rank(samples):
+    return samples.view(-1).argsort().argsort().float() / samples.size(0)
+
 def kl(h1, h2):
     h1 = h1 / h1.sum()
     h2 = h2 / h2.sum()
