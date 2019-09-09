@@ -69,6 +69,7 @@ Differentiable Probabilistic Models
   1. Exp
   1. Expm1
   1. Gumbel
+  1. Identity
   1. InverseTransform (Inverts a transform)
   1. Log
   1. Logit
