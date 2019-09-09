@@ -36,7 +36,7 @@ class Planar(Transform):
         return z + torch.mm((self.h(torch.mm(z, self.w) + self.bias)), self.u_hat.t())
 
     def inverse(self, z):
-        raise NotImplementedError('Planar Flow direction not implemented')
+        raise NotImplementedError("Direction not implemented for Planar")
 
     def log_abs_det_jacobian(self, x, y):
         psi = torch.mm(x, self.w) + self.bias
