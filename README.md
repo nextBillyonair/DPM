@@ -75,6 +75,7 @@ Differentiable Probabilistic Models
   1. Logit
   1. Planar
   1. Power
+  1. Radial
   1. Reciprocal
   1. Sigmoid
   1. SinhArcsinh
