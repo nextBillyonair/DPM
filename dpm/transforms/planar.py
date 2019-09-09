@@ -7,7 +7,7 @@ import math
 
 class Planar(Transform):
 
-    def __init__(self, in_shape=1, activation='Tanh'):
+    def __init__(self, in_shape=1):
         super().__init__()
         self.in_shape=in_shape
         self.w = Parameter(torch.Tensor(in_shape, 1))
@@ -29,7 +29,6 @@ class Planar(Transform):
     def u_hat(self):
         w_u = self.w.t().mm(self.u)
         u_hat = self.u + (elu(w_u) - w_u) * self.w / (self.w.pow(2).sum())
-        # u_hat = self.u + (softplus(w_u) - 1. - w_u) * self.w / (self.w.pow(2).sum())
         return u_hat
 
     def forward(self, z):
