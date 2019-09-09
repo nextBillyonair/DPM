@@ -4,7 +4,7 @@ BIBTEX:=bibtex
 
 TEX_SRC=doc.tex
 
-${TEX_SRC:.tex=.pdf}:%.pdf: %.tex #%.bib
+${TEX_SRC:.tex=.pdf}:%.pdf: %.tex subsections/*.tex #%.bib
 	$(PDFLATEX) $<
 	# $(BIBTEX) ${<:.tex=}
 	$(PDFLATEX) $<
