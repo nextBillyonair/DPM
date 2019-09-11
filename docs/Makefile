@@ -9,10 +9,10 @@ ${TEX_SRC:.tex=.pdf}:%.pdf: %.tex subsections/*.tex #%.bib
 	# $(BIBTEX) ${<:.tex=}
 	$(PDFLATEX) $<
 	$(PDFLATEX) $<
-	rm -f *.out *.aux *.log *.bbl *.blg
+	rm -f *.out *.aux *.log *.bbl *.blg *.toc
 
 clean:
-	rm -f *.out *.aux *.log *.bbl *.blg
+	rm -f *.out *.aux *.log *.bbl *.blg *.toc
 
 
 .PHONY: clean

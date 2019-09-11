@@ -6,6 +6,29 @@ sake of notation clarity, $p$ is the true distribution and $q$ is the learned
 distribution. Hence we "fit" $q$ to match $p$. In addition, we provide the
 Monte Carlo approximation.
 
+\begin{center}
+\begin{tabular}{l|lC{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}}
+\toprule
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{2}{c}{$P$} & \multicolumn{2}{c}{$Q$} \\
+\cmidrule(lr){3-4}  \cmidrule(lr){5-6}
+\multicolumn{1}{l}{} & \multicolumn{1}{l}{Criterion} &  \multicolumn{1}{c}{$\log p(x)$} &  \multicolumn{1}{c|}{$x \sim P$} &  \multicolumn{1}{c}{$\log q(x)$} &  \multicolumn{1}{c}{$x \sim Q$} \\
+\midrule
+\multirow{5}{*}{Divergence}    & Cross-Entropy    &        & \cmark & \cmark &        \\
+                               & Perplexity       &        & \cmark & \cmark &        \\
+                               & Forward KL       & \cmark & \cmark & \cmark &        \\
+                               & Reverse KL       & \cmark &        & \cmark & \cmark \\
+                               & JS Divergence    & \cmark & \cmark & \cmark & \cmark \\
+\midrule
+\multirow{4}{*}{Adversarial}   & GAN              &        & \cmark &        & \cmark \\
+                               & MMGAN            &        & \cmark &        & \cmark \\
+                               & WGAN             &        & \cmark &        & \cmark \\
+                               & LSGAN            &        & \cmark &        & \cmark \\
+% \midrule
+% \multirow{1}{*}{Variational}   & ELBO             &        & \cmark & \cmark &        \\
+\bottomrule
+\end{tabular}
+\end{center}
+
 \subsection{Divergences}
 
 \subsubsection{Cross-Entropy}
