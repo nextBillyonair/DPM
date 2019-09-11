@@ -8,6 +8,6 @@ from .divergences import (
 )
 from .elbo import ELBO
 from .emd import (
-    emd, model_to_bins, bincount,
+    emd,
     make_constraint_matrix, make_distance_matrix
 )
