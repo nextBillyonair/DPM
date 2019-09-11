@@ -3,7 +3,7 @@ import torch
 from torch import nn, optim
 from torch.nn.utils import spectral_norm
 from torch.nn import Module, Sequential, Linear
-import dpm.newton as newton
+import dpm.utils as newton
 
 class AdversarialLoss(ABC, Module):
 

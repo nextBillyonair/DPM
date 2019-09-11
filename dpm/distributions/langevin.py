@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import numpy as np
 import math
-from dpm.newton import gradient
+from dpm.utils import gradient
 from .normal import Normal
 from .distribution import Distribution
 

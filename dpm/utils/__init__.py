@@ -31,3 +31,9 @@ from .layers import (
     Sigmoid, Logit,
     Flatten, Reshape
 )
+from .newton import (
+    gradient, grad, jacobian,
+    grad_n, taylor, maclaurin,
+    hessian, hessian_1d, hessian_2d,
+    newton_step
+)

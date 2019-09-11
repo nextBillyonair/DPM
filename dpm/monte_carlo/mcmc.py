@@ -1,7 +1,7 @@
 import torch
 from functools import partial
 from dpm.distributions import Normal, Distribution, Langevin
-from dpm.newton import gradient
+from dpm.utils import gradient
 
 
 def metropolis(true_model, epochs=10000, burn_in=1000, keep_every=1,
@@ -95,16 +95,6 @@ def hamiltonian_monte_carlo(model, epsilon=0.2, leapfrog=20, alpha=1.,
             samples.append(current_q)
 
     return torch.cat(samples, dim=0)
-
-
-
-
-
-
-
-
-
-
 
 
 #EOF

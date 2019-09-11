@@ -1,4 +1,4 @@
-import dpm.newton as newton
+import dpm.utils as newton
 import torch
 import pytest
 
