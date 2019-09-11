@@ -3,7 +3,7 @@ import torch
 from dpm.distributions import (
     Distribution, Normal, Data
 )
-from dpm.mixture_models import MixtureModel
+from dpm.distributions import MixtureModel
 from dpm.train import train
 from dpm.divergences import cross_entropy
 

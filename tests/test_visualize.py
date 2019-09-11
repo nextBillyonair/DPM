@@ -13,7 +13,7 @@ from dpm.distributions import (
     Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
     Logistic, ChiSquare
 )
-from dpm.mixture_models import MixtureModel, GumbelMixtureModel
+from dpm.distributions import MixtureModel, GumbelMixtureModel
 from dpm.monte_carlo import metropolis
 from dpm.train import train
 from dpm.divergences import (

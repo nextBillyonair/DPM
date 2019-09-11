@@ -6,12 +6,20 @@ from dpm.distributions import (
 from dpm.train import train
 import numpy as np
 
+# VAE:
+#   X -> Encoder -> Mu, Sigma
+#   Sample
+#   Sample -> Decoder -> Reonstruction
+#
 
 class Encoder(Distribution):
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args):
         super().__init__()
-        self.encoder = ConditionalModel(**kwargs)
+        self.encoder = ConditionalModel(*args)
+
+    def forward(self, x):
+        return self.encoder(x)
 
     def log_prob(self, z, x):
         return self.encoder.log_prob(z, x)
@@ -26,7 +34,7 @@ class Decoder(Distribution):
     def __init__(self, *args):
         super().__init__()
         self.decoder = ConditionalModel(*args)
-        self.unit_normal = Normal([0.0], [1.0], learnable=False, diag=True)
+        self.unit_normal = Normal(torch.zeros(args[0]), torch.ones(args[0]), learnable=False)
 
     def log_prob(self, samples, latents=None):
         if latents is None:
@@ -57,10 +65,19 @@ class VAE(Distribution):
         return mu, sigma
 
     def sample_latent(self, mu, sigma):
-        return Normal(mu, sigma).sample(1)
+        return Normal(mu, sigma, learnable=False).sample(1)
 
     def decoder(self, z):
         return self.decoder.sample(z)
+
+    def forward(self, x):
+        mu, sigma = self.encode(x)
+        latent = self.sample_latent(mu, sigma)
+        reconstruction = self.decoder(latent)
+        return reconstruction
+
+    def log_prob(self, x):
+        pass
 
 
 

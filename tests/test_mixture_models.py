@@ -1,4 +1,4 @@
-from dpm.mixture_models import (
+from dpm.distributions import (
     MixtureModel, GumbelMixtureModel, InfiniteMixtureModel
 )
 from dpm.distributions import Normal, Exponential

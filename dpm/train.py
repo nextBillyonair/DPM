@@ -1,5 +1,5 @@
 from torch import optim
-from dpm.mixture_models import MixtureModel, GumbelMixtureModel
+from dpm.distributions import MixtureModel, GumbelMixtureModel
 from dpm.elbo import ELBO
 import torch
 

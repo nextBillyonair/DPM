@@ -9,7 +9,7 @@ from dpm.distributions import (
     Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
     Logistic, ChiSquare, LogitNormal
 )
-from dpm.mixture_models import (
+from dpm.distributions import (
     MixtureModel, GumbelMixtureModel
 )
 import pytest

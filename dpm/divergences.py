@@ -1,7 +1,7 @@
 import torch
 from torch.nn import Module
 from abc import abstractmethod, ABC
-from dpm.mixture_models import MixtureModel
+from dpm.distributions import MixtureModel
 
 def cross_entropy(p_model, q_model, batch_size=64):
     samples = p_model.sample(batch_size)

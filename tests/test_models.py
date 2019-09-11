@@ -9,7 +9,7 @@ from dpm.models import (
     GAN, WGAN, LSGAN, MMGAN
 )
 from dpm.distributions import Normal, Categorical
-from dpm.mixture_models import MixtureModel
+from dpm.distributions import MixtureModel
 from sklearn import datasets
 import numpy as np
 import torch

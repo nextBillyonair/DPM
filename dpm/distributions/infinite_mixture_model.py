@@ -1,7 +1,9 @@
 import torch
 from torch.nn import Parameter
 from torch.nn.functional import softplus
-from dpm.distributions import Distribution, Gamma, Normal
+from .distribution import Distribution
+from .gamma import Gamma
+from .normal import Normal
 import dpm.utils as utils
 
 

@@ -3,7 +3,7 @@ from dpm.distributions import (
     Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
     Dirichlet, FisherSnedecor, HalfCauchy, HalfNormal, Laplace,
 )
-from dpm.mixture_models import (
+from dpm.distributions import (
     MixtureModel, GumbelMixtureModel
 )
 from dpm.monte_carlo import (

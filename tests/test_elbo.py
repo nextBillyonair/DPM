@@ -1,6 +1,6 @@
 from dpm.train import train, Statistics
 from dpm.elbo import ELBO
-from dpm.mixture_models import InfiniteMixtureModel
+from dpm.distributions import InfiniteMixtureModel
 from dpm.distributions import StudentT, Gamma, Distribution, ConditionalModel
 from dpm.divergences import forward_kl
 

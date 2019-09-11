@@ -2,7 +2,8 @@ import torch
 from torch.nn import ModuleList
 import numpy as np
 
-from dpm.distributions import Distribution, Categorical
+from .distribution import Distribution
+from .categorical import Categorical
 
 
 

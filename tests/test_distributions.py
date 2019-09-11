@@ -5,7 +5,7 @@ from dpm.distributions import (
     Laplace, LogLaplace, LogCauchy, LogNormal, Logistic, LogitNormal, Normal, Rayleigh,
     RelaxedBernoulli, StudentT, Uniform, Distribution
 )
-from dpm.mixture_models import (
+from dpm.distributions import (
     MixtureModel, GumbelMixtureModel
 )
 import torch.distributions as dist

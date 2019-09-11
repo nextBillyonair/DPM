@@ -16,11 +16,13 @@ from .exponential import Exponential
 from .fisher_snedecor import FisherSnedecor
 from .gamma import Gamma
 from .generator import Generator
+from .gumbel_mixture_model import GumbelMixtureModel
 from .gumbel_softmax import GumbelSoftmax
 from .gumbel import Gumbel
 from .half_cauchy import HalfCauchy
 from .half_normal import HalfNormal
 from .hyperbolic_secant import HyperbolicSecant
+from .infinite_mixture_model import InfiniteMixtureModel
 from .langevin import Langevin
 from .laplace import Laplace
 from .log_cauchy import LogCauchy
@@ -28,6 +30,7 @@ from .log_laplace import LogLaplace
 from .log_normal import LogNormal
 from .logistic import Logistic
 from .logit_normal import LogitNormal
+from .mixture_model import MixtureModel
 from .normal import Normal
 from .rayleigh import Rayleigh
 from .relaxed_bernoulli import RelaxedBernoulli
