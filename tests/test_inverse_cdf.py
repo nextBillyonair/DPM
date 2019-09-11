@@ -4,7 +4,7 @@ from dpm.distributions import (
     Laplace, LogCauchy, Rayleigh, Uniform, Data, Normal,
     Logistic, LogitNormal
 )
-from dpm.divergences import forward_kl
+from dpm.criterion import forward_kl
 import pytest
 
 

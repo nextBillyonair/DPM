@@ -1,8 +1,8 @@
 from dpm.train import train, Statistics
-from dpm.elbo import ELBO
+from dpm.criterion import ELBO
 from dpm.distributions import InfiniteMixtureModel
 from dpm.distributions import StudentT, Gamma, Distribution, ConditionalModel
-from dpm.divergences import forward_kl
+from dpm.criterion import forward_kl
 
 def test_elbo():
     variational_model = ConditionalModel(

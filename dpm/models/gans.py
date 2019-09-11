@@ -1,5 +1,5 @@
 from dpm.distributions import Generator, Distribution, Data
-from dpm.adversarial_loss import (
+from dpm.criterion import (
     GANLoss, MMGANLoss, WGANLoss, LSGANLoss
 )
 from dpm.train import train

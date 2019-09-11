@@ -6,7 +6,7 @@ from dpm.visualize import (
     plot_loss_function, plot_emd_partition, plot_emd_gamma,
     plot_emd_hist, get_emd_colormap
 )
-from dpm.emd import emd, make_distance_matrix
+from dpm.criterion import emd, make_distance_matrix
 from dpm.distributions import (
     Normal, Exponential, GumbelSoftmax, Cauchy,
     Beta, LogNormal, Gamma, RelaxedBernoulli, Uniform, StudentT,
@@ -16,7 +16,7 @@ from dpm.distributions import (
 from dpm.distributions import MixtureModel, GumbelMixtureModel
 from dpm.monte_carlo import metropolis
 from dpm.train import train
-from dpm.divergences import (
+from dpm.criterion import (
     forward_kl, reverse_kl, js_divergence, cross_entropy
 )
 import numpy as np

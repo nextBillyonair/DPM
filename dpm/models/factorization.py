@@ -3,7 +3,7 @@ from torch.nn import Parameter, init
 import math
 from dpm.distributions import Normal, Distribution, Data
 from dpm.train import train
-from dpm.divergences import cross_entropy
+from dpm.criterion import cross_entropy
 
 # Probabilistic Matrix Factorization
 class PMF(Distribution):

@@ -1,7 +1,7 @@
 from dpm.train import train
 from dpm.distributions import Normal
 from dpm.distributions import MixtureModel
-from dpm.adversarial_loss import GANLoss, WGANLoss, LSGANLoss, MMGANLoss
+from dpm.criterion import GANLoss, WGANLoss, LSGANLoss, MMGANLoss
 import pytest
 
 gans_list = [

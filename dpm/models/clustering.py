@@ -5,7 +5,7 @@ from dpm.distributions import (
 )
 from dpm.distributions import MixtureModel
 from dpm.train import train
-from dpm.divergences import cross_entropy
+from dpm.criterion import cross_entropy
 
 
 class GaussianMixture(Distribution):

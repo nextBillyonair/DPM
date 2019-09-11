@@ -1,5 +1,5 @@
 import torch
-from dpm.divergences import (
+from dpm.criterion import (
     cross_entropy, perplexity, forward_kl,
     reverse_kl, js_divergence
 )

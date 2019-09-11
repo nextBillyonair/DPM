@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 import torch
 from dpm.distributions import Distribution, Data, ConditionalModel
 from dpm.train import train
-from dpm.divergences import cross_entropy
+from dpm.criterion import cross_entropy
 
 def fit(x, y, model, criterion=cross_entropy, **kwargs):
     data = Data(x, y)

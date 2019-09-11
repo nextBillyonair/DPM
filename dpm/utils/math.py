@@ -107,17 +107,38 @@ def corr(X, Y=None):
     C = C / std_y.expand_as(C).t()
     return C
 
+
 # Testing Difference
 def to_hist(X, bins=50, min=0, max=0.):
     return torch.histc(X, bins=bins, min=min, max=max)
 
+
+def bincount(samples, bins, num_bins):
+    idxs, counts = np.unique(np.digitize(samples, bins) - 1, return_counts=True)
+    bincounts = np.zeros(num_bins + 1)
+    bincounts[idxs] = counts
+    return bincounts
+
+
+def model_to_bins(p_model, q_model, batch_size=64, n_bins=10):
+    p_samples = p_model.sample(batch_size).detach().numpy()
+    q_samples = q_model.sample(batch_size).detach().numpy()
+    total_samples = np.concatenate((p_samples, q_samples), axis=0)
+    _, bins = np.histogram(total_samples, bins=n_bins)
+    p_hist = bincount(p_samples, bins, n_bins)
+    q_hist = bincount(q_samples, bins, n_bins)
+    return p_hist / np.sum(p_hist), q_hist / np.sum(q_hist)
+
+
 def percentile_rank(samples):
     return samples.view(-1).argsort().argsort().float() / samples.size(0)
+
 
 def kl(h1, h2):
     h1 = h1 / h1.sum()
     h2 = h2 / h2.sum()
     return (h1 * log(h1) - h1 * log(h2)).sum()
+
 
 def integrate(model, rng=(-10, 10), n_points=10000):
     x = np.linspace(rng[0], rng[1], n_points)

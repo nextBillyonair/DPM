@@ -22,7 +22,9 @@ from .math import (
     diag, batch_diag, bilinear,
     inverse, pinverse,
     cov, corr,
-    to_hist, kl, integrate, percentile_rank
+    to_hist, bincount, model_to_bins,
+    percentile_rank,
+    kl, integrate
 )
 from .layers import (
     Function,

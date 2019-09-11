@@ -1,6 +1,6 @@
 from torch import optim
 from dpm.distributions import MixtureModel, GumbelMixtureModel
-from dpm.elbo import ELBO
+from dpm.criterion import ELBO
 import torch
 
 class Statistics:

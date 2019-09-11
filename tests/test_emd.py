@@ -1,4 +1,4 @@
-from dpm.emd import emd
+from dpm.criterion import emd
 from dpm.distributions import Normal
 import numpy as np
 

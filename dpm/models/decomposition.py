@@ -1,10 +1,10 @@
 import torch
 from torch.nn import Parameter, init
 from torch.nn import functional as F
-from dpm.elbo import ELBO
+from dpm.criterion import ELBO
 from dpm.distributions import Distribution, Normal, Data
 from dpm.train import train
-from dpm.divergences import cross_entropy
+from dpm.criterion import cross_entropy
 import math
 
 # spin off into class

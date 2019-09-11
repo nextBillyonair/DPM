@@ -4,7 +4,7 @@ from dpm.distributions import (
     Bernoulli, Categorical, Normal, Data, Distribution
 )
 from dpm.train import train
-from dpm.divergences import cross_entropy
+from dpm.criterion import cross_entropy
 import numpy as np
 
 

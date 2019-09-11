@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from scipy.optimize import linprog
 from dpm.distributions import Distribution
+from dpm.utils import bincount, model_to_bins
 
 # https://vincentherrmann.github.io/blog/wasserstein/
 
@@ -29,22 +30,6 @@ def make_constraint_matrix(p_len, q_len):
             A[r_id, c_id] = 1
 
     return A.T
-
-def bincount(samples, bins, num_bins):
-    idxs, counts = np.unique(np.digitize(samples, bins) - 1, return_counts=True)
-    bincounts = np.zeros(num_bins + 1)
-    bincounts[idxs] = counts
-    return bincounts
-
-
-def model_to_bins(p_model, q_model, batch_size=64, n_bins=10):
-    p_samples = p_model.sample(batch_size).detach().numpy()
-    q_samples = q_model.sample(batch_size).detach().numpy()
-    total_samples = np.concatenate((p_samples, q_samples), axis=0)
-    _, bins = np.histogram(total_samples, bins=n_bins)
-    p_hist = bincount(p_samples, bins, n_bins)
-    q_hist = bincount(q_samples, bins, n_bins)
-    return p_hist / np.sum(p_hist), q_hist / np.sum(q_hist)
 
 
 # P, Q must be discrete histograms
@@ -77,15 +62,6 @@ def emd(p_model, q_model, batch_size=64, dual=False, n_bins=10):
     emd = opt_res.fun
     gamma = opt_res.x.reshape((p_len, q_len))
     return emd, gamma
-
-
-
-
-
-
-
-
-
 
 
 # EOF

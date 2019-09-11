@@ -6,7 +6,7 @@ from matplotlib import cm
 import matplotlib
 import seaborn as sns
 from dpm.distributions import Uniform, Normal, Data
-from dpm.emd import make_distance_matrix
+from dpm.criterion import make_distance_matrix
 from torch.nn.functional import softplus
 import torch
 plt.style.use('seaborn-darkgrid')
