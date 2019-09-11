@@ -11,8 +11,8 @@ class Affine(Transform):
             loc = torch.tensor(loc).view(1, -1)
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(1, -1)
-        self.loc = loc
-        self.scale = scale
+        self.loc = loc.float()
+        self.scale = scale.float()
         self.n_dims = len(loc)
         if learnable:
             self.loc = Parameter(self.loc)

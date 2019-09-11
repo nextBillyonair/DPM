@@ -77,12 +77,13 @@ def plot_contour(model, n_plot=500, rng=(-10, 10)):
 def plot_contour_1d(model, n_plot=500, rng=(-10, 10)):
     X = np.linspace(rng[0], rng[1], n_plot).reshape(-1, 1)
     probs = model.log_prob(torch.tensor(X).view(-1, 1).float()).exp().detach().numpy()
+    probs = np.nan_to_num(probs)
     plt.plot(X, probs, label="Model Prob", color="#dd5182")
     plt.fill(X, probs, color="#dd5182", alpha=0.3)
     plt.xlabel("X")
     plt.ylabel("Prob")
     plt.title("P Samples vs Q Contour")
-    plt.xlim(rng[0], rng[1]); plt.ylim(0, max(0.5, probs.max()+.05))
+    plt.xlim(rng[0], rng[1]); plt.ylim(0, min(max(0.5, probs.max()+.05), 10.))
 
 
 def plot_contour_2d(model, n_plot=500, rng=(-10, 10)):
@@ -125,8 +126,8 @@ def plot_hists(samples_1, samples_2, labels=["Accepted Samples", "True Model"], 
     return plot_hists_2D(samples_1, samples_2, labels)
 
 def plot_hists_1D(samples_1, samples_2, labels=["Accepted Samples", "True Model"], bins=50):
-    ax = sns.distplot(samples_1, color = '#003f5c', label=labels[0], bins=bins)
-    ax = sns.distplot(samples_2, color = '#ffa600', label=labels[1], bins=bins)
+    ax = sns.distplot(samples_1.detach(), color = '#003f5c', label=labels[0], bins=bins)
+    ax = sns.distplot(samples_2.detach(), color = '#ffa600', label=labels[1], bins=bins)
     plt.xlabel("Sample")
     plt.ylabel("Density")
     plt.title("Distplot for Model")
@@ -134,6 +135,8 @@ def plot_hists_1D(samples_1, samples_2, labels=["Accepted Samples", "True Model"
 
 def plot_hists_2D(samples_1, samples_2, labels=["Accepted Samples", "True Model"]):
     x_min, x_max, y_min, y_max = [-10.0, 10.0, -10.0, 10.0]
+    samples_1 = samples_1.detach()
+    samples_2 = samples_2.detach()
     # plot_x, plot_y = np.linspace(x_min, x_max, n_plot), np.linspace(y_min, y_max, n_plot)
     # plot_x, plot_y = np.meshgrid(plot_x, plot_y)
 

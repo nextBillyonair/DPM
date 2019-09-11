@@ -19,15 +19,18 @@ class Chain(Transform):
             y = transform.inverse(y)
         return y
 
-    def log_abs_det_jacobian(self, x, y):
-        prev_value = y
+    def log_abs_det_jacobian(self, x, y=None):
+        prev_value = x
         log_det = 0.0
         for transform in reversed(self.chain):
             value = transform.inverse(prev_value)
             log_det += transform.log_abs_det_jacobian(value, prev_value)
             prev_value = value
-        return log_det
+        return log_det, value
 
     def get_parameters(self):
         return {'type':'chain',
                 'compnents':[transform.get_parameters() for transform in self.chain]}
+
+    def __iter__(self):
+        return iter(self.chain)

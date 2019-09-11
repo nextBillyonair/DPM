@@ -11,7 +11,7 @@ class Softplus(Transform):
         if hinge_softness == 0.0: raise ValueError("Hinge Softness cannot be 0")
         if not isinstance(hinge_softness, torch.Tensor):
             hinge_softness = torch.tensor(hinge_softness).view(1, -1)
-        self.hinge_softness = hinge_softness
+        self.hinge_softness = hinge_softness.float()
         if learnable:
             self.hinge_softness = Parameter(self.hinge_softness)
 

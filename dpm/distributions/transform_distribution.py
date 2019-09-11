@@ -1,11 +1,5 @@
-import torch
-from torch import nn
-from torch import distributions as dists
-from torch.nn import Module, Parameter, ModuleList
-from torch.nn.functional import softplus
-import numpy as np
-import math
 from .distribution import Distribution
+from dpm.transforms import Chain
 
 # Uses dist + transforms
 class TransformDistribution(Distribution):
@@ -14,34 +8,26 @@ class TransformDistribution(Distribution):
         super().__init__()
         self.n_dims = distribution.n_dims
         self.distribution = distribution
-        self.transforms = ModuleList(transforms)
+        if isinstance(transforms, list):
+            transforms = Chain(transforms)
+        self.transforms = transforms
 
     def log_prob(self, value):
-        prev_value = value
-        log_det = 0.0
-        for transform in self.transforms[::-1]:
-            value = transform.inverse(prev_value)
-            log_det += transform.log_abs_det_jacobian(value, prev_value)
-            prev_value = value
-        return -log_det.sum(1) + self.distribution.log_prob(value)
+        log_det, final_value = self.transforms.log_abs_det_jacobian(value)
+        return self.distribution.log_prob(final_value) - log_det.sum(1)
 
     def sample(self, batch_size):
         samples = self.distribution.sample(batch_size)
-        for transform in self.transforms:
-            samples = transform(samples)
-        return samples
+        return self.transforms(samples)
 
     # might need monotonize?
     def cdf(self, value):
-        for transform in self.transforms[::-1]:
-            value = transform.inverse(value)
+        value = self.transforms.inverse(value)
         return self.distribution.cdf(value)
 
     def icdf(self, value):
         value = self.distribution.icdf(value)
-        for transform in self.transforms:
-            value = transform(value)
-        return value
+        return self.transforms(value)
 
     def get_parameters(self):
         return {'distribution':self.distribution.get_parameters(),

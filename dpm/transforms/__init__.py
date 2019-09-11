@@ -2,10 +2,12 @@ from .transform import Transform
 from .inverse_transform import InverseTransform
 
 from .affine import Affine
+from .chain import Chain
 from .exp import Exp
 from .expm1 import Expm1
 from .gumbel import Gumbel
 from .identity import Identity
+from .kumaraswamy import Kumaraswamy
 from .log import Log
 from .logit import Logit
 from .planar import Planar

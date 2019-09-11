@@ -23,6 +23,7 @@ from .half_cauchy import HalfCauchy
 from .half_normal import HalfNormal
 from .hyperbolic_secant import HyperbolicSecant
 from .infinite_mixture_model import InfiniteMixtureModel
+from .kumaraswamy import Kumaraswamy
 from .langevin import Langevin
 from .laplace import Laplace
 from .log_cauchy import LogCauchy

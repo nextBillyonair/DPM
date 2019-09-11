@@ -30,6 +30,9 @@ def js_divergence(p_model, q_model, batch_size=64):
                   + forward_kl(q_model, M, batch_size))
 
 
+def exponential_divergence(p_model, q_model, batch_size=64):
+    p_samples = p_model.sample(batch_size)
+    return (p_model.log_prob(p_samples) - q_model.log_prob(p_samples)).pow(2).mean()
 
 ################################################################################
 # Experimental
@@ -62,10 +65,6 @@ def js_divergence_2(p_model, q_model, batch_size=64):
     return 0.5 * (_other_term(p_model, M, batch_size)
                   + _forward_kl(q_model, M, batch_size))
 
-
-def exponential_divergence(p_model, q_model, batch_size=64):
-    p_samples = p_model.sample(batch_size)
-    return (p_model.log_prob(p_samples) - q_model.log_prob(p_samples)).pow(2).mean()
 
 class FDivergence(ABC, Module):
 

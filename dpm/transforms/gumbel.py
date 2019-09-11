@@ -12,8 +12,8 @@ class Gumbel(Transform):
             loc = torch.tensor(loc).view(1, -1)
         if not isinstance(scale, torch.Tensor):
             scale = torch.tensor(scale).view(1, -1)
-        self.loc = loc
-        self._scale = utils.softplus_inverse(scale)
+        self.loc = loc.float()
+        self._scale = utils.softplus_inverse(scale.float())
         if learnable:
             self.loc = Parameter(self.loc)
             self._scale = Parameter(self._scale)

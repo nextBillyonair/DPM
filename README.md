@@ -40,6 +40,7 @@ Differentiable Probabilistic Models
   1. Half Cauchy
   1. Half Normal
   1. [Hyperbolic Secant](https://en.wikipedia.org/wiki/Hyperbolic_secant_distribution)
+  1. [Kumaraswamy](https://en.wikipedia.org/wiki/Kumaraswamy_distribution)
   1. [Langevin](https://en.wikipedia.org/wiki/Metropolis-adjusted_Langevin_algorithm)
       * Adds Langevin Dynamics to sampling methods (see wikipedia)
   1. [Laplace](https://en.wikipedia.org/wiki/Laplace_distribution)
@@ -71,6 +72,7 @@ Differentiable Probabilistic Models
   1. Gumbel
   1. Identity
   1. InverseTransform (Inverts a transform)
+  1. Kumaraswamy
   1. Log
   1. Logit
   1. Planar

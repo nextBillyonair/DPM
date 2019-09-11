@@ -13,8 +13,8 @@ class SinhArcsinh(Transform):
             skewness = torch.tensor(skewness).view(1, -1)
         if not isinstance(tailweight, torch.Tensor):
             tailweight = torch.tensor(tailweight).view(1, -1)
-        self.skewness = skewness
-        self._tailweight = utils.softplus_inverse(tailweight)
+        self.skewness = skewness.float()
+        self._tailweight = utils.softplus_inverse(tailweight.float())
         if learnable:
             self.skewness = Parameter(self.skewness)
             self._tailweight = Parameter(self._tailweight)
