@@ -20,7 +20,7 @@ class Chain(Transform):
         return y
 
     def log_abs_det_jacobian(self, x, y):
-        prev_value = x
+        prev_value = y
         log_det = 0.0
         for transform in reversed(self.chain):
             value = transform.inverse(prev_value)
