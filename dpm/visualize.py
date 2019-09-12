@@ -122,12 +122,12 @@ def plot_model_2D(model, batch_size=10000):
 
 def plot_hists(samples_1, samples_2, labels=["Accepted Samples", "True Model"], bins=50):
     if samples_1.size(1) == 1:
-        return plot_hists_1D(samples_1, samples_2, labels, bins)
-    return plot_hists_2D(samples_1, samples_2, labels)
+        return plot_hists_1D(samples_1.detach(), samples_2.detach(), labels, bins)
+    return plot_hists_2D(samples_1.detach(), samples_2.detach(), labels)
 
 def plot_hists_1D(samples_1, samples_2, labels=["Accepted Samples", "True Model"], bins=50):
-    ax = sns.distplot(samples_1.detach(), color = '#003f5c', label=labels[0], bins=bins)
-    ax = sns.distplot(samples_2.detach(), color = '#ffa600', label=labels[1], bins=bins)
+    ax = sns.distplot(samples_1, color = '#003f5c', label=labels[0], bins=bins)
+    ax = sns.distplot(samples_2, color = '#ffa600', label=labels[1], bins=bins)
     plt.xlabel("Sample")
     plt.ylabel("Density")
     plt.title("Distplot for Model")
@@ -135,8 +135,6 @@ def plot_hists_1D(samples_1, samples_2, labels=["Accepted Samples", "True Model"
 
 def plot_hists_2D(samples_1, samples_2, labels=["Accepted Samples", "True Model"]):
     x_min, x_max, y_min, y_max = [-10.0, 10.0, -10.0, 10.0]
-    samples_1 = samples_1.detach()
-    samples_2 = samples_2.detach()
     # plot_x, plot_y = np.linspace(x_min, x_max, n_plot), np.linspace(y_min, y_max, n_plot)
     # plot_x, plot_y = np.meshgrid(plot_x, plot_y)
 
@@ -163,8 +161,8 @@ def plot_hists_2D(samples_1, samples_2, labels=["Accepted Samples", "True Model"
 
 def plot_hist(samples):
     if samples.size(1) == 1:
-        return plot_hist_1D(samples)
-    return plot_hist_2D(samples)
+        return plot_hist_1D(samples.detach())
+    return plot_hist_2D(samples.detach())
 
 def plot_hist_1D(samples):
     ax = sns.distplot(samples, color = '#003f5c')

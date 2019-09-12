@@ -10,7 +10,14 @@ from .trig import (
     sinh, cosh, tanh,
     coth, sech, csch,
     arcsinh, arccosh, arctanh,
-    arccoth, arcsech, arccsch
+    arccoth, arcsech, arccsch,
+    versin, vercos,
+    coversin, covercos,
+    haversin, havercos,
+    hacoversin, hacovercos,
+    arcversin, arcvercos,
+    arccoversin, arccovercos,
+    archaversin, archavercos,
 )
 from .math import (
     sqrtx2p1, softplus_inverse,

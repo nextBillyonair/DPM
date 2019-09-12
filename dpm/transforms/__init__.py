@@ -20,3 +20,4 @@ from .softplus import Softplus
 from .softsign import Softsign
 from .square import Square
 from .tanh import Tanh
+from .weibull import Weibull

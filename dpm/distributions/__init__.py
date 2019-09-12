@@ -38,3 +38,4 @@ from .relaxed_bernoulli import RelaxedBernoulli
 from .student_t import StudentT
 from .transform_distribution import TransformDistribution
 from .uniform import Uniform
+from .weibull import Weibull

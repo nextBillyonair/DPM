@@ -57,6 +57,7 @@ Differentiable Probabilistic Models
       * Composes a list of [transforms](#transforms) on a distribution
       * Example: Exp(Normal) ~ LogNormal
   1. [Uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous))
+  1. [Weibull](https://en.wikipedia.org/wiki/Weibull_distribution)
   1. [Mixture Model](https://en.wikipedia.org/wiki/Mixture_model)
       * Static weights to pick from sub-models using a categorical distribution.
   1. [Gumbel Mixture Model](https://arxiv.org/abs/1611.01144)
@@ -85,6 +86,7 @@ Differentiable Probabilistic Models
   1. Softsign
   1. Square
   1. Tanh
+  1. Weibull
 
 # Criterion <a name="criterion"></a>
   1. [Cross Entropy](https://en.wikipedia.org/wiki/Cross_entropy)

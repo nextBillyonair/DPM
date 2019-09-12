@@ -82,3 +82,54 @@ def arcsech(x):
 
 def arccsch(x):
     return ((1. / x) + ((1. / x.pow(2)) - 1).sqrt()).log()
+
+
+# Versine
+
+def versin(x):
+    return 1 - cos(x)
+
+def vercos(x):
+    return 1 + cos(x)
+
+def coversin(x):
+    return 1 - sin(x)
+
+def covercos(x):
+    return 1 + sin(x)
+
+def haversin(x):
+    return versin(x) / 2
+
+def havercos(x):
+    return vercos(x) / 2
+
+def hacoversin(x):
+    return coversin(x) / 2
+
+def hacovercos(x):
+    return covercos(x) / 2
+
+
+def arcversin(x):
+    return arccos(1 - x)
+
+def arcvercos(x):
+    return arccos(1 + x)
+
+def arccoversin(x):
+    return arcsin(1 - x)
+
+def arccovercos(x):
+    return arcsin(1 + x)
+
+def archaversin(x):
+    return 2 * arcsin(x.sqrt())
+
+def archavercos(x):
+    return 2 * arccos(x.sqrt())
+
+
+
+
+# EOF
