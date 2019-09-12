@@ -14,14 +14,14 @@ class Generator(Distribution):
 
     def __init__(self, latent_distribution=None, input_dim=8,
                  hidden_sizes=[24, 24], activation="LeakyReLU",
-                 output_shapes=[1], output_activations=[None]):
+                 output_dim=1):
         super().__init__()
         self.latent_distribution = latent_distribution
         if latent_distribution is None:
             self.latent_distribution = Normal(torch.zeros(input_dim), torch.eye(input_dim), learnable=False)
         self.conditional_model = ConditionalModel(input_dim, hidden_sizes, activation,
-                                                  output_shapes, output_activations, DiracDelta)
-        self.n_dims = output_shapes[0]
+                                                  [output_dim], [None], DiracDelta)
+        self.n_dims = output_dim
 
     def log_prob(self, value):
         raise NotImplementedError("Generator log_prob not implemented")

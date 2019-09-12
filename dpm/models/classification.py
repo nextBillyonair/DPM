@@ -4,6 +4,7 @@ from dpm.distributions import (
 )
 from dpm.utils import Sigmoid
 from .model import LinearModel
+from functools import partial
 
 ################################################################################
 # LOGISTIC REGRESSION
@@ -13,14 +14,14 @@ class LogisticRegression(LinearModel):
 
     def __init__(self, input_dim=1, output_shape=1):
         super().__init__(input_dim, output_shape, output_activation=Sigmoid(),
-            distribution=Bernoulli)
+            distribution=partial(Bernoulli, learnable=False))
 
 # Normal prior on weights
 class BayesianLogisticRegression(LinearModel):
 
     def __init__(self, input_dim=1, output_shape=1, tau=1.):
         super().__init__(input_dim, output_shape, output_activation=Sigmoid(),
-            distribution=Bernoulli, prior=Normal(0., tau))
+            distribution=partial(Bernoulli, learnable=False), prior=Normal(0., tau, learnable=False))
 
 
 ################################################################################
@@ -32,7 +33,7 @@ class SoftmaxRegression(LinearModel):
 
     def __init__(self, input_dim=1, output_shape=2):
         super().__init__(input_dim, output_shape, output_activation=Softmax(dim=1),
-            distribution=Categorical)
+            distribution=partial(Categorical, learnable=False))
 
 
 # EOF

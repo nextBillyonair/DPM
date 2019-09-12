@@ -16,6 +16,7 @@ from .exponential import Exponential
 from .fisher_snedecor import FisherSnedecor
 from .gamma import Gamma
 from .generator import Generator
+from .geometric import Geometric
 from .gumbel_mixture_model import GumbelMixtureModel
 from .gumbel_softmax import GumbelSoftmax
 from .gumbel import Gumbel

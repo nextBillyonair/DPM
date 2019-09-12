@@ -6,13 +6,16 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
+from .normal import Normal
+from functools import partial
 
 # For ELBO!
 # AKA Conditional Model
 class ConditionalModel(Distribution):
 
-    def __init__(self, input_dim, hidden_sizes, activation,
-                 output_shapes, output_activations, distribution):
+    def __init__(self, input_dim=1, hidden_sizes=[24, 24], activation='ReLU',
+                 output_shapes=[1, 1], output_activations=[None, 'Softplus'],
+                 distribution=partial(Normal, learnable=False)):
         super().__init__()
         prev_size = input_dim
         layers = []

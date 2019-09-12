@@ -2,7 +2,7 @@ import torch
 from torch import distributions as dists
 from torch.nn import Parameter
 from .distribution import Distribution
-from dpm.utils import eps
+from dpm.utils import log
 
 # convert to non dist version
 # Differentiable log_prob, not differentiable sample
@@ -13,7 +13,7 @@ class Categorical(Distribution):
         self.n_dims = len(probs)
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs)
-        self.logits = probs.float().log()
+        self.logits = log(probs.float())
         if learnable:
             self.logits = Parameter(self.logits)
 

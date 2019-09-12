@@ -1,8 +1,9 @@
 import torch
 from dpm.distributions import (
     Bernoulli, Normal, Distribution,
-    ConditionalModel, DiracDelta
+    ConditionalModel
 )
+from dpm.utils import Sigmoid
 from dpm.train import train
 import numpy as np
 
@@ -14,9 +15,9 @@ import numpy as np
 
 class Encoder(Distribution):
 
-    def __init__(self, *args):
+    def __init__(self, **kwargs):
         super().__init__()
-        self.encoder = ConditionalModel(*args)
+        self.encoder = ConditionalModel(**kwargs)
 
     def forward(self, x):
         return self.encoder(x)
@@ -31,33 +32,32 @@ class Encoder(Distribution):
 
 class Decoder(Distribution):
 
-    def __init__(self, *args):
+    def __init__(self, **kwargs):
         super().__init__()
-        self.decoder = ConditionalModel(*args)
-        self.unit_normal = Normal(torch.zeros(args[0]), torch.ones(args[0]), learnable=False)
+        self.decoder = ConditionalModel(**kwargs)
 
-    def log_prob(self, samples, latents=None):
-        if latents is None:
-            raise NotImplementedError("VAE Decoder log_prob not implemented without latents")
-        return self.decoder.log_prob(samples, latents) + self.unit_normal.log_prob(latents)
+    def log_prob(self, z, x):
+        return self.decoder.log_prob(z, x)
 
-    def sample(self, batch_size, compute_logprob=False):
-        x = self.unit_normal.sample(batch_size)
+    def sample(self, x, compute_logprob=False):
         return self.decoder.sample(x, compute_logprob)
 
 
 # FINISH
 class VAE(Distribution):
 
-    def __init__(self, input_dim, embedding_dim):
+    def __init__(self, encoder_kwargs={}, decoder_kwargs={}):
         super().__init__()
-        self.encoder = Encoder(input_dim, [24, 24], "ReLU",
-                               [embedding_dim, embedding_dim],
-                               [None, "Softplus"],
-                                Normal)
-        self.decoder = Decoder(embedding_dim, [24, 24], "ReLU",
-                               [input_dim],
-                               [None], DiracDelta)
+        self.encoder = Encoder(**encoder_kwargs)
+        self.decoder = Decoder(**decoder_kwargs)
+
+        # self.encoder = Encoder(input_dim, [128, 64], "ReLU",
+        #                        [embedding_dim, embedding_dim],
+        #                        [None, "Softplus"],
+        #                         Normal)
+        # self.decoder = Decoder(embedding_dim, [24, 24], "ReLU",
+        #                        [input_dim],
+        #                        [Sigmoid()], output_dist)
 
 
     def encode(self, x):
@@ -73,16 +73,28 @@ class VAE(Distribution):
     def forward(self, x):
         mu, sigma = self.encode(x)
         latent = self.sample_latent(mu, sigma)
-        reconstruction = self.decoder(latent)
-        return reconstruction
+        reconstruction, log_probs = self.decoder(latent, compute_logprob=True)
+        return reconstruction, log_probs
 
     def log_prob(self, x):
-        pass
+        return self.forward(x)[1]
 
 
+class BernoulliVAE(VAE):
 
+    def __init__(self, encoder_kwargs={},
+                 decoder_kwargs={
+                    'output_shape'=[1],
+                    'output_activation':[Sigmoid()],
+                    'distribution':partial(Bernoulli, learnable=False)}):
+        super().__init__(encoder_kwargs, decoder_kwargs)
 
+# Regression
+class NormalVAE(VAE):
 
+    def __init__(self, encoder_kwargs={},
+                 decoder_kwargs={}):
+        super().__init__(encoder_kwargs, decoder_kwargs)
 
 
 

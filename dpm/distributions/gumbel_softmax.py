@@ -6,7 +6,7 @@ import numpy as np
 import math
 from .distribution import Distribution
 from .categorical import Categorical
-from dpm.utils import eps
+from dpm.utils import log, eps
 
 
 class GumbelSoftmax(Distribution):
@@ -19,7 +19,7 @@ class GumbelSoftmax(Distribution):
         self.hard = hard
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs)
-        self.logits = probs.float().log()
+        self.logits = log(probs.float())
         if learnable:
             self.logits = Parameter(self.logits)
 

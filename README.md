@@ -35,6 +35,7 @@ Differentiable Probabilistic Models
   1. Generator
       * Uses a latent distribution to sample inputs to a neural network to
       generate a distribution. Train with the adversarial losses.
+  1. [Geometric](https://en.wikipedia.org/wiki/Geometric_distribution)
   1. [Gumbel Softmax (Relaxed Categorical)](https://arxiv.org/abs/1611.01144)
   1. [Gumbel](https://en.wikipedia.org/wiki/Gumbel_distribution)
   1. Half Cauchy
