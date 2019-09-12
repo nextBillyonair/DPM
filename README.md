@@ -50,6 +50,8 @@ Differentiable Probabilistic Models
   1. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
   1. [Logit Normal](https://en.wikipedia.org/wiki/Logit-normal_distribution)
   1. [Normal (Multivariate)](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)
+  1. [Pareto](https://en.wikipedia.org/wiki/Pareto_distribution)
+  1. [Poisson](https://en.wikipedia.org/wiki/Poisson_distribution)
   1. [Rayleigh](https://en.wikipedia.org/wiki/Rayleigh_distribution)
   1. [Relaxed Bernoulli](https://arxiv.org/abs/1611.00712)
   1. [Student T](https://en.wikipedia.org/wiki/Student%27s_t-distribution)

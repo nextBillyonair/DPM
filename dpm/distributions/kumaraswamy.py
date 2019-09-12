@@ -23,8 +23,8 @@ class Kumaraswamy(Distribution):
             self._beta = Parameter(self._beta)
 
     def create_dist(self):
-        zero = torch.zeros_like(self.alpha)
-        one = torch.ones_like(self.alpha)
+        zero = torch.zeros_like(self._alpha)
+        one = torch.ones_like(self._alpha)
         model = TransformDistribution(Uniform(zero, one, learnable=False),
                                       [kumaraswamy_tform(self.alpha, self.beta, learnable=False)])
         return model

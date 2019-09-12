@@ -24,8 +24,8 @@ class Weibull(Distribution):
             self._concentration = Parameter(self._concentration)
 
     def create_dist(self):
-        zero = torch.zeros_like(self.scale)
-        one = torch.ones_like(self.scale)
+        zero = torch.zeros_like(self._scale)
+        one = torch.ones_like(self._scale)
         model = TransformDistribution(Uniform(zero, one, learnable=False),
                     [InverseTransform(weibull_tform(self.scale, self.concentration, learnable=False))])
         return model

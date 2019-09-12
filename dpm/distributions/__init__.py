@@ -33,6 +33,8 @@ from .logistic import Logistic
 from .logit_normal import LogitNormal
 from .mixture_model import MixtureModel
 from .normal import Normal
+from .pareto import Pareto
+from .poisson import Poisson
 from .rayleigh import Rayleigh
 from .relaxed_bernoulli import RelaxedBernoulli
 from .student_t import StudentT
