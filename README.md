@@ -93,6 +93,7 @@ Differentiable Probabilistic Models
 # Criterion <a name="criterion"></a>
   1. [Cross Entropy](https://en.wikipedia.org/wiki/Cross_entropy)
   1. [Perplexity](https://en.wikipedia.org/wiki/Perplexity)
+  1. Exponential
   1. [Forward KL Divergence](https://en.wikipedia.org/wiki/Kullback–Leibler_divergence)
       * P Model -> Sampling (rsample)
       * Q Model -> PDF Function (log_prob)
