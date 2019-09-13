@@ -143,6 +143,7 @@ Differentiable Probabilistic Models
       1. MMGAN
       1. WGAN
       1. LSGAN
+  1. Variational Auto-Encoder (VAE)
 
 # Monte Carlo <a name="monte_carlo"></a>
   1. Approximations (Integration, Expectation, Variance, etc.)

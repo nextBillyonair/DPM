@@ -17,6 +17,8 @@ class ConditionalModel(Distribution):
                  output_shapes=[1, 1], output_activations=[None, 'Softplus'],
                  distribution=partial(Normal, learnable=False)):
         super().__init__()
+        self.input_dim = input_dim
+        self.output_dim = output_shapes
         prev_size = input_dim
         layers = []
         for h in hidden_sizes:

@@ -34,6 +34,6 @@ from .model import (
     Model, NeuralModel, LinearModel,
     fit, predict, parameterize
 )
-# from .vae import (
-#   Encoder, Decoder, VAE
-# )
+from .vae import (
+    VAE
+)
