@@ -13,6 +13,8 @@ from functools import partial
 # AKA Conditional Model
 class ConditionalModel(Distribution):
 
+    has_latents = True
+
     def __init__(self, input_dim=1, hidden_sizes=[24, 24], activation='ReLU',
                  output_shapes=[1, 1], output_activations=[None, 'Softplus'],
                  distribution=partial(Normal, learnable=False)):
