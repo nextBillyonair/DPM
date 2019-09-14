@@ -1,6 +1,7 @@
 import torch
 from torch import distributions as dists
 from torch.nn import Parameter
+from torch.nn.functional import log_softmax
 from .distribution import Distribution
 from dpm.utils import log
 

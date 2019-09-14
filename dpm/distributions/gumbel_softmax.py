@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from torch.nn import Module, Parameter, ModuleList
-from torch.nn.functional import softplus
+from torch.nn.functional import log_softmax
 import numpy as np
 import math
 from .distribution import Distribution

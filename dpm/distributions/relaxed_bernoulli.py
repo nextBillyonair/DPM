@@ -16,7 +16,7 @@ class RelaxedBernoulli(Distribution):
         self.temperature = torch.tensor(temperature)
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs)
-        self.logits = utils.softplus_inverse(probs.float())
+        self.logits = utils.log(probs.float())
         if learnable:
             self.logits = Parameter(self.logits)
 
@@ -30,7 +30,7 @@ class RelaxedBernoulli(Distribution):
 
     @property
     def probs(self):
-        return softplus(self.logits)
+        return self.logits.exp()
 
     def get_parameters(self):
         if self.n_dims == 1: return {'probs':self.probs.item()}

@@ -1,6 +1,6 @@
 import torch
 from .distribution import Distribution
-from dpm.utils import eps
+from dpm.utils import eps, log
 from torch.nn import Parameter
 
 
@@ -8,12 +8,12 @@ class Bernoulli(Distribution):
 
     def __init__(self, probs=[0.5], learnable=True):
         super().__init__()
-        self.n_dims = len(probs)
         if not isinstance(probs, torch.Tensor):
-            probs = torch.tensor(probs)
-        self.probs = probs.float()
+            probs = torch.tensor(probs).view(-1)
+        self.n_dims = len(probs)
+        self.logits = log(probs.float())
         if learnable:
-            self.probs = Parameter(self.probs)
+            self.logits = Parameter(self.logits)
 
 
     def log_prob(self, value):
@@ -45,8 +45,8 @@ class Bernoulli(Distribution):
         return (1 - 6. * self.probs * q) / (self.probs * q)
 
     @property
-    def logits(self):
-        return (self.probs + eps).log()
+    def probs(self):
+        return self.logits.exp()
 
     def get_parameters(self):
         if self.n_dims == 1:

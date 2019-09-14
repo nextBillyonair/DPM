@@ -13,15 +13,18 @@ from functools import partial
 class LogisticRegression(LinearModel):
 
     def __init__(self, input_dim=1, output_shape=1):
-        super().__init__(input_dim, output_shape, output_activation=Sigmoid(),
+        super().__init__(input_dim=input_dim, output_shapes=output_shape,
+            output_activations=Sigmoid(),
             distribution=partial(Bernoulli, learnable=False))
 
 # Normal prior on weights
 class BayesianLogisticRegression(LinearModel):
 
     def __init__(self, input_dim=1, output_shape=1, tau=1.):
-        super().__init__(input_dim, output_shape, output_activation=Sigmoid(),
-            distribution=partial(Bernoulli, learnable=False), prior=Normal(0., tau, learnable=False))
+        super().__init__(input_dim=input_dim, output_shapes=output_shape,
+            output_activations=Sigmoid(),
+            distribution=partial(Bernoulli, learnable=False),
+            prior=Normal(0., tau, learnable=False))
 
 
 ################################################################################
@@ -32,7 +35,8 @@ class BayesianLogisticRegression(LinearModel):
 class SoftmaxRegression(LinearModel):
 
     def __init__(self, input_dim=1, output_shape=2):
-        super().__init__(input_dim, output_shape, output_activation=Softmax(dim=1),
+        super().__init__(input_dim=input_dim, output_shapes=output_shape,
+            output_activations=Softmax(dim=-1),
             distribution=partial(Categorical, learnable=False))
 
 

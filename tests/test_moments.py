@@ -21,7 +21,7 @@ def test_arcsine():
 
 def test_bernoulli():
     model = Bernoulli(probs=[0.3])
-    assert model.logits.item() + 1.2039728043 < 1e-2
+    assert model.logits.item() + 0.8473 < 1e-2
     assert model.expectation.item() - 0.3 < 1e-2
     assert model.variance.item() - 0.21 < 1e-2
     assert model.skewness.item() - 1.9047619048 < 1e-2

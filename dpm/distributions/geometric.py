@@ -8,14 +8,14 @@ from dpm.utils import log
 # Models num of failures before first success
 class Geometric(Distribution):
 
-    def __init__(self, probs=1., learnable=True):
+    def __init__(self, probs=0.5, learnable=True):
         super().__init__()
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs).view(-1)
         self.n_dims = len(probs)
-        self.probs = probs.float()
+        self.logits = log(probs.float())
         if learnable:
-            self.probs = Parameter(self.probs)
+            self.logits = Parameter(self.logits)
 
     def log_prob(self, value):
         return (value * (-self.probs).log1p() + log(self.probs)).sum(-1)
@@ -64,8 +64,8 @@ class Geometric(Distribution):
         return (-1 / (-self.probs).log1p()).ceil() - 1.
 
     @property
-    def logits(self):
-        return log(self.probs)
+    def probs(self):
+        return self.logits.exp()
 
     def get_parameters(self):
         return {'probs':self.probs.detach().numpy()}

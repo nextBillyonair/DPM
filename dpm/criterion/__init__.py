@@ -5,7 +5,7 @@ from .adversarial_loss import (
 from .divergences import (
     cross_entropy, perplexity,
     forward_kl, reverse_kl,
-    empirical_forward_kl, empirical_reverse_kl
+    empirical_forward_kl, empirical_reverse_kl,
     js_divergence,
     exponential_divergence
 )

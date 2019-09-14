@@ -33,6 +33,7 @@ from .log_normal import LogNormal
 from .logistic import Logistic
 from .logit_normal import LogitNormal
 from .mixture_model import MixtureModel
+from .negative_binomial import NegativeBinomial
 from .normal import Normal
 from .pareto import Pareto
 from .poisson import Poisson

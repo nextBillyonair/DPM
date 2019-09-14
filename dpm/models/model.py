@@ -37,17 +37,22 @@ class Model(Distribution):
 # wraps Conditonal Model around interface to NN Model (Expands Linear to multiple layers)
 class NeuralModel(Model):
 
-    def __init__(self, input_dim=1, output_shape=1,
+    def __init__(self, input_dim=1, output_shapes=[1],
                  hidden_sizes=[24, 24],
                  activation='LeakyReLU',
-                 output_activation=None,
+                 output_activations=[None],
                  distribution=None, prior=None):
         super().__init__()
-        self.n_dims = output_shape
+        if not isinstance(output_shapes, list):
+            output_shapes = [output_shapes]
+        if not isinstance(output_activations, list):
+            output_activations = [output_activations]
+            
+        self.n_dims = output_shapes
         self.model = ConditionalModel(input_dim, hidden_sizes=hidden_sizes,
                             activation=activation,
-                            output_shapes=[output_shape],
-                            output_activations=[output_activation],
+                            output_shapes=output_shapes,
+                            output_activations=output_activations,
                             distribution=distribution)
         self.prior = prior
 
@@ -66,11 +71,11 @@ class NeuralModel(Model):
 
 class LinearModel(NeuralModel):
 
-    def __init__(self, input_dim=1, output_shape=1, output_activation=None,
+    def __init__(self, input_dim=1, output_shapes=[1], output_activations=[None],
                  distribution=None, prior=None):
-        super().__init__(input_dim=input_dim, output_shape=output_shape,
+        super().__init__(input_dim=input_dim, output_shapes=output_shapes,
                          hidden_sizes=[], activation="",
-                         output_activation=output_activation,
+                         output_activations=output_activations,
                          distribution=distribution, prior=prior)
 
 

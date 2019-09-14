@@ -11,7 +11,7 @@ def softplus_inverse(value, threshold=20):
     return inv
 
 def logit(x):
-    return x.log() - (-x).log1p()
+    return log(x) - (-x + eps).log1p()
 
 def log(x):
     return (x + eps).log()
