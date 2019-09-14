@@ -36,7 +36,7 @@ def l1_regularize(model):
 
 
 def train(p_model, q_model, criterion, epochs=1000, batch_size=64,
-          lr=0.01, optimizer='Adam', track_parameters=True, log_interval=None,
+          lr=0.01, optimizer='Adam', track_parameters=False, log_interval=None,
           stats=None, clip_gradients=None, l2_penalty=None, l1_penalty=None):
 
     optimizer = getattr(optim, optimizer)(q_model.parameters(), lr=lr)

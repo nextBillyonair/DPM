@@ -14,7 +14,7 @@ class Radial(Transform):
         self.z_0 = Parameter(torch.zeros(n_dims))
         self.n_dims = n_dims
         self._alpha = Parameter(utils.softplus_inverse(torch.rand(1).float()))
-        self.beta = Parameter(2+torch.randn(1).float())
+        self.beta = Parameter(torch.randn(1).float())
 
     @property
     def alpha(self):
@@ -31,7 +31,7 @@ class Radial(Transform):
         return -1 / (self.alpha + self.r(z)) ** 2
 
     def r(self, z):
-        return (z - self.z_0).abs()
+        return (z - self.z_0).pow(2).sum(dim=-1, keepdim=True).sqrt()
 
     def forward(self, z):
         return z + self.beta_hat * self.h(z) * (z - self.z_0)
