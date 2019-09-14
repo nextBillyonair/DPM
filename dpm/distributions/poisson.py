@@ -20,7 +20,12 @@ class Poisson(Distribution):
         return (self.rate.log() * value - self.rate - (value + 1).lgamma()).sum(-1)
 
     def sample(self, batch_size):
-        return torch.poisson(self.rate.expand((batch_size, self.n_dims)))
+        return torch.poisson(self.rate.unsqueeze(0).expand((batch_size, *self._rate.shape)))
+
+    def kl(self, other):
+        if isinstance(other, Poisson):
+            return (self.rate * (self.rate.log() - other.rate.log()) - (self.rate - other.rate)).sum()
+        return None
 
     @property
     def expectation(self):

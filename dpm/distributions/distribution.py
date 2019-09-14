@@ -42,3 +42,6 @@ class Distribution(ABC, Module):
     @property
     def median(self):
         raise NotImplementedError('Median not implemented, use monte carlo approximation')
+
+    def kl(self, other):
+        return None

@@ -32,6 +32,13 @@ class Exponential(Distribution):
     def icdf(self, value):
         return -(1 - value).log() / self.rate
 
+    def kl(self, other):
+        if isinstance(other, Exponential):
+            lam = self.rate
+            lam_0 = other.rate
+            return ((lam_0.log() - lam.log()) + (lam / lam_0) - 1.).sum()
+        return None
+
     @property
     def expectation(self):
         return self.rate.pow(-1)

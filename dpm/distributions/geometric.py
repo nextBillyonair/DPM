@@ -34,6 +34,11 @@ class Geometric(Distribution):
         q = (1. - self.probs)
         return - (q * utils.log(q) + self.probs * utils.log(self.probs)) / self.probs
 
+    def kl(self, other):
+        if isinstance(other, Geometric):
+            return (-self.entropy() - (-other.probs).log1p() / self.probs - other.logits).sum()
+        return None
+
     @property
     def expectation(self):
         return 1. / self.probs - 1.

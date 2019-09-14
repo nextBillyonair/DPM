@@ -121,6 +121,7 @@ Differentiable Probabilistic Models
       1. L1 Regression (Laplace)
       1. Ridge Regression (Normal + Normal Prior on weights) (Bayesian Linear Regression)
       1. Lasso Regression (Normal + Laplace Prior on weights)
+      1. Poisson Regression (Poisson)
   1. Classification
       1. Logistic Regression (Bernoulli)
       1. Bayesian Logistic Regression (Bernoulli + Normal Prior on weights)

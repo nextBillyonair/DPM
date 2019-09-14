@@ -89,6 +89,14 @@ class Normal(Distribution):
         else:
             raise NotImplementedError("CDF only implemented for _diag_type diag")
 
+    def kl(self, other):
+        if isinstance(other, Normal):
+            if other._diag_type == 'diag': # regular normal
+                var_ratio = (self.scale / other.scale).pow(2)
+                t1 = ((self.loc - other.loc) / other.scale).pow(2)
+                return (0.5 * (var_ratio + t1 - 1. - var_ratio.log())).sum()
+        return None
+
     @property
     def expectation(self):
         return self.loc

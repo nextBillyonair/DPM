@@ -15,11 +15,25 @@ def perplexity(p_model, q_model, batch_size=64):
 
 
 def forward_kl(p_model, q_model, batch_size=64):
+    kl_div = p_model.kl(q_model)
+    if kl_div is None:
+        return empirical_forward_kl(p_model, q_model, batch_size)
+    return kl_div
+
+
+def reverse_kl(p_model, q_model, batch_size=64):
+    kl_div = q_model.kl(p_model)
+    if kl_div is None:
+        return empirical_reverse_kl(p_model, q_model, batch_size)
+    return kl_div
+
+
+def empirical_forward_kl(p_model, q_model, batch_size=64):
     p_samples = p_model.sample(batch_size)
     return (p_model.log_prob(p_samples) - q_model.log_prob(p_samples)).mean()
 
 
-def reverse_kl(p_model, q_model, batch_size=64):
+def empirical_reverse_kl(p_model, q_model, batch_size=64):
     q_samples = q_model.sample(batch_size)
     return -(p_model.log_prob(q_samples) - q_model.log_prob(q_samples)).mean()
 

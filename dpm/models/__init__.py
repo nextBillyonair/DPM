@@ -28,7 +28,8 @@ from .generative_classification import (
 )
 from .regression import (
     LinearRegression, L1Regression,
-    RidgeRegression, LassoRegression
+    RidgeRegression, LassoRegression,
+    PoissonRegression
 )
 from .model import (
     Model, NeuralModel, LinearModel,

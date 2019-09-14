@@ -1,5 +1,6 @@
 import torch
 from torch.nn import Module
+from torch.nn.functional import softplus
 from .math import logit
 
 # Layers
@@ -13,6 +14,14 @@ class Function(Module):
 
     def forward(self, x):
         return self.function(x)
+
+
+# Avoids NAN
+class SafeSoftplus(Function):
+
+    def __init__(self):
+        super().__init__(lambda x : softplus(x) + 0.01)
+
 
 # Avoids torch deprecation warning
 class Sigmoid(Function):

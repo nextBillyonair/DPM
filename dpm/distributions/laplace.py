@@ -39,6 +39,16 @@ class Laplace(Distribution):
     def entropy(self):
         return 1 + (2 * self.scale).log()
 
+    def kl(self, other):
+        if isinstance(other, Laplace):
+            scale_ratio = self.scale / other.scale
+            loc_abs_diff = (self.loc - other.loc).abs()
+            t1 = -scale_ratio.log()
+            t2 = loc_abs_diff / other.scale
+            t3 = scale_ratio * (-loc_abs_diff / self.scale).exp()
+            return (t1 + t2 + t3 - 1.).sum()
+        return None
+
     @property
     def expectation(self):
         return self.loc

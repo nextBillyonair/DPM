@@ -36,7 +36,8 @@ from .math import (
 from .layers import (
     Function,
     Sigmoid, Logit,
-    Flatten, Reshape
+    Flatten, Reshape,
+    SafeSoftplus
 )
 from .newton import (
     gradient, grad, jacobian,

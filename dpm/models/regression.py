@@ -1,9 +1,10 @@
 import torch
 from functools import partial
 from dpm.distributions import (
-    Normal, Laplace
+    Normal, Laplace, Poisson
 )
 from .model import LinearModel
+from dpm.utils import SafeSoftplus
 
 
 ################################################################################
@@ -21,7 +22,7 @@ class L1Regression(LinearModel):
 
     def __init__(self, input_dim=1, output_shape=1):
         super().__init__(input_dim, output_shape,
-            distribution=partial(Laplace, scale=torch.ones(output_shape), learnable=False))
+            distribution=partial(Laplace, scale=torch.ones(1, output_shape), learnable=False))
 
 # Bayesian Linear Regression
 class RidgeRegression(LinearModel):
@@ -40,5 +41,11 @@ class LassoRegression(LinearModel):
             prior=Laplace(0., tau, learnable=False))
 
 
+class PoissonRegression(LinearModel):
+
+    def __init__(self, input_dim=1, output_shape=1):
+        super().__init__(input_dim, output_shape,
+            output_activation=SafeSoftplus(),
+            distribution=partial(Poisson, learnable=False))
 
 # EOF
