@@ -50,7 +50,9 @@ Differentiable Probabilistic Models
   1. [Log Normal](https://en.wikipedia.org/wiki/Log-normal_distribution)  
   1. [Logistic](https://en.wikipedia.org/wiki/Logistic_distribution)
   1. [Logit Normal](https://en.wikipedia.org/wiki/Logit-normal_distribution)
+  1. [Negative Binomial](https://en.wikipedia.org/wiki/Negative_binomial_distribution)
   1. [Normal (Multivariate)](https://en.wikipedia.org/wiki/Multivariate_normal_distribution)
+  1. [Normal (Independent)](https://en.wikipedia.org/wiki/Normal_distribution)
   1. [Pareto](https://en.wikipedia.org/wiki/Pareto_distribution)
   1. [Poisson](https://en.wikipedia.org/wiki/Poisson_distribution)
   1. [Rayleigh](https://en.wikipedia.org/wiki/Rayleigh_distribution)
@@ -122,6 +124,7 @@ Differentiable Probabilistic Models
       1. Ridge Regression (Normal + Normal Prior on weights) (Bayesian Linear Regression)
       1. Lasso Regression (Normal + Laplace Prior on weights)
       1. Poisson Regression (Poisson)
+      1. Negative Binomial Regression (Generalized Poisson)
   1. Classification
       1. Logistic Regression (Bernoulli)
       1. Bayesian Logistic Regression (Bernoulli + Normal Prior on weights)

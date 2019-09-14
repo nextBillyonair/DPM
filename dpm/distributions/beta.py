@@ -6,6 +6,7 @@ from torch.nn.functional import softplus
 import numpy as np
 import math
 from .distribution import Distribution
+from .exponential import Exponential
 import dpm.utils as utils
 
 
@@ -32,6 +33,11 @@ class Beta(Distribution):
 
     def entropy(self, batch_size=None):
         return dists.Beta(self.alpha, self.beta).entropy()
+
+    def kl(self, other):
+        if isinstance(other, Exponential):
+            return (-self.entropy() - other.rate.log() + other.rate * (self.alpha / (self.alpha + self.beta))).sum()
+        return None
 
     @property
     def expectation(self):

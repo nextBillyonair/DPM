@@ -4,6 +4,7 @@ from torch.nn import Parameter
 from torch.nn.functional import log_softmax
 from .distribution import Distribution
 from dpm.utils import log
+from torch._six import inf
 
 # convert to non dist version
 # Differentiable log_prob, not differentiable sample
@@ -31,6 +32,14 @@ class Categorical(Distribution):
     def entropy(self):
         model = dists.Categorical(probs=self.probs)
         return model.entropy()
+
+    def kl(self, other):
+        if isinstance(other, Categorical):
+            t = self.probs * (self.logits - other.logits)
+            t[(other.probs == 0).expand_as(t)] = inf
+            t[(self.probs == 0).expand_as(t)] = 0
+            return t.sum()
+        return None
 
     @property
     def probs(self):

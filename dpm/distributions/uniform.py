@@ -3,6 +3,7 @@ from torch import nn
 from torch.nn import Parameter
 from torch.nn.functional import softplus
 from .distribution import Distribution
+from torch._six import inf
 
 
 class Uniform(Distribution):
@@ -37,6 +38,13 @@ class Uniform(Distribution):
 
     def icdf(self, value):
         return value * (self.high - self.low) + self.low
+
+    def kl(self, other):
+        if isinstance(other, Uniform):
+            result = ((other.high - other.low) / (self.high - self.low)).log()
+            result[(other.low > self.low) | (other.high < self.high)] = inf
+            return result.sum()
+        return None
 
     @property
     def expectation(self):
