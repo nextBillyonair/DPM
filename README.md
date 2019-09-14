@@ -17,6 +17,7 @@ Differentiable Probabilistic Models
   1. [Asymmetric Laplace](https://en.wikipedia.org/wiki/Asymmetric_Laplace_distribution)
   1. [Bernoulli](https://en.wikipedia.org/wiki/Bernoulli_distribution)
   1. [Beta](https://en.wikipedia.org/wiki/Beta_distribution)
+  1. [Binomial](https://en.wikipedia.org/wiki/Binomial_distribution)
   1. [Categorical](https://en.wikipedia.org/wiki/Categorical_distribution)
   1. [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution)
   1. [ChiSquare](https://en.wikipedia.org/wiki/Chi-squared_distribution)

@@ -1,7 +1,8 @@
 import torch
 from functools import partial
 from dpm.distributions import (
-    Normal, Laplace, Poisson, NegativeBinomial
+    Normal, Laplace, Poisson,
+    NegativeBinomial, Binomial
 )
 from .model import LinearModel
 from dpm.utils import SafeSoftplus, Sigmoid
@@ -55,5 +56,13 @@ class NegativeBinomialRegression(LinearModel):
         super().__init__(input_dim, output_shape,
             output_activations=[SafeSoftplus(), Sigmoid()] ,
             distribution=partial(NegativeBinomial, learnable=False))
+
+
+class BinomialRegression(LinearModel):
+
+    def __init__(self, input_dim=1, output_shape=[1, 1]):
+        super().__init__(input_dim, output_shape,
+            output_activations=[SafeSoftplus(), Sigmoid()] ,
+            distribution=partial(Binomial, learnable=False))
 
 # EOF

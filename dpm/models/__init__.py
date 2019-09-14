@@ -29,7 +29,8 @@ from .generative_classification import (
 from .regression import (
     LinearRegression, L1Regression,
     RidgeRegression, LassoRegression,
-    PoissonRegression, NegativeBinomialRegression
+    PoissonRegression, NegativeBinomialRegression,
+    # BinomialRegression
 )
 from .model import (
     Model, NeuralModel, LinearModel,

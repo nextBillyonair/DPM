@@ -1,11 +1,11 @@
 import torch
-from torch.nn import Parameter
-from torch.distributions import NegativeBinomial as NB
 from .distribution import Distribution
-from dpm.utils import log
+from dpm.utils import log, e, pi
+from torch.nn import Parameter
+from torch.distributions.binomial import Binomial as BN
 
 
-class NegativeBinomial(Distribution):
+class Binomial(Distribution):
 
     def __init__(self, total_count=10, probs=[0.5], learnable=True):
         super().__init__()
@@ -21,32 +21,38 @@ class NegativeBinomial(Distribution):
             self.logits = Parameter(self.logits)
 
     def log_prob(self, value):
-        return NB(self.total_count, probs=self.probs).log_prob(value).sum(-1)
+        return BN(self.total_count, probs=self.probs).log_prob(value).sum(-1)
 
     def sample(self, batch_size):
-        return NB(self.total_count, probs=self.probs).sample((batch_size, ))
+        return BN(self.total_count, probs=self.probs).sample((batch_size, ))
+
+    def entropy(self):
+        return 0.5 * (2 * pi * e * self.total_count * self.probs * (1-self.probs)).log()
 
     @property
     def expectation(self):
-        return (self.probs * self.total_count) / (1 - self.probs)
+        return self.total_count * self.probs
 
     @property
     def mode(self):
-        if self.total_count > 1:
-            return (self.probs * (self.total_count - 1) / (1 - self.probs)).floor()
-        return torch.tensor(0.).float()
+        return ((self.total_count  + 1) * self.probs).floor()
+
+    @property
+    def median(self):
+        return (self.total_count * self.probs).floor()
 
     @property
     def variance(self):
-        return self.probs * self.total_count / (1 - self.probs).pow(2)
+        return self.total_count * self.probs * (1 - self.probs)
 
     @property
     def skewness(self):
-        return (1 + self.probs) / (self.probs * self.total_count).sqrt()
+        return (1 - 2 * self.probs) / (self.total_count * self.probs * (1 - self.probs)).sqrt()
 
     @property
     def kurtosis(self):
-        return 6. / self.total_count + (1 - self.probs).pow(2) / (self.probs * self.total_count)
+        pq = self.probs * (1 - self.probs)
+        return (1 - 6 * pq) / (self.total_count * pq)
 
     @property
     def probs(self):
@@ -55,3 +61,8 @@ class NegativeBinomial(Distribution):
     def get_parameters(self):
         return {'total_count':self.total_count.detach().numpy(),
                 'probs':self.probs.detach().numpy()}
+
+
+
+
+#EOF

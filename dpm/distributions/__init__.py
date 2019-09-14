@@ -4,6 +4,7 @@ from .arcsine import Arcsine
 from .asymmetric_laplace import AsymmetricLaplace
 from .bernoulli import Bernoulli
 from .beta import Beta
+from .binomial import Binomial
 from .categorical import Categorical
 from .cauchy import Cauchy
 from .chi_square import ChiSquare
