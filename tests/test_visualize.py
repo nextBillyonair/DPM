@@ -103,7 +103,7 @@ stats = [
 ]
 @pytest.mark.parametrize("p_model,q_model,n_stats", stats)
 def test_plot_stats(p_model, q_model, n_stats):
-    stats = train(p_model, q_model, forward_kl, epochs=10)
+    stats = train(p_model, q_model, forward_kl, epochs=10, track_parameters=True)
     assert len(stats.data['loss']) == 10
     assert len(stats.data.keys()) == n_stats + 1
     for key in stats.data.keys():

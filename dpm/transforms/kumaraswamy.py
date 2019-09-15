@@ -27,8 +27,8 @@ class Kumaraswamy(Transform):
         return (-(1 - y.pow(self.alpha)).pow(self.beta)).log1p().exp()
 
     def log_abs_det_jacobian(self, x, y):
-        return -(self.alpha.log() + self.beta.log() \
-            + (self.alpha - 1) * utils.log(y) + (self.beta - 1) * (-y.pow(self.alpha)).log1p())
+        return (-(self.alpha.log() + self.beta.log() \
+            + (self.alpha - 1) * utils.log(y) + (self.beta - 1) * (-y.pow(self.alpha)).log1p())).sum(-1)
 
     @property
     def alpha(self):

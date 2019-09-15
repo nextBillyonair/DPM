@@ -9,7 +9,7 @@ class Planar(Transform):
 
     def __init__(self, in_shape=1):
         super().__init__()
-        self.in_shape=in_shape
+        self.in_shape = in_shape
         self.w = Parameter(torch.Tensor(in_shape, 1))
         self.u = Parameter(torch.zeros(in_shape, 1))
         self.bias = Parameter(torch.zeros(1))
@@ -40,7 +40,7 @@ class Planar(Transform):
     def log_abs_det_jacobian(self, x, y):
         psi = torch.mm(x, self.w) + self.bias
         det_jacobian = 1 + self.h_prime(psi).mul(self.w.t().mm(self.u_hat))
-        return det_jacobian.abs().log()
+        return det_jacobian.abs().log().sum(-1)
 
 
 

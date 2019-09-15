@@ -29,7 +29,7 @@ class Weibull(Transform):
     def log_abs_det_jacobian(self, x, y):
         return (-(x / self.scale).pow(self.concentration) \
             + (self.concentration * utils.log(x)) + self.concentration.log() \
-            - self.concentration * self.scale.log())
+            - self.concentration * self.scale.log()).sum(-1)
 
     @property
     def scale(self):

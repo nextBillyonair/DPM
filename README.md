@@ -82,9 +82,10 @@ Differentiable Probabilistic Models
   1. Kumaraswamy
   1. Log
   1. Logit
-  1. Planar
+  1. [NICE](https://arxiv.org/pdf/1410.8516.pdf)
+  1. [Planar](https://arxiv.org/pdf/1505.05770.pdf)
   1. Power
-  1. Radial
+  1. [Radial](https://arxiv.org/pdf/1505.05770.pdf)
   1. Reciprocal
   1. Sigmoid
   1. SinhArcsinh
@@ -113,7 +114,7 @@ Differentiable Probabilistic Models
       1. [MMGAN Loss](https://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf)
       1. [WGAN Loss](https://arxiv.org/pdf/1701.07875.pdf)
       1. [LSGAN Loss](https://arxiv.org/pdf/1611.04076.pdf)
-  1. Variational
+  1. [Variational](https://en.wikipedia.org/wiki/Variational_Bayesian_methods)
       1. ELBO
           * Implements SVI with ELBO loss.
           * Requires a Conditional Model to learn, in addition to P and Q models.

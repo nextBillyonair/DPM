@@ -9,10 +9,10 @@ import dpm.utils as utils
 
 class Radial(Transform):
 
-    def __init__(self, n_dims=1):
+    def __init__(self, in_shape=1):
         super().__init__()
-        self.z_0 = Parameter(torch.zeros(n_dims))
-        self.n_dims = n_dims
+        self.z_0 = Parameter(torch.zeros(in_shape))
+        self.in_shape = in_shape
         self._alpha = Parameter(utils.softplus_inverse(torch.rand(1).float()))
         self.beta = Parameter(torch.randn(1).float())
 
@@ -41,6 +41,6 @@ class Radial(Transform):
 
     def log_abs_det_jacobian(self, z, y):
         bhp1 = 1 + self.beta_hat * self.h(z)
-        term_1 = (self.n_dims - 1) * bhp1.log()
+        term_1 = (self.in_shape - 1) * bhp1.log()
         term_2 = (bhp1 + self.beta_hat * self.h_prime(z) * self.r(z)).log()
-        return term_1 + term_2
+        return (term_1 + term_2).sum(-1)

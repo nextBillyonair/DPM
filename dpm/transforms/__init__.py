@@ -10,6 +10,7 @@ from .identity import Identity
 from .kumaraswamy import Kumaraswamy
 from .log import Log
 from .logit import Logit
+from .nice import NICE
 from .planar import Planar
 from .power import Power
 from .radial import Radial

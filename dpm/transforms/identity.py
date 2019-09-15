@@ -13,7 +13,7 @@ class Identity(Transform):
         return y
 
     def log_abs_det_jacobian(self, x, y):
-        return torch.zeros_like(x)
+        return torch.zeros_like(x).sum(-1)
 
     def get_parameters(self):
         return {'type':'identity'}

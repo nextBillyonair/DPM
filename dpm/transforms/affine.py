@@ -25,7 +25,7 @@ class Affine(Transform):
         return (y - self.loc) / self.scale
 
     def log_abs_det_jacobian(self, x, y):
-        return torch.log(torch.abs(self.scale.expand(x.size())))
+        return torch.log(torch.abs(self.scale.expand(x.size()))).sum(-1)
 
     def get_parameters(self):
         return {'type':'affine', 'loc':self.loc.detach().numpy(),

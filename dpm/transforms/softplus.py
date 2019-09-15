@@ -22,7 +22,7 @@ class Softplus(Transform):
         return self.hinge_softness * utils.softplus_inverse(y / self.hinge_softness)
 
     def log_abs_det_jacobian(self, x, y):
-        return -softplus(-x / self.hinge_softness)
+        return (-softplus(-x / self.hinge_softness)).sum(-1)
         # return torch.log(-torch.expm1(-y) + 1e-10)
 
     def get_parameters(self):

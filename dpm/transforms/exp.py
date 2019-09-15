@@ -13,7 +13,7 @@ class Exp(Transform):
         return y.log()
 
     def log_abs_det_jacobian(self, x, y):
-        return x
+        return x.sum(-1)
 
     def get_parameters(self):
         return {'type':'exp'}

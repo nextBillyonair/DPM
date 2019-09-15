@@ -14,7 +14,7 @@ class Expm1(Transform):
 
     def log_abs_det_jacobian(self, x, y):
         # log1p(y) = log1p(e^x - 1) = log((e^x - 1) + 1) = x
-        return x
+        return x.sum(-1)
 
     def get_parameters(self):
         return {'type':'expm1'}

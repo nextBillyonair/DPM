@@ -28,7 +28,7 @@ class SinhArcsinh(Transform):
     def log_abs_det_jacobian(self, x, y):
         return (torch.log(
                 torch.cosh((utils.arcsinh(x) + self.skewness) * self.tailweight)
-                / utils.sqrtx2p1(x + 1e-10)) + torch.log(self.tailweight))
+                / utils.sqrtx2p1(x + 1e-10)) + torch.log(self.tailweight)).sum(-1)
 
     @property
     def tailweight(self):

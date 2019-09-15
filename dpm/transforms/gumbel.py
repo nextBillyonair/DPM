@@ -26,7 +26,7 @@ class Gumbel(Transform):
         return self.loc - self.scale * torch.log(-torch.log(y))
 
     def log_abs_det_jacobian(self, x, y):
-        return -torch.log(self.scale / (-torch.log(y) * y))
+        return -torch.log(self.scale / (-torch.log(y) * y)).sum(-1)
 
     @property
     def scale(self):

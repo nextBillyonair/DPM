@@ -13,7 +13,7 @@ class Reciprocal(Transform):
         return 1. / y
 
     def log_abs_det_jacobian(self, x, y):
-        return -2. * x.abs().log()
+        return (-2. * x.abs().log()).sum(-1)
 
     def get_parameters(self):
         return {'type':'reciprocal'}

@@ -14,7 +14,7 @@ class TransformDistribution(Distribution):
 
     def log_prob(self, value):
         log_det, final_value = self.transforms.log_abs_det_jacobian(value)
-        return self.distribution.log_prob(final_value) - log_det.sum(1)
+        return self.distribution.log_prob(final_value) - log_det
 
     def sample(self, batch_size):
         samples = self.distribution.sample(batch_size)

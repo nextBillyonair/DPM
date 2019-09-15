@@ -15,7 +15,7 @@ class Tanh(Transform):
         return utils.arctanh(y)
 
     def log_abs_det_jacobian(self, x, y):
-        return 2.0 * (np.log(2.0) - x - softplus(-2.0 * x))
+        return (2.0 * (np.log(2.0) - x - softplus(-2.0 * x))).sum(-1)
 
     def get_parameters(self):
         return {'type':'tanh'}

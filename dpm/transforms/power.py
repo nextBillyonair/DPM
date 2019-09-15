@@ -25,8 +25,8 @@ class Power(Transform):
 
     def log_abs_det_jacobian(self, x, y):
         if self.power == 0.:
-            return x
-        return (1. / self.power - 1.) * (x * self.power).log1p()
+            return x.sum(-1)
+        return ((1. / self.power - 1.) * (x * self.power).log1p()).sum(-1)
 
     def get_parameters(self):
         return {'type':'power', 'power':self.power.item()}

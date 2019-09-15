@@ -14,7 +14,7 @@ class Square(Transform):
         return y.sqrt()
 
     def log_abs_det_jacobian(self, x, y):
-        return np.log(2.) + x.log()
+        return (np.log(2.) + x.log()).sum(-1)
 
     def get_parameters(self):
         return {'type':'square'}

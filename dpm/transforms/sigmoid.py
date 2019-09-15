@@ -16,7 +16,7 @@ class Sigmoid(Transform):
         return utils.logit(y)
 
     def log_abs_det_jacobian(self, x, y):
-        return -softplus(-x) - softplus(x)
+        return (-softplus(-x) - softplus(x)).sum(-1)
 
     def get_parameters(self):
         return {'type':'sigmoid'}
