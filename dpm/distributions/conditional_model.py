@@ -23,7 +23,7 @@ class ConditionalModel(Distribution):
             output_shapes = [output_shapes]
         if not isinstance(output_activations, list):
             output_activations = [output_activations]
-            
+
         self.input_dim = input_dim
         self.output_dim = output_shapes[0]
         prev_size = input_dim
@@ -45,7 +45,10 @@ class ConditionalModel(Distribution):
         self.distribution = distribution
 
     def forward(self, x):
+        batch_shape = x.shape[:-1]
+        # x = x.reshape(-1, x.size(-1))
         h = self.model(x)
+        # h = h.reshape(*batch_shape, -1)
         return [output_layer(h) for output_layer in self.output_layers]
 
     def _create_dist(self, x):

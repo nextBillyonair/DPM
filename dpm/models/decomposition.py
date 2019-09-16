@@ -179,4 +179,11 @@ class ProbabilisticPCA(Distribution):
     def transform(self, X):
         return X.mm(self.W)
 
+    # rewrite
+    # def parameters(self):
+    #     for name, param in self.named_parameters(recurse=True):
+    #         if 'encoder' in name:
+    #             continue
+    #         yield param
+
 # EOF

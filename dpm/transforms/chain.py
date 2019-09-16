@@ -7,6 +7,8 @@ class Chain(Transform):
 
     def __init__(self, transforms):
         super().__init__()
+        if not isinstance(transforms, list):
+            transforms = [transforms]
         self.chain = ModuleList(transforms)
 
     def forward(self, x):
@@ -34,3 +36,6 @@ class Chain(Transform):
 
     def __iter__(self):
         return iter(self.chain)
+
+    def __getitem__(self, index):
+        return self.chain[index]

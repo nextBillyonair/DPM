@@ -14,11 +14,11 @@ class GumbelSoftmax(Distribution):
     def __init__(self, probs=[0.5, 0.5], temperature=1.0,
                  hard=True, learnable=True):
         super().__init__()
-        self.n_dims = len(probs)
         self.temperature = temperature
         self.hard = hard
         if not isinstance(probs, torch.Tensor):
             probs = torch.tensor(probs)
+        self.n_dims = probs.shape
         self.logits = log(probs.float())
         if learnable:
             self.logits = Parameter(self.logits)
@@ -30,8 +30,10 @@ class GumbelSoftmax(Distribution):
         # put non hard pdf here
 
     def sample(self, batch_size):
-        U = torch.rand((batch_size, self.n_dims))
+        U = torch.rand((batch_size, *self.n_dims))
         gumbel_samples = -torch.log(-torch.log(U + eps) + eps)
+        if len(self.logits) != 1:
+            gumbel_samples = gumbel_samples.squeeze(0)
         y = self.logits + gumbel_samples
         y = (y / self.temperature).softmax(dim=1)
         if self.hard:

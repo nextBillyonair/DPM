@@ -8,7 +8,9 @@ from .classification import (
     SoftmaxRegression
 )
 from .clustering import (
-    GaussianMixture
+    GaussianMixtureModel,
+    VariationalCategorical,
+    VariationalGaussianMixtureModel
 )
 from .decomposition import (
     pca, PCA,

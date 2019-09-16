@@ -6,6 +6,7 @@ from functools import partial
 from dpm.utils import Sigmoid
 from dpm.train import train
 from dpm.criterion import cross_entropy, ELBO
+import torch
 
 # Pass Data to encoder -> mu, sigma
 # Sample from latent(mu, sigma)
@@ -66,6 +67,16 @@ class VAE(Distribution):
             return train(data, self, self.criterion, **kwargs)
         return train(data, self, cross_entropy, **kwargs)
 
+    def parameters(self):
+        for name, param in self.named_parameters(recurse=True):
+            if 'encoder' in name:
+                continue
+            yield param
+
 
 # Normalize Data with X - Mu / Std For Normal Decoder
 # Min Max Scaler for Bernoulli
+
+# Note on decoder args:
+# Gaussian -> 2 output shapes, activations: [None, SafeSoftplus()], distribtuion: Normal
+# Bernoulli -> 1 output shape, activation: [Softmax()], distribtuion: Bernoulli
