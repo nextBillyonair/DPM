@@ -157,5 +157,6 @@ Differentiable Probabilistic Models
   1. Rejection Sampling (and Mode Sampling)
   1. Metropolis
   1. Metropolis-Hastings
+  1. Simulated Annealing
   1. Metropolis-Adjusted Langevin Algorithm (MALA)
   1. Hamiltonian Monte Carlo (HMC)
