@@ -47,7 +47,7 @@ class NeuralModel(Model):
             output_shapes = [output_shapes]
         if not isinstance(output_activations, list):
             output_activations = [output_activations]
-            
+
         self.n_dims = output_shapes
         self.model = ConditionalModel(input_dim, hidden_sizes=hidden_sizes,
                             activation=activation,
@@ -66,6 +66,9 @@ class NeuralModel(Model):
 
     def sample(self, x, compute_logprob=False):
         return self.model.sample(x, compute_logprob)
+
+    def create_dist(self, x):
+        return self.model._create_dist(x)
 
 
 

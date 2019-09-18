@@ -3,7 +3,7 @@ from dpm.models import (
     RidgeRegression, LassoRegression,
     LogisticRegression, BayesianLogisticRegression,
     SoftmaxRegression, PMF,
-    GaussianMixture,
+    GaussianMixtureModel,
     GaussianNaiveBayes, BernoulliNaiveBayes, MultinomialNaiveBayes,
     LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis,
     GAN, WGAN, LSGAN, MMGAN
@@ -105,7 +105,7 @@ def test_gmm_clustering():
                       Normal([-5.3, -6.3], [7, 4.2, 3.1, 3])], [0.75, 0.25])
 
     X = model.sample(100).detach()
-    m = GaussianMixture(n_dims=2)
+    m = GaussianMixtureModel(n_dims=2)
     m.fit(X, epochs=100, track_parameters=False)
     assert m.sample(5).shape == (5, 2)
     assert m.log_prob(m.sample(5)).shape == (5, )

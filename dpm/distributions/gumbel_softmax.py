@@ -26,20 +26,25 @@ class GumbelSoftmax(Distribution):
     def log_prob(self, value):
         if self.hard or True:
             model = Categorical(self.probs, learnable=False)
-            return model.log_prob(value.max(dim=1)[1].view(-1, 1))
+            if len(self.logits.shape) == 1:
+                return model.log_prob(value.max(dim=1)[1].view(-1, 1))
+            return model.log_prob(value.max(dim=-1, keepdim=True)[1].sum(-1)).unsqueeze(-1)
+
         # put non hard pdf here
 
     def sample(self, batch_size):
         U = torch.rand((batch_size, *self.n_dims))
         gumbel_samples = -torch.log(-torch.log(U + eps) + eps)
-        if len(self.logits) != 1:
-            gumbel_samples = gumbel_samples.squeeze(0)
         y = self.logits + gumbel_samples
-        y = (y / self.temperature).softmax(dim=1)
+        y = (y / self.temperature).softmax(dim=-1)
         if self.hard:
             _, ind = y.max(dim=-1)
             y_hard = torch.zeros_like(y)
-            y_hard.scatter_(1, ind.view(-1, 1), 1)
+            if len(self.logits.shape) == 1:
+                y_hard.scatter_(1, ind.view(-1, 1), 1)
+            else:
+                mask = torch.arange(y.size(-1)).reshape(1, 1, -1) == ind.unsqueeze(-1)
+                y_hard[mask] = 1.
             y = (y_hard - y).detach() + y
         return y
 
