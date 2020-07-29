@@ -321,6 +321,61 @@ def plot_emd_partition(gamma, colorMap, titles=[r"", r""], ylim=0.25):
     ax[1].set_title(titles[1], y=-0.25, x=0.5, fontsize=20)
 
 
+###############################################################
+# ORDINAL VISUALS
+
+# From Manual Settings:
+def plot_ordinal_classes(f, cutpoints, func=torch.sigmoid, title=None):
+    # f -> linspace(low, high, step) to plot curves on
+    # cutpoints -> manual tensor list of cutoff points, in order smallest to largest
+    # func -> some function that has cdf properties
+    num_classes = len(cutpoints) + 1
+    labels = []
+    for idx in range(num_classes):
+        if idx == 0:
+            plt.plot(f, func(cutpoints[0] - f));
+        elif idx == num_classes - 1:
+            plt.plot(f, 1 - func(cutpoints[-1] - f));
+        else:
+            plt.plot(f, func(cutpoints[idx] - f) - func(cutpoints[idx - 1] - f));
+
+        labels.append(f'$P(y = {idx})$')
+
+    for c in cutpoints:
+        plt.plot((c, c), (0, 1), 'k--')
+
+    labels.append('cutpoints')
+    plt.ylabel('Probability');
+    plt.ylim(0)
+    plt.xlabel('$f$');
+    if title: plt.title(title)
+    plt.legend(labels, loc='center left', bbox_to_anchor=(1, 0.5),
+              fancybox=True, ncol=1)
+
+# visualize straight from layer itself, easier
+def plot_ordinal_classes_from_layer(f, layer, title=None):
+    # f -> linspace(low, high, step) to plot curves on
+    # layer -> Some ordinal layer from dpm.models.OrdinalLayer
+    cutpoints = layer.threshold.detach()
+    data = layer(f.view(-1, 1)).detach().exp()
+    num_classes = len(cutpoints) + 1
+
+    labels = []
+    for idx in range(num_classes):
+        plt.plot(f, data[:, idx])
+        labels.append(f'$P(y = {idx})$')
+
+    for c in cutpoints:
+        plt.plot((c, c), (0, 1), 'k--')
+
+    labels.append('cutpoints')
+    plt.ylabel('Probability');
+    plt.ylim(0)
+    plt.xlabel('$f$');
+    if title: plt.title(title)
+    plt.legend(labels, loc='center left', bbox_to_anchor=(1, 0.5),
+              fancybox=True, ncol=1)
+
 
 
 

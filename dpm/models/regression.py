@@ -4,7 +4,7 @@ from dpm.distributions import (
     Normal, Laplace, Poisson,
     NegativeBinomial, Binomial
 )
-from .model import LinearModel
+from .model import LinearModel, NeuralModel
 from dpm.utils import SafeSoftplus, Sigmoid
 
 
@@ -64,5 +64,19 @@ class BinomialRegression(LinearModel):
         super().__init__(input_dim, output_shape,
             output_activations=[SafeSoftplus(), Sigmoid()] ,
             distribution=partial(Binomial, learnable=False))
+
+
+################################################################################
+# REGRESSION
+################################################################################
+
+
+class Regression(NeuralModel):
+
+    def __init__(self, input_dim=1, output_shape=1, hidden_sizes=[24, 24]):
+        super().__init__(input_dim, output_shape,
+            distribution=partial(Normal, scale=torch.ones(1, output_shape), learnable=False))
+
+
 
 # EOF

@@ -46,13 +46,16 @@ class ConditionalModel(Distribution):
 
     def forward(self, x):
         batch_shape = x.shape[:-1]
-        # x = x.reshape(-1, x.size(-1))
+        x = x.reshape(-1, x.size(-1))
+        # print(x.shape)
         h = self.model(x)
-        # h = h.reshape(*batch_shape, -1)
+        h = h.reshape(*batch_shape, -1)
+        # print(h.shape)
         return [output_layer(h) for output_layer in self.output_layers]
 
     def _create_dist(self, x):
         dist_params = self(x)
+        # print(len(dist_params), dist_params[0].shape)
         return self.distribution(*dist_params, learnable=False)
 
     def sample(self, x, compute_logprob=False):

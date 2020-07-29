@@ -150,6 +150,18 @@ Differentiable Probabilistic Models
       1. WGAN
       1. LSGAN
   1. Variational Auto-Encoder (VAE)
+  1. Ordinal Models (For Ordinal Targets)
+      1. OrdinalLayer (Layer to convert Real Value to Target Prob)
+      1. OrdinalModel (Wraps a Predictor + Ordinal in one module)
+      1. OrdinalLoss (Reminder to use NLLLoss b/c you don't want to softmax the probs)
+      1. Functional CDFs
+          1. exp_cdf -> Exponential Function
+          1. erf_cdf -> Error Function as a CDF
+          1. tanh_cdf -> Uses Hyperbolic Tangent to fake a CDF
+      1. Distribution CDFs
+          1. normal_cdf
+          1. laplace_cdf
+          1. cauchy_cdf
 
 # Monte Carlo <a name="monte_carlo"></a>
   1. Approximations (Integration, Expectation, Variance, etc.)

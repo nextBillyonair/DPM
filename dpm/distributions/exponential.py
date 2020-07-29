@@ -20,7 +20,7 @@ class Exponential(Distribution):
         return (self.rate.log() - self.rate * value).sum(dim=-1)
 
     def sample(self, batch_size):
-        u = torch.rand((batch_size, self.n_dims))
+        u = torch.rand((batch_size, *self._rate.shape))
         return -(-u).log1p() / self.rate
 
     def entropy(self):

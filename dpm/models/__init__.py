@@ -41,3 +41,9 @@ from .model import (
 from .vae import (
     VAE
 )
+from .ordinal import (
+    OrdinalLayer, OrdinalModel,
+    OrdinalLoss,
+    exp_cdf, erf_cdf, tanh_cdf,
+    normal_cdf, laplace_cdf, cauchy_cdf
+)
